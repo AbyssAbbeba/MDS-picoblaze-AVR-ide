@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>resources/icons/reg_watch.png</file>
     <file>resources/html/welcome.html</file>
     <file>resources/icons/Moravia_Microsystems_small.png</file>
     <file>resources/icons/compile.png</file>
