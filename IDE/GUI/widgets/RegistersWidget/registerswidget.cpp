@@ -482,6 +482,7 @@ void RegistersWidget::updateValue(int row, int column)
         {
             m_memory->directWrite(row, value);
         }
+        m_simControlUnit->dispatchEvents();
         this->update = false;
     }
     //qDebug() << "RegistersWidget: return updateValue()";
