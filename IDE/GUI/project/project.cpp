@@ -382,6 +382,11 @@ Project::Project(QFile *file, ProjectMan *parent)
         compileOpt.append(false);
     }
 
+    for (int i = 0; i < 3; i++)
+    {
+        compileDepths.append(-1);
+    }
+
     fileCount = 0;
     parentManager = parent;
     this->m_simControlUnit = NULL;
@@ -598,7 +603,13 @@ Project::Project(QFile *file, ProjectMan *parent)
                         {
                             //qDebug() << "node";
                             xmlCompilerElement = xmlCompilerNode.toElement();
-                            if (xmlCompilerElement.tagName() == "Options")
+                            if (xmlCompilerElement.tagName() == "Depths")
+                            {
+                                compileDepths[0] = (xmlCompilerElement.attribute("macro", "").toInt());
+                                compileDepths[1] = (xmlCompilerElement.attribute("file", "").toInt());
+                                compileDepths[2] = (xmlCompilerElement.attribute("repeat", "").toInt());
+                            }
+                            else if (xmlCompilerElement.tagName() == "Options")
                             {
                                 QDomNode xmlCompileOptNode = xmlCompilerElement.firstChild();
                                 QDomElement xmlCompileOptElem;
@@ -915,6 +926,7 @@ Project::Project(ProjectMan *parent)
     this->mainFileName = "";
     this->mainFilePath = "";
     this->compileOpt = GuiCfg::getInstance().getProjectCompOpt();
+    this->compileDepths = GuiCfg::getInstance().getProjectCompDepth();
     this->defaultVHDL = GuiCfg::getInstance().getProjectDefVHDL();
     this->defaultVerilog = GuiCfg::getInstance().getProjectDefVerilog();
     this->templateVHDL =  GuiCfg::getInstance().getProjectPathVHDL();
@@ -1073,9 +1085,11 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     //this->treeProjUntitled->setText(0, "Untitled");
 
 //     
-    for (int i = 0; i < 13; i++)
+    
+    
+    for (int i = 0; i < 3; i++)
     {
-        compileOpt.append(false);
+        compileDepths.append(-1);
     }
 
     this->family = arch;
@@ -1138,44 +1152,63 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlCompilerOpt = domDoc.createElement("Options");
     QDomElement xmlSymbolTbl = domDoc.createElement("SymbolTable");
     xmlSymbolTbl.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlSymbolTbl);
     QDomElement xmlMacroTbl = domDoc.createElement("MacroTable");
     xmlMacroTbl.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlMacroTbl);
     QDomElement xmlDbgFile = domDoc.createElement("DebugFile");
     xmlDbgFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlDbgFile);
     QDomElement xmlCodeTree = domDoc.createElement("CodeTree");
     xmlCodeTree.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlCodeTree);
     QDomElement xmlLstFile = domDoc.createElement("ListFile");
     xmlLstFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlLstFile);
     QDomElement xmlHexFile = domDoc.createElement("HexFile");
     xmlHexFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlHexFile);
     QDomElement xmlBinFile = domDoc.createElement("BinFile");
     xmlBinFile.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlBinFile);
     QDomElement xmlSRecFile = domDoc.createElement("SRecFile");
     xmlSRecFile.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlSRecFile);
     QDomElement xmlMemFile = domDoc.createElement("MemFile");
     xmlMemFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlMemFile);
     QDomElement xmlRawHexFile = domDoc.createElement("RawHexFile");
     xmlRawHexFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlRawHexFile);
     QDomElement xmlVerilogFile = domDoc.createElement("VerilogFile");
     xmlVerilogFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlVerilogFile);
     QDomElement xmlVHDLFile = domDoc.createElement("VHDLFile");
     xmlVHDLFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlVHDLFile);
     QDomElement xmlStringFile = domDoc.createElement("StringFile");
     xmlStringFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlStringFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
+
+    QDomElement xmlCompilerDepth = domDoc.createElement("Depths");
+    xmlCompilerDepth.setAttribute("macro", compileDepths.at(0));
+    xmlCompilerDepth.setAttribute("file", compileDepths.at(1));
+    xmlCompilerDepth.setAttribute("repeat", compileDepths.at(2));
+    xmlCompiler.appendChild(xmlCompilerDepth);
 
     QDomElement xmlCompilerTemplates = domDoc.createElement("Templates");
     QDomElement xmlVHDLTemplate = domDoc.createElement("VHDL");
@@ -1513,7 +1546,7 @@ void Project::saveProject()
     {
         xmlVHDLFile.setAttribute("enable", "false");
     }
-    QDomElement xmlStringFile = domDoc.createElement("StringList");
+    QDomElement xmlStringFile = domDoc.createElement("StringFile");
     if (true == this->compileOpt.at(12))
     {
         xmlStringFile.setAttribute("enable", "true");
@@ -1524,6 +1557,12 @@ void Project::saveProject()
     }
     xmlCompilerOpt.appendChild(xmlVHDLFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
+
+    QDomElement xmlCompilerDepth = domDoc.createElement("Depths");
+    xmlCompilerDepth.setAttribute("macro", compileDepths.at(0));
+    xmlCompilerDepth.setAttribute("file", compileDepths.at(1));
+    xmlCompilerDepth.setAttribute("repeat", compileDepths.at(2));
+    xmlCompiler.appendChild(xmlCompilerDepth);
 
     QDomElement xmlCompilerTemplates = domDoc.createElement("Templates");
     QDomElement xmlVHDLTemplate = domDoc.createElement("VHDL");
@@ -2228,10 +2267,18 @@ void Project::startCfgDlgCore()
 
 void Project::setCompileOpt(QList<bool> opt)
 {
-
     for (int i = 0; i < opt.size(); i++)
     {
         this->compileOpt[i] = opt.at(i);
+    }
+}
+
+
+void Project::setCompileDepths(QList<int> depths)
+{
+    for (int i = 0; i < depths.size(); i++)
+    {
+        this->compileDepths[i] = depths.at(i);
     }
 }
 

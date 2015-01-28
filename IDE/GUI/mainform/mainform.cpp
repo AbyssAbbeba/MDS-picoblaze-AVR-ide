@@ -2639,6 +2639,9 @@ void MainForm::compileProject()
                                   + ".strtbl"
                                   ).toLocal8Bit().constData();
         }
+
+        options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+        options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
         //return;
     }
     else if ( false == m_projectMan->getActive()->useMainFile )
@@ -2820,6 +2823,9 @@ void MainForm::compileProject()
             {
                 options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
             }
+            
+            options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+            options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
         }
         else
         {
@@ -3050,6 +3056,9 @@ void MainForm::compileProject()
             {
                 options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
             }
+            
+            options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+            options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
         }
         //return;
     }
@@ -3231,6 +3240,9 @@ void MainForm::compileProject()
         {
             options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
         }
+        
+        options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+        options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
     }
 
 
