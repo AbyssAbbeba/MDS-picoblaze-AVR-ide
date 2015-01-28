@@ -46,6 +46,7 @@ class QTreeWidgetItem;
 class QColor;
 class DataFile;
 class DbgFile;
+class CompatibilityMode;
 
 
 /*typedef enum LangType {
@@ -118,7 +119,7 @@ class Project : public QObject
         void setupSim();
         void setupSim(QString family);
         int start(QString file = "", QString dumpFiles = "", DbgFile *dbgFile = NULL, DataFile *dataFile = NULL);
-        void setBreakpoints(bool set);
+        void setBreakpoints(bool set, bool compatibilityMode = false, CompatibilityMode *mode = NULL);
         void stop();
         void reset();
         void step();
