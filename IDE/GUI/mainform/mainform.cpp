@@ -1802,6 +1802,18 @@ bool MainForm::saveFile()
             m_wDockManager->setTabSaved();
             m_wDockManager->getCentralWidget()->setSaved();
         }
+        for (int i = 0; i < m_fileTimeStamps.count(); i++)
+        {
+            if (m_fileTimeStamps.at(i).first == m_wDockManager->getCentralPath())
+            {
+                m_fileTimeStamps.removeAt(i);
+                break;
+            }
+        }
+        QFileInfo fileInfo(m_wDockManager->getCentralPath());
+        QPair<QString, QDateTime> pair(m_wDockManager->getCentralPath(), fileInfo.lastModified());
+        m_fileTimeStamps.append(pair);
+        QTimer::singleShot(2000, this, SLOT(clearFileTimestamps()));
         QApplication::processEvents();
         m_fileWatcher.blockSignals(false);
             //qDebug() << "mainform: block signal false";
@@ -1919,6 +1931,18 @@ bool MainForm::saveFileAs()
             m_wDockManager->setCentralName(path.section('/', -1));
             m_wDockManager->getCentralWidget()->setSaved();
         }
+        for (int i = 0; i < m_fileTimeStamps.count(); i++)
+        {
+            if (m_fileTimeStamps.at(i).first == m_wDockManager->getCentralPath())
+            {
+                m_fileTimeStamps.removeAt(i);
+                break;
+            }
+        }
+        QFileInfo fileInfo(path);
+        QPair<QString, QDateTime> pair(path, fileInfo.lastModified());
+        m_fileTimeStamps.append(pair);
+        QTimer::singleShot(2000, this, SLOT(clearFileTimestamps()));
         QApplication::processEvents();
         m_fileWatcher.blockSignals(false);
     }
@@ -2068,6 +2092,18 @@ bool MainForm::saveFile(CodeEdit *editor, bool ask)
                 editor->setSaved();
                 //qDebug() << "mainform: editor saved";
             }
+            for (int i = 0; i < m_fileTimeStamps.count(); i++)
+            {
+                if (m_fileTimeStamps.at(i).first == m_wDockManager->getCentralPath())
+                {
+                    m_fileTimeStamps.removeAt(i);
+                    break;
+                }
+            }
+            QFileInfo fileInfo(path);
+            QPair<QString, QDateTime> pair(path, fileInfo.lastModified());
+            m_fileTimeStamps.append(pair);
+            QTimer::singleShot(2000, this, SLOT(clearFileTimestamps()));
             QApplication::processEvents();
             m_fileWatcher.blockSignals(false);
         }
@@ -5357,10 +5393,21 @@ void MainForm::fileClosed(QString path)
 
 void MainForm::fileChanged(QString path)
 {
-    qDebug() << "file changed" << path;
+    //qDebug() << "file changed" << path;
     //QApplication::processEvents();
     if (NULL == m_reloadDlg)
     {
+        QFileInfo fileInfo(path);
+        for (int i = 0; i < m_fileTimeStamps.count(); i++)
+        {
+            if (m_fileTimeStamps.at(i).first == path && m_fileTimeStamps.at(i).second == fileInfo.lastModified())
+            {
+                return;
+            }
+        }
+        QPair<QString, QDateTime> pair(path, fileInfo.lastModified());
+        m_fileTimeStamps.append(pair);
+        QTimer::singleShot(2000, this, SLOT(clearFileTimestamps()));
         m_reloadDlg = new SaveDialog(this, QStringList(), true);
         connect(m_reloadDlg, SIGNAL(reload(QString)), this, SLOT(reloadFile(QString)));
         m_reloadDlg->appendFile(path);
@@ -5370,6 +5417,17 @@ void MainForm::fileChanged(QString path)
     }
     else// (NULL != m_reloadDlg)
     {
+        QFileInfo fileInfo(path);
+        for (int i = 0; i < m_fileTimeStamps.count(); i++)
+        {
+            if (m_fileTimeStamps.at(i).first == path && m_fileTimeStamps.at(i).second == fileInfo.lastModified())
+            {
+                return;
+            }
+        }
+        QPair<QString, QDateTime> pair(path, fileInfo.lastModified());
+        m_fileTimeStamps.append(pair);
+        QTimer::singleShot(2000, this, SLOT(clearFileTimestamps()));
         m_reloadDlg->appendFile(path);
     }
     if (false == m_fileWatcher.files().contains(path))
@@ -5759,4 +5817,28 @@ void MainForm::disableHelpActions(bool disable)
     simulationBreakpointAct->setDisabled(disable);
     simulationDisableBreakpointsAct->setDisabled(disable);
     projectCompileAct->setDisabled(disable);
+}
+
+
+void MainForm::clearFileTimestamps()
+{
+    QList<int> indexes;
+    QString file;
+    for (int i = 0; i < m_fileTimeStamps.count(); i++)
+    {
+        indexes.clear();
+        file = m_fileTimeStamps.at(i).first;
+        for (int j = 0; j < m_fileTimeStamps.count(); j++)
+        {
+            if (file == m_fileTimeStamps.at(i).first)
+            {
+                indexes.append(j);
+            }
+        }
+        while (indexes.count() > 1)
+        {
+            m_fileTimeStamps.removeAt(indexes.at(0));
+            indexes.removeAt(0);
+        }
+    }
 }
