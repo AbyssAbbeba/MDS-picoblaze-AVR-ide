@@ -98,6 +98,8 @@ MCUSim::RetCode PicoBlazeDataMemory::directWrite ( unsigned int addr,
         return MCUSim::RC_ADDR_OUT_OF_RANGE;
     }
 
+    logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, addr);
+
     m_memory[addr] = ( data & 0xff );
     return MCUSim::RC_OK;
 }

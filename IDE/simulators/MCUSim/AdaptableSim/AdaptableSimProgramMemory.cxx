@@ -166,6 +166,8 @@ MCUSim::RetCode AdaptableSimProgramMemory::directWrite ( unsigned int addr,
         return MCUSim::RC_ADDR_OUT_OF_RANGE;
     }
 
+    logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, addr);
+
     m_memory[addr] = ( data & 0x3ffff );
     return MCUSim::RC_OK;
 }
