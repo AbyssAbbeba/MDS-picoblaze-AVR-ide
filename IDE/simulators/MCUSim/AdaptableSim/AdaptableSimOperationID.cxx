@@ -25,11 +25,11 @@ std::ostream & operator << ( std::ostream & out,
         case OP_NONE:          out << "NONE";                  break;
         case OP_ABS_JUMP:      out << "ABS JUMP";              break;
         case OP_ABS_CALL:      out << "ABS CALL";              break;
-        case OP_REL_JUMP:      out << "REL CALL";              break;
+        case OP_REL_JUMP:      out << "REL JUMP";              break;
         case OP_REL_CALL:      out << "REL CALL";              break;
-        case OP_OFS_JUMP:      out << "OFS CALL";              break;
+        case OP_OFS_JUMP:      out << "OFS JUMP";              break;
         case OP_OFS_CALL:      out << "OFS CALL";              break;
-        case OP_IDX_JUMP:      out << "IDX CALL";              break;
+        case OP_IDX_JUMP:      out << "IDX JUMP";              break;
         case OP_IDX_CALL:      out << "IDX CALL";              break;
         case OP_RETURN:        out << "RETURN";                break;
         case OP_ISR_RETURN:    out << "ISR RETURN";            break;
