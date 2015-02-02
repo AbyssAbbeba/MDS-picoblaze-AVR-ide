@@ -54,11 +54,11 @@ dataIN:         INPUT           inout_data,@pointer_in
                 ;; reg[1] == 1
                 ;; flag[C] == false
                 ;; flag[Z] == false
-                CMP             pointer_in,#2
+                COMPARE             pointer_in,#2
                 ;; step
                 ;; flag[C] == true
                 ;; flag[Z] == false
-                JUMP            NZ,dataIN
+                JUMPNZ             dataIN
                 ;; step
                 ;; flag[C] == true
                 ;; flag[Z] == false
@@ -86,7 +86,7 @@ dataIN:         INPUT           inout_data,@pointer_in
                  
 dataOUT:        OUTPUT          inout_data,@pointer_out
                 ADD             pointer_in,#1
-                CMP             pointer_in,#255
-                JUMP            NZ,dataOUT
+                COMPARE         pointer_in,#255
+                JUMPNZ          dataOUT
 
                 
