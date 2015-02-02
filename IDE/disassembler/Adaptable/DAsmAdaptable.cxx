@@ -141,6 +141,7 @@ bool DAsmAdaptable::phase1 ( unsigned int code,
                     break;
             case AdjSimProcDef::Instruction::Operand::T_REG_DIR:
             case AdjSimProcDef::Instruction::Operand::T_REG_INDR:
+            case AdjSimProcDef::Instruction::Operand::T_REG_DATA:
                     m_addresses[REG].insert(operands[i]);
                     break;
             case AdjSimProcDef::Instruction::Operand::T_DATA_DIR:
@@ -254,6 +255,7 @@ void DAsmAdaptable::phase2 ( unsigned int code,
                 reg(line, valueTypePairs[i].first);
                 break;
             case AdjSimProcDef::Instruction::Operand::T_REG_INDR:
+            case AdjSimProcDef::Instruction::Operand::T_REG_DATA:
                 appendStr(line, "@");
                 reg(line, valueTypePairs[i].first);
                 break;

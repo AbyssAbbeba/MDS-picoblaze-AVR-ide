@@ -97,7 +97,8 @@ class AdjSimProcDef
                     T_DATA_DIR,
                     T_DATA_INDR,
                     T_PROGRAM,
-                    T_PORT
+                    T_PORT,
+                    T_REG_DATA
                 } m_type;
 
                 enum Number
