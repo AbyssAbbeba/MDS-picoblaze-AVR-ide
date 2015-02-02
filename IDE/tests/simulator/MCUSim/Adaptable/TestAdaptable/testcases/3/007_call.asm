@@ -27,7 +27,7 @@ start:
                 JUMP    $
 
 print_decimal:  COMPARE s5, #10
-                JUMP C, start
+                JUMPC   start
                 RETURN
                 
 
