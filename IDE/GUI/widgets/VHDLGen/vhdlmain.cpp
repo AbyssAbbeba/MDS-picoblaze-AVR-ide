@@ -1887,8 +1887,6 @@ void VhdlMain::pushOk()
         saveEditedComponent();
         return;
     }
-    qDebug() << "tunesmim byt";
-
     // for checking if there are duplicate components
     if ( true == createWidget)
     {
