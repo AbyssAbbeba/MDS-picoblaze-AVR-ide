@@ -150,6 +150,7 @@ std::ostream & operator << ( std::ostream & out,
         case AdaptableSimInstruction::OperParam::A_DATA_INDR: out << "DATA_INDR";       break;
         case AdaptableSimInstruction::OperParam::A_PROGRAM:   out << "PROGRAM";         break;
         case AdaptableSimInstruction::OperParam::A_PORT:      out << "PORT";            break;
+        case AdaptableSimInstruction::OperParam::A_REG_DATA:  out << "REG_DATA";        break;
     }
 
     return out;
