@@ -179,7 +179,7 @@ class AdjSimProcDef
                 OP_SHIFT_LEFT_C,    ///<
                 OP_SHIFT_RIGHT_C,   ///<
                 OP_ROTATE_LEFT,     ///<
-                OP_ROTATE_RIGHT     ///<
+                OP_ROTATE_RIGHT,    ///<
             };
 
             Next m_next;

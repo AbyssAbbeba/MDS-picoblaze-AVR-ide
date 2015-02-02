@@ -39,6 +39,26 @@
                 \end{tabular}
             \end{table}
 
+            \clearpage
+            The right panel also contains the Help Browser which can help you navigate and read in your user manual, the Reg Watcher, and the Call Watcher.
+
+            \paragraph{Reg Watcher}~\\
+                This panel might help you to keep track of specific locations in registers, scratch-pad RAM, and ports. You can add arbitrary locations in memory which you consider to be the most important for your current work.
+
+            \paragraph{Call Watcher}~\\
+                From here you can see all subprogram and interrupt calls in your program. For each entry there you can see whether it is a call or an interrupt, return address and address from which the call was invoked. And you can force each of them to premature return.
+
+            \begin{table}[h!]
+                \centering
+                \begin{tabular}{ccc}
+                    \includegraphics[width=.3\textwidth]{img/reg_watcher.png}
+                        &
+                    \includegraphics[width=.3\textwidth]{img/call_watcher.png}
+                    \\ Reg Watcher & Call watcher
+                \end{tabular}
+            \end{table}
+
+    \clearpage
     \subsection{Central panel}
         Central panel contains the main text editor with syntax highlight for writing a source code. In the editor you can also easily add breakpoints and bookmarks just by clicking on desired line number by left or right mouse button, each invokes different action.
 

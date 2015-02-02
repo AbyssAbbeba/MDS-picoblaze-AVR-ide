@@ -25,11 +25,15 @@
 #include "AdaptableSimProgramMemory.h"
 #include "AdaptableSimInterruptController.h"
 
+#include<iostream>//DEBUG
+
 bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID operation,
                                                unsigned int operands [ AdaptableSimInstruction::OPERANDS_MAX ],
                                                const AdaptableSimInstruction & inst )
 {
     using namespace AdaptableSimOperationID;
+
+std::cout << "SimDebug: operation=" << operation << ", operands={"<<operands[0]<<", "<<operands[1]<<", "<<operands[2]<<"}, instuction=" << inst;
 
     const AdaptableSimInstruction::OperParam parameters = inst.m_parameters;
 
@@ -204,6 +208,8 @@ unsigned int AdaptableSimOperations::getValue ( unsigned int addrVal,
             return ( ( true == jump ) ? addrVal :m_programMemory->read(addrVal) );
         case AdaptableSimInstruction::OperParam::A_PORT:
             return m_io->read(addrVal);
+        case AdaptableSimInstruction::OperParam::A_REG_DATA:
+            return m_dataMemory->read(m_registers->read(addrVal));
     }
 
     // Control flow should never reach this point.
@@ -231,6 +237,8 @@ void AdaptableSimOperations::setValue ( unsigned int destination,
             m_programMemory->write(destination, value);
         case AdaptableSimInstruction::OperParam::A_PORT:
             m_io->write(destination, value);
+        case AdaptableSimInstruction::OperParam::A_REG_DATA:
+            return m_dataMemory->write(m_registers->read(destination), value);
     }
 }
 
