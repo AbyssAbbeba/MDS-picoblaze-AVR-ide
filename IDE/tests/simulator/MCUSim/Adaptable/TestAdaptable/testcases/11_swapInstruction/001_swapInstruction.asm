@@ -35,7 +35,8 @@ SF      REG     0xF
 ; NUMBER_OF_BANKS         EQU           1
 ; PORT_ADR_WIDTH          EQU           1
 ; PORT_DATA_WIDTH         EQU           1
-
+A define 0
+B define 1
 
 ; START OF PROGRAM
 ;==============================================================================;
@@ -61,4 +62,15 @@ SF      REG     0xF
     ;; REG[0] == 15
     ;; REG[1] == 10
     ;; PC == 3
+    ; swap registers cross banks
+    LOAD        s2,#11
+    REGBANK     #B
+    LOAD        s3,#12
+    
+    SWAPCB      s2,s3
+    ; cross bank move z aktivní do neaktivní
+    ;; step 4
+    ;; REG[19] == 12
+    ;; REG[20] == 11
+    ;; PC == 8
     
