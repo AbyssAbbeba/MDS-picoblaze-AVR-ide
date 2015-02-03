@@ -16,12 +16,8 @@
 
 /*
  * MISSING FEATURES:
- * - warning and error reporting
  * - location map involvement for trigraphs and macros
- * - digraphs are not supposed to be translated in the preprocessor but in the lexer instead
- * - _Pragma(...) operator support (if applicable)
  * - #line directive support
- * - everything marked with "TODO:"
  */
 
 // Common compiler header files.
@@ -31,6 +27,7 @@
 // Standard headers.
 #include <cctype>
 #include <cstdlib>
+#include <climits>
 #include <cstring>
 #include<iostream>//DEBUG
 
@@ -593,8 +590,12 @@ inline bool CompilerCPreProc::handleDirective ( char * arguments,
             handleInclude(arguments, argLength);
             break;
         case DIR_LINE:
-            handleLine(arguments, argLength);
+        {
+            Buffer buf;
+            m_macroTable.expand(buf, Buffer(arguments, argLength));
+            handleLine(buf.m_data, buf.m_pos);
             break;
+        }
         case DIR_PRAGMA:
             handlePragma(arguments, argLength);
             break;
@@ -698,6 +699,26 @@ inline void CompilerCPreProc::handleInclude ( char * arguments,
     }
 }
 
+inline void CompilerCPreProc::tokenize ( std::vector<char*> & tokens,
+                                         char * arguments,
+                                         unsigned int length )
+{
+    for ( unsigned int i = 0; i < length; i++ )
+    {
+        if ( ( ' ' == arguments[i] ) || ( '\t' == arguments[i] ) )
+        {
+            arguments[i] = '\0';
+        }
+        else
+        {
+            if ( ( 0 == i ) || ( '\0' == arguments[i - 1] ) )
+            {
+                tokens.push_back(arguments + i);
+            }
+        }
+    }
+}
+
 bool CompilerCPreProc::evaluateExpr ( char * expr,
                                       unsigned int length )
 {
@@ -728,20 +749,7 @@ inline void CompilerCPreProc::handlePragma ( char * arguments,
                                              const unsigned int length )
 {
     std::vector<char*> tokens;
-    for ( unsigned int i = 0; i < length; i++ )
-    {
-        if ( ( ' ' == arguments[i] ) || ( '\t' == arguments[i] ) )
-        {
-            arguments[i] = '\0';
-        }
-        else
-        {
-            if ( ( 0 == i ) || ( '\0' == arguments[i - 1] ) )
-            {
-                tokens.push_back(arguments + i);
-            }
-        }
-    }
+    tokenize(tokens, arguments, length);
 
     if ( true == tokens.empty() )
     {
@@ -818,7 +826,48 @@ inline void CompilerCPreProc::handlePragma ( char * arguments,
     }
 }
 
-inline void CompilerCPreProc::handleLine ( char * /*arguments*/,
-                                           const unsigned int /*length*/ )
+inline void CompilerCPreProc::handleLine ( char * arguments,
+                                           const unsigned int length )
 {
+    std::vector<char*> tokens;
+    tokenize(tokens, arguments, length);
+
+    // Validate input data size.
+    if ( ( tokens.size() < 1 ) || ( tokens.size() > 2 ) )
+    {
+        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "invalid syntax for #line directive").toStdString() );
+        return;
+    }
+
+    // Read line number.
+    long int linenum = strtol(tokens[0], nullptr, 0);
+    if ( ( linenum <= 0 ) || ( linenum >= INT_MAX ) )
+    {
+        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "invalid line number: ").toStdString() + tokens[0] );
+        return;
+    }
+
+    // Read file name.
+    if ( 2 == tokens.size() )
+    {
+        unsigned int len = strlen(tokens[1]);
+        if ( len >= 2 )
+        {
+            if ( ( '"' == tokens[1][0] ) && ( '"' == tokens[1][len - 1] ) )
+            {
+                tokens[1][len - 1] = '\0';
+                tokens[1]++;
+            }
+        }
+
+        m_compilerCore->setVirtualFileName(tokens[1]);
+    }
+
+    // Alter current location accordingly.
+    m_locationStack.back().m_lineStart = (int) linenum;
+    m_locationStack.back().m_fileNumber = m_compilerCore->getFileNumber();
 }

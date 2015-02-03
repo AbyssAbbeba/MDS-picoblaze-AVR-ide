@@ -26,6 +26,10 @@ class CompilerParserInterface;
 #include <vector>
 #include <utility>
 
+// Compiler header files.
+#include "CompilerSourceLocation.h"
+#include "CompilerParserInterface.h"
+
 // C compiler preprocessor header files.
 #include "CompilerCPreProcSupport.h"
 
@@ -114,9 +118,13 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
     public:
         /**
          * @brief
+         * @param[in,out] compilerCore
          * @param[in] opts
+         * @param[in,out] locationStack
          */
-        CompilerCPreProcMacros ( const CompilerOptions * opts );
+        CompilerCPreProcMacros ( CompilerParserInterface * compilerCore,
+                                 const CompilerOptions * opts,
+                                 std::vector<CompilerSourceLocation> & locationStack );
 
     ////    Public Operations    ////
     public:
@@ -151,18 +159,24 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
          */
         void undef ( char * macro );
 
-    ////    Private Operations    ////
+    ////    Inline Private Operations    ////
     private:
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] file
+         */
+        inline void getFileOrLine ( Buffer & out,
+                                    bool file );
+
         /**
          * @brief
          * @param[in,out] out
          * @param[in] date
          */
-        void getTimeOrDate ( Buffer & out,
-                             bool date );
+        inline void getTimeOrDate ( Buffer & out,
+                                    bool date );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
          * @param[in] word
@@ -252,7 +266,13 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
     ////    Private Attributes    ////
     private:
         ///
+        CompilerParserInterface * const m_compilerCore;
+
+        ///
         const CompilerOptions * const m_opts;
+
+        ///
+        std::vector<CompilerSourceLocation> & m_locationStack;
 
         ///
         std::map<std::string,Macro> m_table;
