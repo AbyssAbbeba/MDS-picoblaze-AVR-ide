@@ -682,6 +682,21 @@ int CompilerCore::getFileNumber ( const std::string & filename ) const
     return result;
 }
 
+void CompilerCore::setVirtualFileName ( const std::string & filename )
+{
+    for ( unsigned int i = 0; i < m_openedFiles.size(); i++ )
+    {
+        if ( filename == m_openedFiles[i].first )
+        {
+            m_fileNumber = i;
+            return;
+        }
+    }
+
+    m_fileNumber = m_openedFiles.size();
+    m_openedFiles.push_back({filename, nullptr});
+}
+
 void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
 {
     if ( nullptr != m_rootStatement )

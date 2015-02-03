@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
  * @file CompilerCPreProcMacros.cxx
@@ -18,8 +18,12 @@
 #include "CompilerOptions.h"
 #include "CompilerParserInterface.h"
 
+// OS compatibility.
+#include "utilities/os/os.h"
+
 // Standard headers.
 #include <ctime>
+#include <cstdio>
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
@@ -81,8 +85,12 @@ CompilerCPreProcMacros::PREDEFINED_MACROS =
     { "__STDC_ISO_10646__",             { false, PRE_DEF__STDC_ISO_10646 } }
 };
 
-CompilerCPreProcMacros::CompilerCPreProcMacros ( const CompilerOptions * opts )
-                                               : m_opts ( opts )
+CompilerCPreProcMacros::CompilerCPreProcMacros ( CompilerParserInterface * compilerCore,
+                                                 const CompilerOptions * opts,
+                                                 std::vector<CompilerSourceLocation> & locationStack )
+                                               : m_compilerCore ( compilerCore ),
+                                                 m_opts ( opts ),
+                                                 m_locationStack ( locationStack )
 {
 }
 
@@ -449,10 +457,10 @@ inline bool CompilerCPreProcMacros::prefinedMacro ( Buffer & out,
         switch ( macro->second.second )
         {
             case PRE_DEF__FILE:
-                // TODO:
+                getFileOrLine(out, true);
                 break;
             case PRE_DEF__LINE:
-                // TODO:
+                getFileOrLine(out, false);
                 break;
             case PRE_DEF__DATE:
                 getTimeOrDate(out, true);
@@ -477,8 +485,35 @@ inline bool CompilerCPreProcMacros::prefinedMacro ( Buffer & out,
     return false;
 }
 
-void CompilerCPreProcMacros::getTimeOrDate ( Buffer & out,
-                                             bool date )
+inline void CompilerCPreProcMacros::getFileOrLine ( Buffer & out,
+                                                    bool file )
+{
+    using namespace boost::filesystem;
+
+    if ( true == file )
+    {
+        out.m_data[out.m_pos++] = '"';
+        std::string filename = m_compilerCore->getFileName ( m_locationStack.back().m_fileNumber );
+        if ( true == path(filename).is_absolute() )
+        {
+            out.append ( make_relative ( m_compilerCore->getBasePath(), filename ).string() );
+        }
+        else
+        {
+            out.append(filename);
+        }
+        out.m_data[out.m_pos++] = '"';
+    }
+    else
+    {
+        char buffer[16];
+        sprintf(buffer, "%d", m_locationStack.back().m_lineStart);
+        out.append(buffer);
+    }
+}
+
+inline void CompilerCPreProcMacros::getTimeOrDate ( Buffer & out,
+                                                    bool date )
 {
     time_t rawtime;
     struct tm * timeinfo;
