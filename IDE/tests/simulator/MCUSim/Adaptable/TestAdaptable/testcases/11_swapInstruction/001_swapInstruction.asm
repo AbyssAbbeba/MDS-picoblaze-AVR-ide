@@ -62,6 +62,27 @@ B define 1
     ;; REG[0] == 15
     ;; REG[1] == 10
     ;; PC == 3
+    ; swap DATA
+    STORED       1,#BBh
+    STORED       0,#AAh
+    SWAPD        0,1
+    ;; step 3
+    ;; DATA[0] == 0xBB
+    ;; DATA[1] == 0xAA
+    ;; PC == 6
+
+    ; swap DATA/REGISTER
+    SWAPDR        0,s1
+    ;; step
+    ;; REG[1] == 0xBB
+    ;; DATA[0] == 10
+    ;; PC == 7
+    SWAPRD        s0,1
+    ;; step
+    ;; REG[0] == 0xAA
+    ;; DATA[1] == 15
+    ;; PC == 8
+
     ; swap registers cross banks
     LOAD        s2,#11
     REGBANK     #B
@@ -70,7 +91,7 @@ B define 1
     SWAPCB      s2,s3
     ; cross bank move z aktivní do neaktivní
     ;; step 4
-    ;; REG[19] == 12
-    ;; REG[20] == 11
-    ;; PC == 8
+    ;; REG[2] == 12
+    ;; REG[19] == 11
+    ;; PC == 12
     
