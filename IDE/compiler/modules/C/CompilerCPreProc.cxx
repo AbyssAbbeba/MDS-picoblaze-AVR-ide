@@ -65,6 +65,7 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
     // Start in the Normal mode.
     m_inmode = MODE_NORMAL;
 
+    m_lineMerges = 0;
     m_location = CompilerSourceLocation(0, 1, 0, 1, 0);
 
     // Iterate over all given input files.
@@ -120,7 +121,9 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
 
     if ( false == m_conditional.empty() )
     {
-        m_compilerCore->preprocessorMessage ( CompilerSourceLocation(),
+        CompilerSourceLocation location;
+        m_conditional.get(&location);
+        m_compilerCore->preprocessorMessage ( locationCorrection(location),
                                               CompilerBase::MT_ERROR,
                                               QObject::tr("unterminated preprocessor condition").toStdString() );
         return nullptr;
@@ -158,6 +161,10 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
 
     // Done.
     outBuffer.m_persistent = true;
+    if ( nullptr == outBuffer.m_data )
+    {
+        outBuffer.append(" ");
+    }
     return outBuffer.m_data;
 }
 
@@ -173,6 +180,7 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
     if ( true == lineMerging(inBuffer, mergeBuffer) )
     {
         m_location.m_colStart += inBuffer.m_pos;
+        m_lineMerges++;
         return true;
     }
 
@@ -191,6 +199,7 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
         // Append contents of the input buffer to the mline buffer.
         mlineBuffer.append(inBuffer);
         m_location.m_colStart = mlineBuffer.m_pos + 2;
+        m_lineMerges++;
         return true;
     }
     else if ( 0 != mlineBuffer.m_pos )
@@ -222,6 +231,8 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
 
     m_location.m_lineStart++;
     m_location.m_colStart = 1;
+    m_lineMerges = 0;
+
     return true;
 }
 
@@ -272,7 +283,9 @@ inline bool CompilerCPreProc::lineMerging ( Buffer & in,
     {
         if ( -1 != whiteSpace )
         {
-            // TODO: Warning.
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                  CompilerBase::MT_WARNING,
+                                                  QObject::tr("space between backslash and new line").toStdString() );
         }
 
         // Append contents of the input buffer to the merge buffer.
@@ -545,7 +558,10 @@ inline bool CompilerCPreProc::directivesProcessing ( Buffer & buffer )
             const auto iter = s_directives.find(directive);
             if ( s_directives.cend() == iter )
             {
-                std::cout << "!!! Invalid preprocessing directive: '"<<directive<<"'\n";
+                m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("invalid preprocessor directive: ")
+                                                                 .toStdString() + directive );
                 return false;
             }
 
@@ -589,30 +605,46 @@ inline bool CompilerCPreProc::handleDirective ( char * arguments,
             m_macroTable.undef(arguments);
             break;
         case DIR_IF:
-            m_conditional.dirIf(evaluateExpr(arguments, argLength));
+            m_conditional.dirIf(m_locationStack.back(), evaluateExpr(arguments, argLength));
             break;
         case DIR_ELIF:
-            m_conditional.dirElif(evaluateExpr(arguments, argLength));
+            m_conditional.dirElif(m_locationStack.back(), evaluateExpr(arguments, argLength));
             break;
         case DIR_IFDEF:
-            m_conditional.dirIf(m_macroTable.isDefined(arguments));
+            m_conditional.dirIf(m_locationStack.back(), m_macroTable.isDefined(arguments));
             break;
         case DIR_IFNDEF:
-            m_conditional.dirIf(!m_macroTable.isDefined(arguments));
+            m_conditional.dirIf(m_locationStack.back(), !m_macroTable.isDefined(arguments));
             break;
         case DIR_ELSE:
-//         TODO: warning if arguments present
-            m_conditional.dirElse();
+            if ( 0 != argLength )
+            {
+                m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                      CompilerBase::MT_WARNING,
+                                                      QObject::tr("ignoring characters at the end of #else directive: ")
+                                                                 .toStdString() + arguments );
+            }
+            m_conditional.dirElse(m_locationStack.back());
             break;
         case DIR_ENDIF:
-//         TODO: warning if arguments present
+            if ( 0 != argLength )
+            {
+                m_compilerCore->preprocessorMessage (locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                     CompilerBase::MT_WARNING,
+                                                     QObject::tr("ignoring characters at the end of #endif directive: ")
+                                                                .toStdString() + arguments );
+            }
             m_conditional.dirEndif();
             break;
         case DIR_ERROR:
-            std::cout << "!!! "<<arguments<<"\n";
-            throw 0;
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                  CompilerBase::MT_ERROR,
+                                                  arguments );
+            break;
         case DIR_WARNING:
-            std::cout << "[W] "<<arguments<<"\n";
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                  CompilerBase::MT_WARNING,
+                                                  arguments );
             break;
         case DIR_NULL:
             break;
@@ -629,8 +661,10 @@ inline void CompilerCPreProc::handleInclude ( char * arguments,
     {
         if ( '>' != arguments[length-1] )
         {
-            std::cout<<"INCLUDE\n";
-            throw 0;
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                  CompilerBase::MT_ERROR,
+                                                  QObject::tr("missing terminating `>' character").toStdString() );
+            return;
         }
 
         arguments[length-1] = '\0';
@@ -641,8 +675,10 @@ inline void CompilerCPreProc::handleInclude ( char * arguments,
     {
         if ( '"' != arguments[length-1] )
         {
-            std::cout<<"INCLUDE\n";
-            throw 0;
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                  CompilerBase::MT_ERROR,
+                                                  QObject::tr("missing terminating `\"' character").toStdString() );
+            return;
         }
 
         arguments[length-1] = '\0';
@@ -709,7 +745,9 @@ inline void CompilerCPreProc::handlePragma ( char * arguments,
 
     if ( true == tokens.empty() )
     {
-        std::cout << "[W] Empty #pragma directive.\n";
+        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr("empty #pragma directive").toStdString() );
         return;
     }
 
@@ -717,7 +755,9 @@ inline void CompilerCPreProc::handlePragma ( char * arguments,
     {
         if ( tokens.size() != 3 )
         {
-            std::cout << "[W] Invalid #pragma STDC directive.\n";
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                  CompilerBase::MT_WARNING,
+                                                  QObject::tr("invalid #pragma STDC directive").toStdString() );
             return;
         }
 
@@ -741,7 +781,10 @@ inline void CompilerCPreProc::handlePragma ( char * arguments,
         }
         else
         {
-            std::cout << "[W] This option for #pragma STDC directive is not supported.\n";
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                  CompilerBase::MT_WARNING,
+                                                  QObject::tr ( "this option for #pragma STDC directive is not "
+                                                                "supported: ").toStdString() + tokens[2] );
             return;
         }
 
@@ -759,13 +802,19 @@ inline void CompilerCPreProc::handlePragma ( char * arguments,
         }
         else
         {
-            std::cout << "[W] This #pragma STDC directive is not supported.\n";
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                  CompilerBase::MT_WARNING,
+                                                  QObject::tr ( "this #pragma STDC directive is not supported: ")
+                                                              .toStdString() + tokens[1] );
             return;
         }
     }
     else
     {
-        std::cout << "[W] This #pragma directive is not supported.\n";
+        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                              CompilerBase::MT_WARNING,
+                                              QObject::tr ( "this #pragma directive is not supported: ")
+                                                          .toStdString() + tokens[0] );
     }
 }
 
