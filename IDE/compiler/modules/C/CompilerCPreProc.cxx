@@ -120,7 +120,10 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
 
     if ( false == m_conditional.empty() )
     {
-        // TODO: error: unterminated condition
+        m_compilerCore->preprocessorMessage ( CompilerSourceLocation(),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr("unterminated preprocessor condition").toStdString() );
+        return nullptr;
     }
 
     // Save the output from preprocessor into a file specified by CompilerOptions.
