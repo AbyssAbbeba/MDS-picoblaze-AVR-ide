@@ -210,6 +210,9 @@ class CompilerCPreProc : private CompilerCPreProcSupport,
     ////    Private Attributes    ////
     private:
         ///
+        unsigned int m_lineMerges;
+
+        ///
         InMode m_inmode;
 
         ///

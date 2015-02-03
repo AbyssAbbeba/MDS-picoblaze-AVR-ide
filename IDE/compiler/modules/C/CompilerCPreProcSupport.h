@@ -15,9 +15,13 @@
 #ifndef COMPILERCPREPROCSUPPORT_H
 #define COMPILERCPREPROCSUPPORT_H
 
+// Compiler header files.
+#include "CompilerSourceLocation.h"
+
 // Standard headers.
 #include <string>
 #include <vector>
+#include <utility>
 
 /**
  * @brief
@@ -164,9 +168,10 @@ class CompilerCPreProcSupport
             public:
                 /**
                  * @brief
+                 * @param[out] location
                  * @return
                  */
-                bool get();
+                bool get ( CompilerSourceLocation * location = nullptr );
 
                 /**
                  * @brief
@@ -176,20 +181,25 @@ class CompilerCPreProcSupport
 
                 /**
                  * @brief
+                 * @param[in] location
                  * @param[in] condition
                  */
-                void dirIf ( bool condition );
+                void dirIf ( const CompilerSourceLocation & location,
+                             bool condition );
 
                 /**
                  * @brief
+                 * @param[in] location
                  * @param[in] condition
                  */
-                void dirElif ( bool condition );
+                void dirElif ( const CompilerSourceLocation & location,
+                               bool condition );
 
                 /**
                  * @brief
+                 * @param[in] location
                  */
-                void dirElse();
+                void dirElse ( const CompilerSourceLocation & location );
 
                 /**
                  * @brief
@@ -206,8 +216,19 @@ class CompilerCPreProcSupport
                 };
 
                 ///
-                std::vector<State> m_stack;
+                std::vector<std::pair<State,CompilerSourceLocation>> m_stack;
         };
+
+    ////    Protected Operations    ////
+    protected:
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] lineCorrection
+         * @return
+         */
+        static CompilerSourceLocation locationCorrection ( const CompilerSourceLocation & location,
+                                                           unsigned int lineCorrection = 0 );
 };
 
 #endif // COMPILERCPREPROCSUPPORT_H

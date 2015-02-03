@@ -25,15 +25,11 @@
 #include "AdaptableSimProgramMemory.h"
 #include "AdaptableSimInterruptController.h"
 
-#include<iostream>//DEBUG
-
 bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID operation,
                                                unsigned int operands [ AdaptableSimInstruction::OPERANDS_MAX ],
                                                const AdaptableSimInstruction & inst )
 {
     using namespace AdaptableSimOperationID;
-
-std::cout << "SimDebug: operation=" << operation << ", operands={"<<operands[0]<<", "<<operands[1]<<", "<<operands[2]<<"}, instuction=" << inst;
 
     const AdaptableSimInstruction::OperParam parameters = inst.m_parameters;
 

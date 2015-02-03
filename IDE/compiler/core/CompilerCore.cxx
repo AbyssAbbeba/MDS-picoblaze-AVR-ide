@@ -706,18 +706,25 @@ void CompilerCore::startSemanticAnalysis()
         return;
     }
 
-    if ( nullptr == m_semanticAnalyzer )
-    {
-        coreMessage ( MT_ERROR, QObject::tr ( "semantic analyzer is missing" ).toStdString() );
-        return;
-    }
-
     if ( false == m_opts->m_prcTarget.empty() )
     {
         if ( false == savePrecompiledCode ( m_opts->m_prcTarget, m_rootStatement ) )
         {
             coreMessage ( MT_ERROR, QObject::tr ( "unable to save precompiled code" ).toStdString() );
         }
+    }
+
+    if ( false == m_success )
+    {
+        coreMessage ( MT_WARNING, QObject::tr ( "semantic analysis was not executed due to error(s)" )
+                                              . toStdString() );
+        return;
+    }
+
+    if ( nullptr == m_semanticAnalyzer )
+    {
+        coreMessage ( MT_ERROR, QObject::tr ( "semantic analyzer is missing" ).toStdString() );
+        return;
     }
 
     if ( false == m_opts->m_device.empty() )
@@ -746,13 +753,6 @@ void CompilerCore::startSemanticAnalysis()
                 delete devSpecCode;
             }
         }
-    }
-
-    if ( false == m_success )
-    {
-        coreMessage ( MT_WARNING, QObject::tr ( "semantic analysis was not executed due to error(s)" )
-                                              . toStdString() );
-        return;
     }
 
     m_semanticAnalyzer->process(m_rootStatement);

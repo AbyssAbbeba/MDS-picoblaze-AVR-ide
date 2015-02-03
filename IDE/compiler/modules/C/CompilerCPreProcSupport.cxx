@@ -150,21 +150,34 @@ bool CompilerCPreProcSupport::Include::Detection::detected() const
     return ( STATE_POSITIVE == m_state );
 }
 
-bool CompilerCPreProcSupport::Conditional::get()
+bool CompilerCPreProcSupport::Conditional::get ( CompilerSourceLocation * location )
 {
     if ( true == m_stack.empty() )
     {
         return true;
     }
-    return ( STATE_POSITIVE == m_stack.back() );
+
+    if ( nullptr != location )
+    {
+        *location = m_stack.back().second;
+    }
+
+    return ( STATE_POSITIVE == m_stack.back().first );
 }
 
-void CompilerCPreProcSupport::Conditional::dirIf ( bool condition )
+bool CompilerCPreProcSupport::Conditional::empty()
 {
-    m_stack.push_back ( condition ? STATE_POSITIVE : STATE_NEGATIVE );
+    return m_stack.empty();
 }
 
-void CompilerCPreProcSupport::Conditional::dirElif ( bool condition )
+void CompilerCPreProcSupport::Conditional::dirIf ( const CompilerSourceLocation & location,
+                                                   bool condition )
+{
+    m_stack.push_back ( { ( condition ? STATE_POSITIVE : STATE_NEGATIVE ), location } );
+}
+
+void CompilerCPreProcSupport::Conditional::dirElif ( const CompilerSourceLocation & location,
+                                                     bool condition )
 {
     if ( true == m_stack.empty() )
     {
@@ -172,13 +185,38 @@ void CompilerCPreProcSupport::Conditional::dirElif ( bool condition )
         throw 0;
     }
 
-    switch ( m_stack.back() )
+    switch ( m_stack.back().first )
     {
         case STATE_POSITIVE:
-            m_stack.back() = STATE_CLOSED;
+            m_stack.back().first = STATE_CLOSED;
+            m_stack.back().second = location;
             break;
         case STATE_NEGATIVE:
-            m_stack.back() = ( condition ? STATE_POSITIVE : STATE_NEGATIVE );
+            m_stack.back().first = ( condition ? STATE_POSITIVE : STATE_NEGATIVE );
+            m_stack.back().second = location;
+            break;
+        case STATE_CLOSED:
+            break;
+    }
+}
+
+void CompilerCPreProcSupport::Conditional::dirElse ( const CompilerSourceLocation & location )
+{
+    if ( true == m_stack.empty() )
+    {
+        std::cout << "!!! #else without an #if...\n";
+        throw 0;
+    }
+
+    switch ( m_stack.back().first )
+    {
+        case STATE_POSITIVE:
+            m_stack.back().first = STATE_CLOSED;
+            m_stack.back().second = location;
+            break;
+        case STATE_NEGATIVE:
+            m_stack.back().first = STATE_POSITIVE;
+            m_stack.back().second = location;
             break;
         case STATE_CLOSED:
             break;
@@ -195,28 +233,17 @@ void CompilerCPreProcSupport::Conditional::dirEndif()
     m_stack.pop_back();
 }
 
-void CompilerCPreProcSupport::Conditional::dirElse()
+CompilerSourceLocation CompilerCPreProcSupport::locationCorrection ( const CompilerSourceLocation & location,
+                                                                     unsigned int lineCorrection )
 {
-    if ( true == m_stack.empty() )
-    {
-        std::cout << "!!! #else without an #if...\n";
-        throw 0;
-    }
+    CompilerSourceLocation result = location;
 
-    switch ( m_stack.back() )
-    {
-        case STATE_POSITIVE:
-            m_stack.back() = STATE_CLOSED;
-            break;
-        case STATE_NEGATIVE:
-            m_stack.back() = STATE_POSITIVE;
-            break;
-        case STATE_CLOSED:
-            break;
-    }
-}
+    result.m_lineStart--;
+    result.m_lineStart -= lineCorrection;
 
-bool CompilerCPreProcSupport::Conditional::empty()
-{
-    return m_stack.empty();
+    result.m_lineEnd = result.m_lineStart;
+    result.m_colEnd = 0;
+    result.m_colStart = 0;
+
+    return result;
 }
