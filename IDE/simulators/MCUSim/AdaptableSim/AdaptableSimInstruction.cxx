@@ -58,7 +58,8 @@ std::ostream & operator << ( std::ostream & out,
     out << instruction.m_fixedOperands << std::endl;
 
     out << "Operation parameters:" << std::endl;
-    out << instruction.m_parameters << std::endl;
+//     TODO: uncomment this when debugging is done.
+//     out << instruction.m_parameters << std::endl;
 
     return out;
 }
