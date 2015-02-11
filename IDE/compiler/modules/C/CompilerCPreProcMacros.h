@@ -52,6 +52,13 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
             EXP_EXPRESSION = 2  ///<
         };
 
+        class MacroException
+        {
+            public:
+                MacroException ( const std::string & message ) : m_message ( message ) {}
+                std::string m_message;
+        };
+
     ////    Private Datatypes    ////
     private:
         /**
@@ -71,22 +78,6 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
             PRE_DEF__STDC_ISO_10646             ///<
         };
 
-    ////    Private Static Constants    ////
-    private:
-        ///
-        constexpr static const char * STDC_VERSION = "199901L";
-
-        /// Language keywords.
-        static const std::set<std::string> KEYWORDS;
-
-        /// C++ named operators
-        static const std::map<std::string, std::string> NAMED_OPERATORS;
-
-        /// C++ named operators
-        static const std::map<std::string, std::pair<bool, PredefinedMacro>> PREDEFINED_MACROS;
-
-    ////    Private Datatypes    ////
-    private:
         /**
          * @brief
          */
@@ -113,6 +104,20 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
             ///
             std::set<std::string> m_macros;
         };
+
+    ////    Private Static Constants    ////
+    private:
+        ///
+        static const char * STDC_VERSION;
+
+        /// Language keywords.
+        static const std::set<std::string> KEYWORDS;
+
+        /// C++ named operators
+        static const std::map<std::string, std::string> NAMED_OPERATORS;
+
+        /// C++ named operators
+        static const std::map<std::string, std::pair<bool, PredefinedMacro>> PREDEFINED_MACROS;
 
     ////    Constructors and Destructors    ////
     public:

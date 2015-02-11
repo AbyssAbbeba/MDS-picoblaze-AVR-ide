@@ -17,7 +17,6 @@
 /*
  * MISSING FEATURES:
  * - location map involvement for trigraphs and macros
- * - #line directive support
  */
 
 // Common compiler header files.
@@ -77,7 +76,21 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
             while ( -1 != ( inBuffer.m_pos = getline(&inBuffer.m_data, &inBuffer.m_size, fileStack.back()) ) )
             {
                 m_compilerCore->locationMap().addMark(m_locationStack.back(), m_location);
-                if ( false == inputProcessing(inBuffer, outBuffer, mergeBuffer, mlineBuffer) )
+
+                bool result = false;
+
+                try
+                {
+                    result = inputProcessing(inBuffer, outBuffer, mergeBuffer, mlineBuffer);
+                }
+                catch ( const CompilerCPreProcMacros::MacroException & e )
+                {
+                    m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                          CompilerBase::MT_ERROR,
+                                                          e.m_message );
+                }
+
+                if ( false == result )
                 {
                     // Critical error.
                     return nullptr;
@@ -391,6 +404,14 @@ inline bool CompilerCPreProc::initialProcessing ( Buffer & buffer,
                     }
                     if ( '\0' != replacent )
                     {
+                        CompilerSourceLocation loc = locationCorrection(m_locationStack.back());
+                        loc.m_colStart += in + 1;
+                        loc.m_colEnd = loc.m_colStart + 3;
+                        m_compilerCore->preprocessorMessage ( loc,
+                                                              CompilerBase::MT_WARNING,
+                                                              QObject::tr("replacing trigraph with: ").toStdString()
+                                                              + replacent );
+
                         in++;
                         buffer.m_data[1+in] = replacent;
                         continue;
@@ -608,14 +629,19 @@ inline bool CompilerCPreProc::handleDirective ( char * arguments,
         case DIR_IF:
             m_conditional.dirIf(m_locationStack.back(), evaluateExpr(arguments, argLength));
             break;
-        case DIR_ELIF:
-            m_conditional.dirElif(m_locationStack.back(), evaluateExpr(arguments, argLength));
-            break;
         case DIR_IFDEF:
             m_conditional.dirIf(m_locationStack.back(), m_macroTable.isDefined(arguments));
             break;
         case DIR_IFNDEF:
             m_conditional.dirIf(m_locationStack.back(), !m_macroTable.isDefined(arguments));
+            break;
+        case DIR_ELIF:
+            if ( false == m_conditional.dirElif(m_locationStack.back(), evaluateExpr(arguments, argLength)) )
+            {
+                m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("#elif without an #if").toStdString() );
+            }
             break;
         case DIR_ELSE:
             if ( 0 != argLength )
@@ -625,7 +651,12 @@ inline bool CompilerCPreProc::handleDirective ( char * arguments,
                                                       QObject::tr("ignoring characters at the end of #else directive: ")
                                                                  .toStdString() + arguments );
             }
-            m_conditional.dirElse(m_locationStack.back());
+            if ( false == m_conditional.dirElse(m_locationStack.back()) )
+            {
+                m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("#else without an #if").toStdString() );
+            }
             break;
         case DIR_ENDIF:
             if ( 0 != argLength )
@@ -635,7 +666,12 @@ inline bool CompilerCPreProc::handleDirective ( char * arguments,
                                                      QObject::tr("ignoring characters at the end of #endif directive: ")
                                                                 .toStdString() + arguments );
             }
-            m_conditional.dirEndif();
+            if ( false == m_conditional.dirEndif() )
+            {
+                m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr("#endif without an #if").toStdString() );
+            }
             break;
         case DIR_ERROR:
             m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),

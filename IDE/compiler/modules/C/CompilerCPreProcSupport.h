@@ -183,6 +183,7 @@ class CompilerCPreProcSupport
                  * @brief
                  * @param[in] location
                  * @param[in] condition
+                 * @return
                  */
                 void dirIf ( const CompilerSourceLocation & location,
                              bool condition );
@@ -191,20 +192,22 @@ class CompilerCPreProcSupport
                  * @brief
                  * @param[in] location
                  * @param[in] condition
+                 * @return
                  */
-                void dirElif ( const CompilerSourceLocation & location,
+                bool dirElif ( const CompilerSourceLocation & location,
                                bool condition );
 
                 /**
                  * @brief
                  * @param[in] location
+                 * @return
                  */
-                void dirElse ( const CompilerSourceLocation & location );
+                bool dirElse ( const CompilerSourceLocation & location );
 
                 /**
                  * @brief
                  */
-                void dirEndif();
+                bool dirEndif();
 
             private:
                 ///
