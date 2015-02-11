@@ -246,6 +246,12 @@ class CompilerCore : public CompilerBase,
 
             /**
              * @brief
+             * @param[in] filename
+             */
+            virtual void setVirtualFileName ( const std::string & filename ) override;
+
+            /**
+             * @brief
              * @param[in,out] codeTree
              * @return
              */
@@ -265,6 +271,19 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             virtual CompilerLocationTracker & locationTrack() override;
+
+            /**
+             * @brief
+             * @param[in] fileNumber
+             * @return
+             */
+            virtual const std::string & getFileName ( int fileNumber = -1 ) const override;
+
+            /**
+             * @brief
+             * @return
+             */
+            virtual const boost::filesystem::path & getBasePath() const override;
         //@}
 
         /// @name Interface for semantic analyzer
@@ -273,20 +292,7 @@ class CompilerCore : public CompilerBase,
              * @brief
              * @return
              */
-            virtual const boost::filesystem::path & getBasePath() const override;
-
-            /**
-             * @brief
-             * @return
-             */
             virtual const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const override;
-
-            /**
-             * @brief
-             * @param[in] fileNumber
-             * @return
-             */
-            virtual const std::string & getFileName ( int fileNumber = -1 ) const override;
 
             /**
              * @brief
