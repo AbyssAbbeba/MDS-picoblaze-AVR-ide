@@ -1,0 +1,3 @@
+
+int x = 41;
+char * y = "abc.y";

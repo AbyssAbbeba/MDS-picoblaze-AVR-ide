@@ -17,7 +17,6 @@
 // Standard headers.
 #include <cstdlib>
 #include <cstring>
-#include<iostream>//DEBUG
 
 void CompilerCPreProcSupport::Buffer::append ( const Buffer & sourceBuffer )
 {
@@ -176,13 +175,12 @@ void CompilerCPreProcSupport::Conditional::dirIf ( const CompilerSourceLocation 
     m_stack.push_back ( { ( condition ? STATE_POSITIVE : STATE_NEGATIVE ), location } );
 }
 
-void CompilerCPreProcSupport::Conditional::dirElif ( const CompilerSourceLocation & location,
+bool CompilerCPreProcSupport::Conditional::dirElif ( const CompilerSourceLocation & location,
                                                      bool condition )
 {
     if ( true == m_stack.empty() )
     {
-        std::cout << "!!! #elif without an #if...\n";
-        throw 0;
+        return false;
     }
 
     switch ( m_stack.back().first )
@@ -198,14 +196,15 @@ void CompilerCPreProcSupport::Conditional::dirElif ( const CompilerSourceLocatio
         case STATE_CLOSED:
             break;
     }
+
+    return true;
 }
 
-void CompilerCPreProcSupport::Conditional::dirElse ( const CompilerSourceLocation & location )
+bool CompilerCPreProcSupport::Conditional::dirElse ( const CompilerSourceLocation & location )
 {
     if ( true == m_stack.empty() )
     {
-        std::cout << "!!! #else without an #if...\n";
-        throw 0;
+        return false;
     }
 
     switch ( m_stack.back().first )
@@ -221,16 +220,19 @@ void CompilerCPreProcSupport::Conditional::dirElse ( const CompilerSourceLocatio
         case STATE_CLOSED:
             break;
     }
+
+    return true;
 }
 
-void CompilerCPreProcSupport::Conditional::dirEndif()
+bool CompilerCPreProcSupport::Conditional::dirEndif()
 {
     if ( true == m_stack.empty() )
     {
-        std::cout << "!!! #endif without an #if...\n";
-        throw 0;
+        return false;
     }
+
     m_stack.pop_back();
+    return true;
 }
 
 CompilerSourceLocation CompilerCPreProcSupport::locationCorrection ( const CompilerSourceLocation & location,
