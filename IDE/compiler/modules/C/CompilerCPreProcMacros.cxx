@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
  * @file CompilerCPreProcMacros.cxx
@@ -18,8 +18,12 @@
 #include "CompilerOptions.h"
 #include "CompilerParserInterface.h"
 
+// OS compatibility.
+#include "utilities/os/os.h"
+
 // Standard headers.
 #include <ctime>
+#include <cstdio>
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
@@ -41,7 +45,7 @@
     || ( '\n' == i ) || ( '\v' == i ) || ( '\r' == i )   \
 )
 
-// const char * CompilerCPreProcMacros::STDC_VERSION = "199901L";
+const char * CompilerCPreProcMacros::STDC_VERSION = "199901L";
 
 const std::set<std::string> CompilerCPreProcMacros::KEYWORDS =
 {
@@ -81,8 +85,12 @@ CompilerCPreProcMacros::PREDEFINED_MACROS =
     { "__STDC_ISO_10646__",             { false, PRE_DEF__STDC_ISO_10646 } }
 };
 
-CompilerCPreProcMacros::CompilerCPreProcMacros ( const CompilerOptions * opts )
-                                               : m_opts ( opts )
+CompilerCPreProcMacros::CompilerCPreProcMacros ( CompilerParserInterface * compilerCore,
+                                                 const CompilerOptions * opts,
+                                                 std::vector<CompilerSourceLocation> & locationStack )
+                                               : m_compilerCore ( compilerCore ),
+                                                 m_opts ( opts ),
+                                                 m_locationStack ( locationStack )
 {
 }
 
@@ -119,14 +127,12 @@ void CompilerCPreProcMacros::define ( char * macro,
         while ( ( ++i < length ) && ( ')' != macro[i] ) );
         if ( length == i )
         {
-            std::cout<<"!!! UNMATCHED ()\n";
-            // throw ...; unmatched ()
+            throw MacroException("unmatched ()");
         }
     }
     else if ( ! IS_BLANK(macro[i]) )
     {
-        std::cout<<"!!! INVALID NAME OF MACRO ('"<<macro[i]<<"')\n";
-        // throw ...; invalid name of macro
+        throw MacroException(std::string("invalid name of macro: ") + macro[i]);
     }
     macro[i] = '\0';
     while ( ( ++i < length ) && isblank(macro[i]) );
@@ -134,20 +140,24 @@ void CompilerCPreProcMacros::define ( char * macro,
 
     if ( '\0' == macro[0] )
     {
-        std::cout<<"!!! NO NAME PROVIDED\n";
-        // throw ...; no name provided
+        throw MacroException("no name for macro provided");
     }
+
     if ( m_table.cend() != m_table.find(macro) )
     {
-        std::cout<<"[W] REDEFINING MACRO\n";
+        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                              CompilerBase::MT_WARNING,
+                                              std::string("redefining macro: ") + macro );
     }
+
     switch ( isReserved(macro) )
     {
         case -1:
-            std::cout<<"!!! THIS MACRO CANNOT BE REDEFINED\n";
-            throw 0;
+            throw MacroException("this macro cannot be redefined");
         case 1:
-            std::cout<<"[W] MACRO NAME IS LANGUAGE KEYWORD\n";
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                  CompilerBase::MT_WARNING,
+                                                  std::string("macro name is language keyword: ") + macro );
     }
 
     m_table[macro] = { body, std::vector<std::string>() };
@@ -183,8 +193,7 @@ void CompilerCPreProcMacros::define ( char * macro,
 
         if ( 0 != dots )
         {
-            std::cout<<"!!! VARIADIC SPECIFIER (`...') MUST APPEAR LAST IN THE PARAMETER LIST\n";
-            throw 0;
+            throw MacroException("variadic specifier (`...') must appear last in the parameter list");
         }
 
         for ( int pos = 0; '\0' != param[pos]; pos++ )
@@ -193,24 +202,23 @@ void CompilerCPreProcMacros::define ( char * macro,
                    &&
                  ( ( '.' != param[pos] ) || ( ++dots > 3 ) ) )
             {
-                std::cout<<"!!! MACRO PARAMETER MUST BE IDENTIFIER\n";
-                throw 0;
+                throw MacroException("macro parameter must be identifier");
             }
         }
 
         if ( ( 0 != dots ) && ( 3 != dots ) )
         {
-            std::cout<<"!!! MACRO PARAMETER MUST BE IDENTIFIER, MAYBE YOU FORGOT A DOT IN `...' EXPRESSION\n";
-            throw 0;
+            throw MacroException("macro parameter must be identifier, maybe you forgot a dot in `...' expression");
         }
 
         switch ( isReserved(param) )
         {
             case -1:
-                std::cout<<"!!! CANNOT USE MACRO PARAMETER WITH THAT NAME\n";
-                throw 0;
+                throw MacroException(std::string("cannot use macro parameter with that name: ") + param);
             case 1:
-                std::cout<<"[W] MACRO PARAMETER IS LANGUAGE KEYWORD\n";
+                m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                      CompilerBase::MT_WARNING,
+                                                      std::string("macro parameter is language keyword: ") + param );
         }
 
         parameters.push_back(param);
@@ -223,8 +231,7 @@ void CompilerCPreProcMacros::define ( char * macro,
         {
             if ( parameters[i] == parameters[j] )
             {
-                std::cout<<"!!! DUPLICITE PARAMETER NAME\n";
-                throw 0;
+                throw MacroException(std::string("duplicite parameter name: ") + parameters[i]);
             }
         }
     }
@@ -234,14 +241,13 @@ void CompilerCPreProcMacros::undef ( char * macro )
 {
     if ( -1 == isReserved(macro) )
     {
-        std::cout<<"!!! THIS MACRO CANNOT BE UNDEFINED\n";
-        throw 0;
+        throw MacroException("this macro cannot be undefined");
     }
 
     const auto iter = m_table.find(macro);
     if ( m_table.cend() == iter )
     {
-        // throw ...;
+        throw MacroException ( std::string("macro not defined: ") + macro );
     }
     m_table.erase(iter);
 }
@@ -328,8 +334,7 @@ void CompilerCPreProcMacros::expand ( Buffer & out,
 
             if ( true == argument.empty() )
             {
-                std::cout << "[W] MISSING ARGUMENT FOR THE defined() OPERATOR\n";
-                throw 0;
+                throw MacroException("missing argument for operator defined()");
             }
 
             out.append(Buffer(in.m_data+outpos, start-outpos));
@@ -373,14 +378,19 @@ void CompilerCPreProcMacros::expand ( Buffer & out,
                 {
                     if ( argVector.size() < ( macro->second.m_parameters.size() - 1) )
                     {
-                        std::cout << "[W] POSSIBLE VARIADIC MACRO EXPANSION, TOO LITTLE ARGUMENTS PROVIDED\n";
+                        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                              CompilerBase::MT_WARNING,
+                                                              "possible variadic macro expansion, too little arguments "
+                                                              "provided");
                         start = -1;
                         continue;
                     }
                 }
                 else
                 {
-                    std::cout << "[W] POSSIBLE MACRO EXPANSION, INVALID NUMBER OF ARGUMENT(S)\n";
+                    m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                          CompilerBase::MT_WARNING,
+                                                          "possible macro expansion, invalid number of argument(s)");
                     start = -1;
                     continue;
                 }
@@ -391,8 +401,7 @@ void CompilerCPreProcMacros::expand ( Buffer & out,
 
         if ( ++m_status.m_depth > m_opts->m_maxMacroExp )
         {
-            std::cout << "!!! MAXIMUM EXPANSION DEPTH EXCEEDED\n";
-            throw 0;
+            throw MacroException("maximum expansion depth exceeded");
         }
         m_status.m_macros.insert(name);
 
@@ -449,10 +458,10 @@ inline bool CompilerCPreProcMacros::prefinedMacro ( Buffer & out,
         switch ( macro->second.second )
         {
             case PRE_DEF__FILE:
-                // TODO:
+                getFileOrLine(out, true);
                 break;
             case PRE_DEF__LINE:
-                // TODO:
+                getFileOrLine(out, false);
                 break;
             case PRE_DEF__DATE:
                 getTimeOrDate(out, true);
@@ -477,8 +486,35 @@ inline bool CompilerCPreProcMacros::prefinedMacro ( Buffer & out,
     return false;
 }
 
-void CompilerCPreProcMacros::getTimeOrDate ( Buffer & out,
-                                             bool date )
+inline void CompilerCPreProcMacros::getFileOrLine ( Buffer & out,
+                                                    bool file )
+{
+    using namespace boost::filesystem;
+
+    if ( true == file )
+    {
+        out.m_data[out.m_pos++] = '"';
+        std::string filename = m_compilerCore->getFileName ( m_locationStack.back().m_fileNumber );
+        if ( true == path(filename).is_absolute() )
+        {
+            out.append ( make_relative ( m_compilerCore->getBasePath(), filename ).string() );
+        }
+        else
+        {
+            out.append(filename);
+        }
+        out.m_data[out.m_pos++] = '"';
+    }
+    else
+    {
+        char buffer[16];
+        sprintf(buffer, "%d", ( m_locationStack.back().m_lineStart - 1 ) );
+        out.append(buffer);
+    }
+}
+
+inline void CompilerCPreProcMacros::getTimeOrDate ( Buffer & out,
+                                                    bool date )
 {
     time_t rawtime;
     struct tm * timeinfo;
@@ -497,7 +533,9 @@ inline int CompilerCPreProcMacros::getArgVector ( std::vector<std::string> & arg
 {
     if ( '(' != string[0] )
     {
-        std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING ARGUMENT(S)\n";
+        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                              CompilerBase::MT_WARNING,
+                                              "possible macro expansion, missing argument(s)");
         return -1;
     }
 
@@ -510,7 +548,9 @@ inline int CompilerCPreProcMacros::getArgVector ( std::vector<std::string> & arg
     {
         if ( '\0' == input )
         {
-            std::cout << "[W] POSSIBLE MACRO EXPANSION, UNMATCHED `()'\n";
+            m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back()),
+                                                  CompilerBase::MT_WARNING,
+                                                  "possible macro expansion, unmatched `()'");
             return -1;
         }
 
@@ -685,8 +725,7 @@ inline void CompilerCPreProcMacros::substitute ( Buffer & out,
             {
                 if ( ( 0 == pos ) || ( ( in.m_pos - 2 ) == pos ) )
                 {
-                    std::cout << "!!! INVALID USE OF PREPROCESSING OPERATOR `##'\n";
-                    throw 0;
+                    throw MacroException("invalid use of preprocessing operator `##'");
                 }
 
                 strf = -1;
@@ -760,7 +799,7 @@ inline void CompilerCPreProcMacros::substArg ( Buffer & out,
 }
 
 inline void CompilerCPreProcMacros::stringify ( Buffer & out,
-                                                      const Buffer & in ) const
+                                                const Buffer & in ) const
 {
     unsigned int start = 0;
     unsigned int end = 0;
@@ -824,9 +863,9 @@ inline void CompilerCPreProcMacros::stringify ( Buffer & out,
 }
 
 inline void CompilerCPreProcMacros::strEscape ( Buffer & out,
-                                                      const Buffer & in,
-                                                      unsigned int & start,
-                                                      unsigned int & end ) const
+                                                const Buffer & in,
+                                                unsigned int & start,
+                                                unsigned int & end ) const
 {
     out.append(Buffer(in.m_data + start, end - start));
     out.m_data[out.m_pos++] = '\\';
