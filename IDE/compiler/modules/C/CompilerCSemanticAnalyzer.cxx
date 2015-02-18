@@ -34,4 +34,12 @@ void CompilerCSemanticAnalyzer::setDevice ( const std::string & deviceName )
 void CompilerCSemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
     std::cout << "CompilerCSemanticAnalyzer::process:\n" << codeTree;
+
+    // Define functions and process declarations.
+    for ( CompilerStatement * node = codeTree->next();
+          nullptr != node;
+          node = node->next() )
+    {
+        
+    }
 }
