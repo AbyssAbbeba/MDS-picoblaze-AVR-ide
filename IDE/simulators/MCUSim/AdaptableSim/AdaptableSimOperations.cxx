@@ -223,18 +223,25 @@ void AdaptableSimOperations::setValue ( unsigned int destination,
             break;
         case AdaptableSimInstruction::OperParam::A_REG_DIR:
             m_registers->write(destination, value);
+            break;
         case AdaptableSimInstruction::OperParam::A_REG_INDR:
             m_registers->write(m_registers->read(destination), value);
+            break;
         case AdaptableSimInstruction::OperParam::A_DATA_DIR:
             m_dataMemory->write(destination, value);
+            break;
         case AdaptableSimInstruction::OperParam::A_DATA_INDR:
             m_dataMemory->write(m_dataMemory->read(destination), value);
+            break;
         case AdaptableSimInstruction::OperParam::A_PROGRAM:
             m_programMemory->write(destination, value);
+            break;
         case AdaptableSimInstruction::OperParam::A_PORT:
             m_io->write(destination, value);
+            break;
         case AdaptableSimInstruction::OperParam::A_REG_DATA:
-            return m_dataMemory->write(m_registers->read(destination), value);
+            m_dataMemory->write(m_registers->read(destination), value);
+            break;
     }
 }
 
