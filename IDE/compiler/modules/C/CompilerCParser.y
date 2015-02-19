@@ -580,7 +580,7 @@ at:
 ;
 
 dt_attr:
-      /* Empty */                   { $$ = nullptr; }
+      /* Empty */                   { $$ = new CompilerExpr(); }
     | "auto"                        {
                                         $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_AUTO),
                                                               CompilerExpr::OPER_DATAATTR,

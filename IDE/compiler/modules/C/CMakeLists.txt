@@ -21,7 +21,7 @@ project ( CompilerModuleC )
 # Generate lexical and syntax analyzer for the C language.
 flex_bison_pair ( CompilerCLexer CompilerCParser CompilerCLexerParser )
 
-# Generate lexical and syntax analyzer for the C preprocessor artithmetic expression calculator.
+# Generate lexical and syntax analyzer for the C preprocessor arithmetic expression calculator.
 flex_bison_pair ( CompilerCPreProcCalcLex CompilerCPreProcCalcPar CompilerCPreProcCalc )
 
 # List of preprocessor include file search directories.
@@ -30,9 +30,14 @@ include_directories ( "${CMAKE_SOURCE_DIR}"
 
 ## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME}
+
+              # Preprocessor
               CompilerCPreProc.cxx
               CompilerCPreProcMacros.cxx
               CompilerCPreProcSupport.cxx
+
+              # Semantic analyzer.
+              CompilerCFuncTable.cxx
               CompilerCSemanticAnalyzer.cxx )
 
 # Link a target to given libraries
