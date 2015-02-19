@@ -1,6 +1,6 @@
 ;==============================================================================;
 ; SWAP OPERATIONS
-    device "001_swapInstruction.procdef"
+    device "001_bitinstructions.procdef"
 ;==============================================================================;
 ;
 ; Tested:   SWAP, CB_SWAP, SWAP_BIT, CB_SWAP_BIT
