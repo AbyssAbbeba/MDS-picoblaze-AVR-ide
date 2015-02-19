@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
  * @file CompilerCPreProc.h
