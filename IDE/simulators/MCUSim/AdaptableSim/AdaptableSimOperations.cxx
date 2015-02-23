@@ -99,10 +99,10 @@ bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID opera
             instCbMove(inst, operands[0], operands[1]);
             break;
         case OP_MOVE_BIT:
-            instMoveBit(parameters, operands[0], operands[1], operands[1]);
+            instMoveBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_CB_MOVE_BIT:
-            instCbMoveBit(parameters, operands[0], operands[1], operands[1]);
+            instCbMoveBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_SWAP:
             instSwap(inst, operands[0], operands[1]);
@@ -111,10 +111,10 @@ bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID opera
             instCbSwap(inst, operands[0], operands[1]);
             break;
         case OP_SWAP_BIT:
-            instSwapBit(parameters, operands[0], operands[1], operands[1]);
+            instSwapBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_CB_SWAP_BIT:
-            instCbSwapBit(parameters, operands[0], operands[1], operands[1]);
+            instCbSwapBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_ADD:
             instAdd(inst, operands[0], operands[1], operands[2]);
