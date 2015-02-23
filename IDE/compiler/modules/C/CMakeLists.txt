@@ -37,6 +37,7 @@ add_library ( ${PROJECT_NAME}
               CompilerCPreProcSupport.cxx
 
               # Semantic analyzer.
+              CompilerCDataType.cxx
               CompilerCFuncTable.cxx
               CompilerCSemanticAnalyzer.cxx )
 
