@@ -504,7 +504,7 @@ inline void AdaptableSimOperations::instCbSwap ( const AdaptableSimInstruction &
                setFlagsAndTrim ( srcVal, inst.m_parameters, inst.m_permutation[0] ) );
     m_registers->setBank(bank);
 }
-
+#include <iostream>//DEBUG
 inline void AdaptableSimOperations::instMoveBit ( AdaptableSimInstruction::OperParam parameters,
                                                   unsigned int destination,
                                                   unsigned int source,
@@ -517,7 +517,7 @@ inline void AdaptableSimOperations::instMoveBit ( AdaptableSimInstruction::OperP
     const unsigned int srcBitNo = ( 0x0f & bitNumbers );
 
     bool srcBit = (bool) ( srcVal & ( 1 << srcBitNo ) );
-
+std::cout << "SOURCE VALUE = " << srcVal << ", DESTINATION VALUE = " << dstVal << ", DESTINATION BIT NO. = " << dstBitNo << ", SOURCE BIT NO. = " << srcBitNo << ", RESULT = " << ( ( dstVal & ~( 1 << dstBitNo ) ) |  ( srcBit ? 1 : 0 ) << dstBitNo ) << '\n';
     setValue ( destination,
                parameters.addressingMode(0),
                ( ( dstVal & ~( 1 << dstBitNo ) ) |  ( srcBit ? 1 : 0 ) << dstBitNo ) );
