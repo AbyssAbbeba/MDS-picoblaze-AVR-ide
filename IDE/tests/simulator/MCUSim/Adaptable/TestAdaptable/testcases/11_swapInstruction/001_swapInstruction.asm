@@ -48,40 +48,56 @@ B define 1
 ;==============================================================================;
 ;; PC == 0
     LOAD        s0,#10
-    ;; step
+;; step
     ;; REG[0] == 10
     ;; PC == 1
     LOAD        s1,#15
-    ;; step
+;; step
     ;; REG[1] == 15
     ;; PC == 2
 
     ; swap registers
     SWAP        s0,s1
-    ;; step
+    ;; REG[0] == 10
+;; step
     ;; REG[0] == 15
     ;; REG[1] == 10
     ;; PC == 3
+
+    
     ; swap DATA
-    STORED       1,#BBh
-    STORED       0,#AAh
+    STORED       1,#50
+    STORED       0,#25
     SWAPD        0,1
-    ;; step 3
-    ;; DATA[0] == 0xBB
-    ;; DATA[1] == 0xAA
+;; step 2
+    ;; DATA[1] == 50
+    ;; DATA[0] == 25
+    ;; PC == 5
+;; step 
+    ;; DATA[0] == 50
+    ;; DATA[1] == 25
     ;; PC == 6
+
+    
 
     ; swap DATA/REGISTER
     SWAPDR        0,s1
-    ;; step
-    ;; REG[1] == 0xBB
+    ;; REG[1] == 10
+    ;; DATA[0] == 50
+    ;; DATA[1] == 25
+;; step
+    ;; REG[1] == 50
     ;; DATA[0] == 10
+    ;; DATA[1] == 25
     ;; PC == 7
     SWAPRD        s0,1
-    ;; step
-    ;; REG[0] == 0xAA
+    ;; REG[0] == 15
+;; step
+    ;; REG[0] == 25
     ;; DATA[1] == 15
     ;; PC == 8
+
+    
 
     ; swap registers cross banks
     LOAD        s2,#11
