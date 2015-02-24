@@ -244,7 +244,7 @@ void AdaptableSimOperations::setValue ( unsigned int destination,
             break;
     }
 }
-
+#include<iostream>//DEBUG
 inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int source,
                                                               AdaptableSimInstruction::OperParam parameters,
                                                               const std::vector<unsigned char> & permutation )
@@ -254,13 +254,15 @@ inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int sourc
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
          == parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_ZERO ) )
     {
+std::cout<<"Affect zero = true\n";
         bool prevZero = true;
         if ( false == parameters.ignoreZero() )
         {
             prevZero = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_ZERO);
         }
-
+std::cout<<"prevZero = "<<prevZero<<"\n";
         m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_ZERO, ( prevZero && ( 0 == source ) ) );
+std::cout<<"SETTING ZERO TO: "<<( prevZero && ( 0 == source ) )<<"\n";
     }
 
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
@@ -504,7 +506,7 @@ inline void AdaptableSimOperations::instCbSwap ( const AdaptableSimInstruction &
                setFlagsAndTrim ( srcVal, inst.m_parameters, inst.m_permutation[0] ) );
     m_registers->setBank(bank);
 }
-#include <iostream>//DEBUG
+
 inline void AdaptableSimOperations::instMoveBit ( AdaptableSimInstruction::OperParam parameters,
                                                   unsigned int destination,
                                                   unsigned int source,
@@ -517,7 +519,7 @@ inline void AdaptableSimOperations::instMoveBit ( AdaptableSimInstruction::OperP
     const unsigned int srcBitNo = ( 0x0f & bitNumbers );
 
     bool srcBit = (bool) ( srcVal & ( 1 << srcBitNo ) );
-std::cout << "SOURCE VALUE = " << srcVal << ", DESTINATION VALUE = " << dstVal << ", DESTINATION BIT NO. = " << dstBitNo << ", SOURCE BIT NO. = " << srcBitNo << ", RESULT = " << ( ( dstVal & ~( 1 << dstBitNo ) ) |  ( srcBit ? 1 : 0 ) << dstBitNo ) << '\n';
+
     setValue ( destination,
                parameters.addressingMode(0),
                ( ( dstVal & ~( 1 << dstBitNo ) ) |  ( srcBit ? 1 : 0 ) << dstBitNo ) );
