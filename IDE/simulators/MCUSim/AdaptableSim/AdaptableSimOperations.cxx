@@ -641,7 +641,14 @@ inline void AdaptableSimOperations::instAdd ( const AdaptableSimInstruction & in
     {
         if ( true == m_statusFlags->getFlag ( AdaptableSimInstruction::OperParam::F_CARRY ) )
         {
-            result++;
+            if ( true == subtract )
+            {
+                result--;
+            }
+            else
+            {
+                result++;
+            }
         }
     }
 
