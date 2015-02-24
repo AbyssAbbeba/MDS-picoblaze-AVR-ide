@@ -39,28 +39,25 @@ class CompilerCDataType
             A_REGISTER     = 0x020,
             A_RESTRICT     = 0x040,
             A_REFERENCE    = 0x080,
-            A_REFERS2CONST = 0x100
+            A_REFERS2CONST = 0x100,
+            A_FUNCTION     = 0x200
         };
-"enum"          { return DATA_ENUM;         }
-"union"         { return DATA_UNION;        }
-"struct"        { return DATA_STRUCT;       }
 
-"typedef"       { return DATA_TYPEDEF;      }
-
-
-        enum BuiltIn
+        enum Type
         {
-            DT_VOID     = 0x01,
+            DT_VOID     = 1,
+            DT_CHAR     = 2,
+            DT_SHORT    = 4,
+            DT_INT      = 5,
+            DT_FLOAT    = 6,
+            DT_DOUBLE   = 7,
 
-            DT_CHAR     = 0x02,
-            DT_SHORT    = 0x04,
-            DT_INT      = 0x08,
+            DT_UNSIGNED = 1 << 8,
+            DT_LONG     = 2 << 8,
 
-            DT_FLOAT    = 0x10,
-            DT_DOUBLE   = 0x20,
-
-            DT_UNSIGNED = 0x40,
-            DT_LONG     = 0x80,
+            DT_ENUM     = 1 << 16,
+            DT_UNION    = 2 << 16,
+            DT_STRUCT   = 3 << 16,
         };
 
     ////    Constructors and Destructors    ////
@@ -75,9 +72,17 @@ class CompilerCDataType
 
     ////    Private Attributes    ////
     private:
+        Type m_type;
         Attribute m_attribute;
-        unsigned int m_array;
+
         unsigned int m_pointer;
+        std::vector<unsigned int> * m_array;
+
+        std::string * m_id;
+        std::string * m_typename;
+
+        CompilerCDataType * m_owner;
+        std::vector<CompilerCDataType*> * m_members;
 };
 
 #endif // COMPILERCDATATYPE_H
