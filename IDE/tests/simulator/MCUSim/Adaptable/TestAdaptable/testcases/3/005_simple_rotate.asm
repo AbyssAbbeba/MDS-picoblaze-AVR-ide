@@ -104,6 +104,48 @@ main:
         ;;STEP  3
         ;;REG[3] == 0b10000000
         RL     s3,#1
+
+        ; Shifting to the right
+        RR     s3,#5
+        ;;STEP
+        ;;REG[3] == 0b00000100
+        RR     s3,#2
+        ;;STEP
+        ;;REG[3] == 0b00000001
+        RL     s3,#2
+        ;;STEP
+        ;;REG[3] == 0b00000100
+        RL      s3,#3
+        ;;STEP
+        ;;REG[3] == 0b10000000
+
+        ; Shifting to the right and left with another target register
+        RRT     s3,#5,s4
+        ;;STEP
+        ;;REG[4] == 0b00000100
+        RRT     s3,#2,s4
+        ;;STEP
+        ;;REG[4] == 0b00000001
+        RLT     s3,#2,s4
+        ;;STEP
+        ;;REG[4] == 0b00000100
+        RLT     s3,#3,s4
+        ;;STEP
+        ;;REG[4] == 0b10000000
+
+        ; Shifting to the right and left with another target register
+        RRT     s3,#5,s4
+        ;;STEP
+        ;;REG[4] == 0b00000100
+        RRT     s3,#2,s4
+        ;;STEP
+        ;;REG[4] == 0b00000001
+        RLT     s3,#2,s4
+        ;;STEP
+        ;;REG[4] == 0b00000100
+        RLT     s3,#3,s4
+        ;;STEP
+        ;;REG[4] == 0b10000000
         JUMP    $
 
     
