@@ -260,7 +260,7 @@ std::cout<<"Affect zero = true\n";
         {
             prevZero = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_ZERO);
         }
-std::cout<<"prevZero = "<<prevZero<<"\n";
+std::cout<<"prevZero = "<<prevZero<<", value = "<<source<<"\n";
         m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_ZERO, ( prevZero && ( 0 == source ) ) );
 std::cout<<"SETTING ZERO TO: "<<( prevZero && ( 0 == source ) )<<"\n";
     }
