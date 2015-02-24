@@ -47,54 +47,63 @@ start:
 ;; PC == 5
 ;; REG[3]==1
 main:
+;-----------------------------------------------------------------
+; FIRST OPERAND = SOURCE
+; SECOND OPERAND = NUMBER OF POSITIONS, CAN BE REGISTER
+; THIRD OPERAND ( OPTIONAL) = TARGET ( IF SAVE TO THIRD IS SET)
+; ----------------------------------------------------------------
 
         ; Shifting to the right
+        RR     s3,#1
         ;;STEP
         ;;PC == 6
         ;;REG[3] == 0b10000000
-        RR     s3
+        RR     s3,#1
         ;;STEP
         ;;REG[3] == 0b01000000
-        RR     s3
+        RR     s3,#1
         ;;STEP
         ;;REG[3] == 0b00100000
-        RR     s3
+        RR     s3,#1
         ;;STEP
         ;;REG[3] == 0b00010000
-        RR     s3
+        RR     s3,#1
         ;;STEP
         ;;REG[3] == 0b00001000
-        RR     s3
+        RR     s3,#1
         ;;STEP
         ;;REG[3] == 0b00000100
-        RR     s3
+        RR     s3,#1
         ;;STEP
         ;;REG[3] == 0b00000010
-        RR     s3
+        RR     s3,#1
         ;;STEP
         ;;REG[3] == 0b00000001
         ;; PC == 13
-        RR     s3
 
         ; Shifting to the left
+        RL     s3,#1
         ;;STEP
         ;;REG[3] == 0b00000010
-        RL     s3
+        
+        RL     s3,#1
         ;;STEP
         ;;REG[3] == 0b00000100
-        RL     s3
+        
+        RL     s3,#1
         ;;STEP
         ;;REG[3] == 0b00001000
-        RL     s3
+        
+        RL     s3,#1
         ;;STEP
         ;;REG[3] == 0b00010000
-        RL     s3
-        RL     s3
-        RL     s3
-        RL     s3
+        
+        RL     s3,#1
+        RL     s3,#1
+        RL     s3,#1
         ;;STEP  3
         ;;REG[3] == 0b10000000
-        RL     s3
-        JUMP    main
+        RL     s3,#1
+        JUMP    $
 
     
