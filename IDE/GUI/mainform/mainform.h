@@ -51,6 +51,7 @@ class QSignalMapper;
 class QToolButton;
 class DataFile;
 class DbgFile;
+class QDockWidget;
 
 /*
 #ifdef MDS_FEATURE_FILECONVERTER
@@ -392,6 +393,9 @@ class MainForm : public QMainWindow
         QSignalMapper *m_stdoutSignalMapper;
 
         QList<QPair<QString, QDateTime>> m_fileTimeStamps;
+
+        QDockWidget *m_bottomDockWidget;
+        QDockWidget *m_rightDockWidget;
 
     protected:
         void closeEvent(QCloseEvent *event);

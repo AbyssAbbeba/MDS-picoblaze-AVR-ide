@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(Project)
+project(DockUi)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -13,32 +13,36 @@ cmake_minimum_required(VERSION 2.8)
 # Create verbose makefiles if on
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
+
+
 # with SET() command you can change variables or define new ones
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-        ./project.cpp
+       ./dockui.cpp
 )
 
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-        ./project.h
+       ./dockui.h
 )
 
+
+if ( MDS_FEATURE_SIM_CALLWATCHER )
+    list ( APPEND DOCKUI_ADDITONAL_LIBS "CallWatcher" )
+endif()
+
+if ( MDS_FEATURE_SIM_REGWATCHER )
+    list ( APPEND DOCKUI_ADDITONAL_LIBS "RegWatcher" )
+endif()
+
+if ( MDS_FEATURE_EXTERNAL_APPS )
+    list ( APPEND DOCKUI_ADDITONAL_LIBS "ExtAppOutput" )
+endif()
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
-
-
-include_directories(
-	"../../simulators/MCUSim/McuSimCfgMgr/"
-	"../../simulators/MCUSim"
-	"../../simulators/SimControl/"
-#   "../../utilities/MCUDataFiles/"
-#	"../../simulators/MCUSim/AVR8/"
-)
-
 
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
@@ -48,7 +52,8 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Simulator ProjectTree GuiCfg os CompatibilityMode DockUi)
+
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${DOCKUI_ADDITONAL_LIBS} PicoBlazeGrid BreakpointList BookmarkList CompileInfo WelcomeScr AsmMacroAnalyser HelpDockWidget)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

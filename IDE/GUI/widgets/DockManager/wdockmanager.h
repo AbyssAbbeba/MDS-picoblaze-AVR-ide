@@ -41,11 +41,9 @@
 #include "../../enums/enums.h"
 //#include "../../project/project.h"
 
-class WDock;
+//class WDock;
 class CodeEdit;
 class BaseEditor;
-class BookmarkList;
-class BreakpointList;
 class WTextEdit;
 class Project;
 class WelcomeScr;
@@ -58,8 +56,6 @@ class QListWidgetItem;
 class QDockWidget;
 class QVBoxLayout;
 class HelpBrowser;
-class CallWatcher;
-class RegWatcher;
 
 
 /**
@@ -72,16 +68,16 @@ class WDockManager : public QObject
     Q_OBJECT
     public:
         WDockManager(QWidget *parent, QWidget *centralWidget);
-        void addDockWidget(WidgetCode code, MCUSimControl *simControl = NULL);
-        void addSimDockWidget(MCUSimControl *simControl);
-        void addCallWatcher(MCUSimControl *simControl);
-        void addRegWatcher(MCUSimControl *simControl);
+//        void addDockWidget(WidgetCode code, MCUSimControl *simControl = NULL);
+//        void addSimDockWidget(MCUSimControl *simControl);
+//        void addCallWatcher(MCUSimControl *simControl);
+//        void addRegWatcher(MCUSimControl *simControl);
         //void addSimDockWidgetP2(QString path, MCUSimControl* simControl);
-        QDockWidget* getDockWidget(WidgetCode code);
-        QDockWidget* getDockWidgetArea(int area);
-        void hideDockWidgetArea(int area);
-        void showDockWidgetArea(int area);
-        void removeDockWidget(WidgetCode code);
+//        QDockWidget* getDockWidget(WidgetCode code);
+//        QDockWidget* getDockWidgetArea(int area);
+//         void hideDockWidgetArea(int area);
+//         void showDockWidgetArea(int area);
+//        void removeDockWidget(WidgetCode code);
         bool addUntrackedCentralWidget(QString wName, QString wPath);
         bool addUntrackedCentralWidget(QString wName, QString wPath, QStringList text);
         bool addCentralWidget(QString wName, QString wPath);
@@ -99,44 +95,44 @@ class WDockManager : public QObject
         int getTabCount();
         void setCentralByIndex(int index);
         bool isEmpty();
-        BookmarkList* getBookmarkList();
-        BreakpointList* getBreakpointList();
-        void createBookmarkList(QDockWidget *wDockWidget);
-        void createBreakpointList(QDockWidget *wDockWidget);
+//        BookmarkList* getBookmarkList();
+//        BreakpointList* getBreakpointList();
+//        void createBookmarkList(QTabWidget *parentTabWidget);
+//        void createBreakpointList(QTabWidget *parentTabWidget);
         void setCentralByName(QString fileName);
         bool setCentralByPath(QString filePath);
         CodeEdit* getCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
-        void changeSimWidget(int index);
-        void deleteActiveSimWidget();
+//        void changeSimWidget(int index);
+//        void deleteActiveSimWidget();
         void closeFile(QString path, bool openUntitled = true);
         void setCentralWelcome(); //welcome screen
         void deleteCentralWelcome();
-        void setBottomAreaToCompilerInfo();
-        void setBottomAreaToSimulationInfo();
+//        void setBottomAreaToCompilerInfo();
+//        void setBottomAreaToSimulationInfo();
         void showProjectEditors(QString projectPath);
         void appendTabBar(QString projectPath);
         void removeTabBar(QString projectPath);
-        void setBottomAreaToExtAppOutput();
+//        void setBottomAreaToExtAppOutput();
         QString getTabToolTip(int index);
         
-        bool dockWidgets;
-        QTabBar *bottomAreaTabs;
+//         bool dockWidgets;
+        //QTabBar *bottomAreaTabs;
         //QTabBar *leftAreaTabs;
-        QTabBar *rightAreaTabs;
-        QList<PicoBlazeGrid*> openSimWidgets;
-        QList<CallWatcher*> openCallWatchers;
-        QList<RegWatcher*> openRegWatchers;
+        //QTabBar *rightAreaTabs;
+        //QList<PicoBlazeGrid*> openSimWidgets;
+        //QList<CallWatcher*> openCallWatchers;
+        //QList<RegWatcher*> openRegWatchers;
 
     public slots:
         void changeLine(QListWidgetItem *item);
-        void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
-        void unhighlightSimWidget();
+//        void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+//        void unhighlightSimWidget();
         void highlightError(QString filename, int line);
-        void handleShowHideBottom(int index);
+//         void handleShowHideBottom(int index);
         //void handleShowHideLeft(int index);
-        void handleShowHideRight(int index);
-        void compilationFinishedSlot(bool success);
+//         void handleShowHideRight(int index);
+//        void compilationFinishedSlot(bool success);
         void changeTab(bool next);
         void closeCurrentTab();
         void setHelpBrowserPath(const QUrl &);
@@ -148,8 +144,8 @@ class WDockManager : public QObject
         void changeActiveCodeEdit(CodeEdit* editor);
         //void updateAnalysersSlot(CodeEdit *editor);
         void moveEditorsSlot(int from, int to);
-        void stopSimSlot();
-        void clockChangedSlot(double clock, int clockMult);
+//        void stopSimSlot();
+//        void clockChangedSlot(double clock, int clockMult);
         void breakpointEmitSlot(QString file, int line);
         void breakpointsAddLinesSlot(QString file, int line, int linesAdded);
         void breakpointsRemoveLinesSlot(QString file, int line, int linesRemoved);
@@ -170,13 +166,13 @@ class WDockManager : public QObject
 
     signals:
         void saveCodeEdit(CodeEdit *editor, bool ask = false);
-        void createDockWidgets();
-        void tabifyDockWidget(QDockWidget *widget1, QDockWidget* widget2);
-        void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
-        void getSimProjectData();
-        void unhighlightSim();
-        void stopSimSig();
-        void clockChangedSig(double clock, int clockMult);
+        //void createDockWidgets();
+        //void tabifyDockWidget(QDockWidget *widget1, QDockWidget* widget2);
+        //void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+        //void getSimProjectData();
+//        void unhighlightSim();
+        //void stopSimSig();
+        //void clockChangedSig(double clock, int clockMult);
         void centralClosed();
         void centralCreated();
         void breakpointEmit(QString file, int line);
@@ -186,7 +182,7 @@ class WDockManager : public QObject
         void bookmarksAddLines(QString file, int line, int linesAdded);
         void bookmarksRemoveLines(QString file, int line, int linesRemoved);
         //void breakpointListRemove(QString file, int line);
-        void compilationFinishedSig(bool success);
+        //void compilationFinishedSig(bool success);
         void welcomeScrExampleSig();
         void welcomeScrOpenPrjSig();
         void welcomeScrNewPrjSig();
@@ -198,11 +194,20 @@ class WDockManager : public QObject
         void tabChangedToDisabled(bool disable);
 
     private:
-        //MainForm *wMainWindow;
-        QList<WDock*> openDockWidgets;
-        WDock *wLeft;
-        WDock *wBottom;
-        WDock *wRight;
+        QWidget *m_parent;
+        
+        //QList<WDock*> openDockWidgets;
+        //WDock *wLeft;
+        //WDock *wBottom;
+        //WDock *wRight;
+
+        //QTabWidget *tabLeft;
+        //QTabWidget *m_tabRight;
+        //QTabWidget *m_tabBottom;
+
+//         QDockWidget *m_dockRight;
+//         QDockWidget *m_dockBottom;
+        
         QList<QPair<TabBar*, QList<BaseEditor*>*>> openCentralWidgets;
         BaseEditor *centralBase;
         TabBar *wTab;
@@ -219,8 +224,8 @@ class WDockManager : public QObject
         QWidget *m_centralWidget;
         
         //widgets
-        BookmarkList *bookmarkList;
-        BreakpointList *breakpointList;
+        //BookmarkList *bookmarkList;
+        //BreakpointList *breakpointList;
 
         //welcome screen
         WelcomeScr *welcomeScr;
@@ -229,10 +234,10 @@ class WDockManager : public QObject
        
 
         //wdockwidgets previous height
-        int wDockBotPrevHeight;
-        int wDockRightPrevWidth;
-        bool bottomVisible;
-        bool rightVisible;
+        //int wDockBotPrevHeight;
+        //int wDockRightPrevWidth;
+//         bool bottomVisible;
+//         bool rightVisible;
 };
 
 
@@ -242,28 +247,28 @@ class WDockManager : public QObject
  * @ingroup GUI
  * @class WDock
  */
-class WDock : public QObject
-{
-    Q_OBJECT
-    public:
-        WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow);
-        WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, MCUSimControl* simControl);
-        ~WDock();
-        bool cmpCode(WidgetCode code);
-        bool cmpArea(int area);
-        int getArea();
-        QDockWidget* getQDockWidget();
-
-    /*signals:
-        void stopSimSig();
-
-    private slots:
-        void stopSimSlot();*/
-        
-    private:
-        QDockWidget *wDockWidget;
-        WidgetCode code;
-        int area;
-};
+// class WDock : public QObject
+// {
+//     Q_OBJECT
+//     public:
+//         WDock(WDockManager *parent, WidgetCode code, QTabWidget *parentTabWidget);
+//         WDock(WDockManager *parent, WidgetCode code, QTabWidget *parentTabWidget, MCUSimControl* simControl);
+//         ~WDock();
+//         bool cmpCode(WidgetCode code);
+//         bool cmpArea(int area);
+//         int getArea();
+//         QDockWidget* getQDockWidget();
+// 
+//     /*signals:
+//         void stopSimSig();
+// 
+//     private slots:
+//         void stopSimSlot();*/
+//         
+//     private:
+//         QDockWidget *wDockWidget;
+//         WidgetCode code;
+//         int area;
+// };
 
 #endif

@@ -24,6 +24,7 @@
 #include "../../simulators/MCUSim/PicoBlaze/PicoBlazeInstructionSet.h"
 #include "../errordialog/errordlg.h"
 #include "../compatibilitymode/compatibilitymode.h"
+#include "../widgets/DockUi/dockui.h"
 
 
 
@@ -892,6 +893,8 @@ Project::Project(QFile *file, ProjectMan *parent)
                    );
             setupSim();
             prjTreeWidget->expandAll();
+            m_dockUi = new DockUi(this);
+            m_dockUi->createWidgets(m_simControlUnit);
         }
     }
     /*for (int i = 0; i < fileCount; i++)
@@ -1014,6 +1017,8 @@ Project::Project(ProjectMan *parent)
            );
     setupSim();
     prjTreeWidget->expandAll();
+    m_dockUi = new DockUi(this);
+    m_dockUi->createWidgets(m_simControlUnit);
     //qDebug() << "Project: return Project()";
 }
 
@@ -1281,6 +1286,8 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
            );
     setupSim();
     prjTreeWidget->expandAll();
+    m_dockUi = new DockUi(this);
+    m_dockUi->createWidgets(m_simControlUnit);
     //qDebug() << "Project: return Project() blank";
 }
 
