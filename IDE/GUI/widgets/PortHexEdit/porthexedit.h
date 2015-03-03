@@ -70,6 +70,7 @@ class PortHexEdit : public QWidget, public MCUSimObserver
         QLabel *m_lblInput;
         QLabel *m_lblOutput;
         QGridLayout *m_layout;
+        bool m_changingHexEdits;
 
         inline void deleteHexEdit();
         

@@ -35,6 +35,7 @@
 #include "../../utilities/AsmTranslator/AsmTranslator.h"
 #include "../../utilities/AsmTranslator/AsmTranslatorConfig.h"
 #include "../../mds.h"
+#include "../widgets/DockUi/dockui.h"
 //#include <QtHelp/QHelpEngineCore>
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
@@ -170,6 +171,19 @@ MainForm::MainForm()
     m_stderrSignalMapper = new QSignalMapper(this);
     m_stdoutSignalMapper = new QSignalMapper(this);
 
+    m_bottomDockWidget = new QDockWidget(this);
+    m_rightDockWidget = new QDockWidget(this);
+    m_bottomDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    m_rightDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+    m_bottomDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    m_rightDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    
+    setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
+    setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
+
+    this->addDockWidget(Qt::BottomDockWidgetArea, m_bottomDockWidget);
+    this->addDockWidget(Qt::RightDockWidgetArea, m_rightDockWidget);
+
     m_projectMan = new ProjectMan(this);
     connect(m_projectMan,
             SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
@@ -201,36 +215,36 @@ MainForm::MainForm()
             this,
             SLOT(createDockWidgets())
            );*/
-    connect(m_wDockManager,
+/*    connect(m_wDockManager,
             SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)),
             this,
             SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*))
-           );
-    connect(m_wDockManager,
+           );*/
+/*    connect(m_wDockManager,
             SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
             this,
             SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*))
-           );
-    connect(m_wDockManager,
+           );*/
+/*    connect(m_wDockManager,
             SIGNAL(getSimProjectData()),
             this,
             SLOT(simProjectData())
-           );
-    connect(this,
+           );*/
+/*    connect(this,
             SIGNAL(unhighlightSim()),
             m_wDockManager,
             SLOT(unhighlightSimWidget())
-           );
-    connect(m_wDockManager,
+           );*/
+/*    connect(m_wDockManager,
             SIGNAL(stopSimSig()),
             this,
             SLOT(stopSimSlot())
-           );
-    connect(m_wDockManager,
+           );*/
+/*    connect(m_wDockManager,
             SIGNAL(clockChangedSig(double, int)),
             this,
             SLOT(clockChangedSlot(double, int))
-           );
+           );*/
     connect(m_wDockManager,
             SIGNAL(centralCreated()),
             this,
@@ -429,11 +443,11 @@ MainForm::~MainForm()
     while (m_projectMan->getOpenProjects().count() > 0)
     {
         #ifdef MDS_FEATURE_SIM_REGWATCHER
-            RegWatcher *regWatcher = (RegWatcher*)(m_wDockManager->getDockWidget(WREGWATCHER)->widget());
+            RegWatcher *regWatcher = m_projectMan->getActive()->m_dockUi->m_regWatcher;
             m_projectMan->getActive()->setRegWatchers(regWatcher->exportWidgets());
         #endif
         m_projectMan->closeProject(m_projectMan->getActive());
-        m_wDockManager->deleteActiveSimWidget();
+//        m_wDockManager->deleteActiveSimWidget();
     }
     GuiCfg::getInstance().saveConfig();
     QApplication::closeAllWindows();
@@ -1062,17 +1076,17 @@ void MainForm::createDockWidgets()
 {
     //qDebug() << "MainForm: CreateDockWidgets()";
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-    if (false == m_wDockManager->dockWidgets)
-    {
+//    if (false == m_wDockManager->dockWidgets)
+//    {
         //QApplication::processEvents();
-        setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
-        setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
-        setTabPosition(Qt::RightDockWidgetArea, QTabWidget::East);
+//         setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
+//         setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
+//        setTabPosition(Qt::RightDockWidgetArea, QTabWidget::East);
 
         //mozno stejne jako u WDockManager - ulozit si ptr na okno
         //m_projectMan->addProject(NULL, NULL, NULL);
 
-        QList<QTabBar*> tabList;
+//        QList<QTabBar*> tabList;
         //m_wDockManager->addDockWidget(wListCode);
         //m_wDockManager->addDockWidget(wListCode2);
         /*
@@ -1084,27 +1098,27 @@ void MainForm::createDockWidgets()
                 SLOT(handleShowHideLeft(int))
                );
          */
-        m_wDockManager->addDockWidget(WCOMPILEINFO);
-        m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
-      #ifdef MDS_FEATURE_EXTERNAL_APPS
-        m_wDockManager->addDockWidget(WEXTAPPOUTPUT);
-      #endif // MDS_FEATURE_EXTERNAL_APPS
-        m_wDockManager->addDockWidget(WBOTTOMHIDE);
+//        m_wDockManager->addDockWidget(WCOMPILEINFO);
+//        m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
+//        #ifdef MDS_FEATURE_EXTERNAL_APPS
+//        m_wDockManager->addDockWidget(WEXTAPPOUTPUT);
+//        #endif // MDS_FEATURE_EXTERNAL_APPS
+//        m_wDockManager->addDockWidget(WBOTTOMHIDE);
         /*#ifdef Q_OS_WIN
             Sleep(50);
         #else
             usleep(50000);
         #endif*/
-        m_wDockManager->addDockWidget(WBREAKPOINTLIST);
-        m_wDockManager->addDockWidget(WBOOKMARKLIST);
-        m_wDockManager->addDockWidget(WASMMACROANALYSER);
-        AsmMacroAnalyser *analys = (AsmMacroAnalyser*)(m_wDockManager->getDockWidget(WASMMACROANALYSER)->widget());
-        connect(analys,
-                SIGNAL(requestCodeEdits()),
-                this,
-                SLOT(requestMacrosCodeEdits())
-            );
-        connect(analys,
+//       m_wDockManager->addDockWidget(WBREAKPOINTLIST);
+//       m_wDockManager->addDockWidget(WBOOKMARKLIST);
+//       m_wDockManager->addDockWidget(WASMMACROANALYSER);
+       /*AsmMacroAnalyser *analys = (AsmMacroAnalyser*)(m_wDockManager->getDockWidget(WASMMACROANALYSER)->widget());
+       connect(analys,
+               SIGNAL(requestCodeEdits()),
+               this,
+               SLOT(requestMacrosCodeEdits())
+           );
+       connect(analys,
                 SIGNAL(macroClicked(QString, int)),
                 this,
                 SLOT(scrollToFileLine(QString, int))
@@ -1118,151 +1132,151 @@ void MainForm::createDockWidgets()
                 SIGNAL(mtblCompiled(QString)),
                 analys,
                 SLOT(reload(QString))
-            );
-        m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
-        #ifdef MDS_FEATURE_SIM_CALLWATCHER
-            m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
-        #endif
-        #ifdef MDS_FEATURE_SIM_REGWATCHER
-            m_wDockManager->addDockWidget(WREGWATCHER, m_projectMan->getActive()->getSimControl());
-        #endif
-        m_wDockManager->addDockWidget(WRIGHTHIDE);
+            );*/
+//        m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
+//        #ifdef MDS_FEATURE_SIM_CALLWATCHER
+//            m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
+//        #endif
+//        #ifdef MDS_FEATURE_SIM_REGWATCHER
+//            m_wDockManager->addDockWidget(WREGWATCHER, m_projectMan->getActive()->getSimControl());
+//        #endif
+//        m_wDockManager->addDockWidget(WRIGHTHIDE);
 
 
-        QApplication::processEvents();
-        QApplication::processEvents();
+//        QApplication::processEvents();
+//        QApplication::processEvents();
 
-        bool done = false;
-        bool tabsFound = false;
+//        bool done = false;
+//        bool tabsFound = false;
 
-        tabList = this->findChildren<QTabBar*>();
-        for (int i = 0; i < tabList.count() && false == done; i++)
-        {
-            for (int j = 0; j < tabList.at(i)->count(); j++)
-            {
-                if ("Compiler Messages" == tabList.at(i)->tabText(j))
-                {
-                    m_wDockManager->bottomAreaTabs = tabList.at(i);
-                    done = true;
-                    break;
-                }
-                else if ("Simulator" == tabList.at(i)->tabText(j))
-                {
-                    m_wDockManager->bottomAreaTabs = tabList.at(i);
-                    done = true;
-                    break;
-                }
-                else if ("External Applications" == tabList.at(i)->tabText(j))
-                {
-                    m_wDockManager->bottomAreaTabs = tabList.at(i);
-                    done = true;
-                    break;
-                }
-            }
-        }
-        if (NULL == m_wDockManager->bottomAreaTabs)
-        {
-            qDebug() << "MainForm: error, bottomAreaTabs == null";
-            m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-        }
-        connect(m_wDockManager->bottomAreaTabs,
-                SIGNAL(currentChanged(int)),
-                m_wDockManager,
-                SLOT(handleShowHideBottom(int))
-               );
-
-        done = false;
-        tabsFound = false;
+//         tabList = this->findChildren<QTabBar*>();
+//         for (int i = 0; i < tabList.count() && false == done; i++)
+//         {
+//             for (int j = 0; j < tabList.at(i)->count(); j++)
+//             {
+//                 if ("Compiler Messages" == tabList.at(i)->tabText(j))
+//                 {
+//                     m_wDockManager->bottomAreaTabs = tabList.at(i);
+//                     done = true;
+//                     break;
+//                 }
+//                 else if ("Simulator" == tabList.at(i)->tabText(j))
+//                 {
+//                     m_wDockManager->bottomAreaTabs = tabList.at(i);
+//                     done = true;
+//                     break;
+//                 }
+//                 else if ("External Applications" == tabList.at(i)->tabText(j))
+//                 {
+//                     m_wDockManager->bottomAreaTabs = tabList.at(i);
+//                     done = true;
+//                     break;
+//                 }
+//             }
+//         }
+//         if (NULL == m_wDockManager->bottomAreaTabs)
+//         {
+//             qDebug() << "MainForm: error, bottomAreaTabs == null";
+//             m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+//         }
+//         connect(m_wDockManager->bottomAreaTabs,
+//                 SIGNAL(currentChanged(int)),
+//                 m_wDockManager,
+//                 SLOT(handleShowHideBottom(int))
+//                );
+// 
+//         done = false;
+//         tabsFound = false;
 
         //qDebug() << "tab count" << tabList.count();
-        for (int i = 0; i < tabList.count() && false == done; i++)
-        {
-            for (int j = 0; j < tabList.at(i)->count(); j++)
-            {
-                //qDebug() << tabList.at(i)->tabText(j);
-                if ("Breakpoints" == tabList.at(i)->tabText(j))
-                {
-                    //qDebug() << "Found 1/6";
-                    m_wDockManager->getDockWidget(WBREAKPOINTLIST)->setWindowTitle(QString());
-                    //tabList.at(i)->setTabText(j, "");
-                    tabList.at(i)->setTabToolTip(j, "Breakpoints");
-                    tabList.at(i)->setTabWhatsThis(j, "Breakpoints");
-                    done = true;
-                }
-                else if ("Help" == tabList.at(i)->tabText(j) && true == done)
-                {
-                    //qDebug() << "Found 4/6";
-                    m_wDockManager->getDockWidget(WHELPDOCKWIDGET)->setWindowTitle(QString());
-                    //tabList.at(i)->setTabText(j, " ");
-                    tabList.at(i)->setTabToolTip(j, "Help");
-                    tabList.at(i)->setTabWhatsThis(j, "Help");
-                    tabList.at(i)->setCurrentIndex(j);
-                    done = true;
-                }
-                else if ("Bookmarks" == tabList.at(i)->tabText(j))
-                {
+//         for (int i = 0; i < tabList.count() && false == done; i++)
+//         {
+//             for (int j = 0; j < tabList.at(i)->count(); j++)
+//             {
+//                 //qDebug() << tabList.at(i)->tabText(j);
+//                 if ("Breakpoints" == tabList.at(i)->tabText(j))
+//                 {
+//                     //qDebug() << "Found 1/6";
+//                     m_wDockManager->getDockWidget(WBREAKPOINTLIST)->setWindowTitle(QString());
+//                     //tabList.at(i)->setTabText(j, "");
+//                     tabList.at(i)->setTabToolTip(j, "Breakpoints");
+//                     tabList.at(i)->setTabWhatsThis(j, "Breakpoints");
+//                     done = true;
+//                 }
+//                 else if ("Help" == tabList.at(i)->tabText(j) && true == done)
+//                 {
+//                     //qDebug() << "Found 4/6";
+//                     m_wDockManager->getDockWidget(WHELPDOCKWIDGET)->setWindowTitle(QString());
+//                     //tabList.at(i)->setTabText(j, " ");
+//                     tabList.at(i)->setTabToolTip(j, "Help");
+//                     tabList.at(i)->setTabWhatsThis(j, "Help");
+//                     tabList.at(i)->setCurrentIndex(j);
+//                     done = true;
+//                 }
+//                 else if ("Bookmarks" == tabList.at(i)->tabText(j))
+//                 {
                     //qDebug() << "Found 2/6";
-                    m_wDockManager->getDockWidget(WBOOKMARKLIST)->setWindowTitle(QString());
-                    //tabList.at(i)->setTabText(j, "");
-                    tabList.at(i)->setTabToolTip(j, "Bookmarks");
-                    tabList.at(i)->setTabWhatsThis(j, "Bookmarks");
-                    done = true;
-                }
-                else if ("Call Watcher" == tabList.at(i)->tabText(j))
-                {
-                    //qDebug() << "Found 5/6";
-                    m_wDockManager->getDockWidget(WCALLWATCHER)->setWindowTitle(QString());
-                    //tabList.at(i)->setTabText(j, "");
-                    tabList.at(i)->setTabToolTip(j, "Call Watcher");
-                    tabList.at(i)->setTabWhatsThis(j, "Call Watcher");
-                    done = true;
-                }
-                else if ("Reg Watcher" == tabList.at(i)->tabText(j) && true == done)
-                {
-                    //qDebug() << "Found 5/6";
-                    m_wDockManager->getDockWidget(WREGWATCHER)->setWindowTitle(QString());
-                    //tabList.at(i)->setTabText(j, "");
-                    tabList.at(i)->setTabToolTip(j, "Reg Watcher");
-                    tabList.at(i)->setTabWhatsThis(j, "Reg Watcher");
-                    done = true;
-                }
-                else if ("Macros" == tabList.at(i)->tabText(j))
-                {
-                    //qDebug() << "Found 3/6";
-                    m_wDockManager->getDockWidget(WASMMACROANALYSER)->setWindowTitle(QString());
-                    //tabList.at(i)->setTabText(j, "");
-                    tabList.at(i)->setTabToolTip(j, "Macros");
-                    tabList.at(i)->setTabWhatsThis(j, "Macros");
-                    done = true;
-                }
-                else if ("Hide" == tabList.at(i)->tabText(j) && true == done)
-                {
-                    //qDebug() << "Found 6/6";
-                    m_wDockManager->getDockWidget(WRIGHTHIDE)->setWindowTitle(QString());
-                    //tabList.at(i)->setTabText(j, "");
-                    tabList.at(i)->setTabToolTip(j, "Hide");
-                    tabList.at(i)->setTabWhatsThis(j, "Hide");
-                }
-
-                if (true == done && tabsFound == false)
-                {
-                    //m_wDockManager->rightAreaTabs->setCurrentIndex(j);
-                    m_wDockManager->rightAreaTabs = tabList.at(i);
-                    tabsFound = true;
-                }
-
-            }
-        }
-        if (NULL == m_wDockManager->rightAreaTabs)
-        {
-            qDebug() << "MainForm: error, rightAreaTabs == null";
-            m_wDockManager->rightAreaTabs = tabList.at(tabList.count() - 1);
-        }
-        connect(m_wDockManager->rightAreaTabs,
-                SIGNAL(currentChanged(int)),
-                m_wDockManager,
-                SLOT(handleShowHideRight(int))
-               );
+//                     m_wDockManager->getDockWidget(WBOOKMARKLIST)->setWindowTitle(QString());
+//                     //tabList.at(i)->setTabText(j, "");
+//                     tabList.at(i)->setTabToolTip(j, "Bookmarks");
+//                     tabList.at(i)->setTabWhatsThis(j, "Bookmarks");
+//                     done = true;
+//                 }
+//                 else if ("Call Watcher" == tabList.at(i)->tabText(j))
+//                 {
+//                     //qDebug() << "Found 5/6";
+//                     m_wDockManager->getDockWidget(WCALLWATCHER)->setWindowTitle(QString());
+//                     //tabList.at(i)->setTabText(j, "");
+//                     tabList.at(i)->setTabToolTip(j, "Call Watcher");
+//                     tabList.at(i)->setTabWhatsThis(j, "Call Watcher");
+//                     done = true;
+//                 }
+//                 else if ("Reg Watcher" == tabList.at(i)->tabText(j) && true == done)
+//                 {
+//                     //qDebug() << "Found 5/6";
+//                     m_wDockManager->getDockWidget(WREGWATCHER)->setWindowTitle(QString());
+//                     //tabList.at(i)->setTabText(j, "");
+//                     tabList.at(i)->setTabToolTip(j, "Reg Watcher");
+//                     tabList.at(i)->setTabWhatsThis(j, "Reg Watcher");
+//                     done = true;
+//                 }
+//                 else if ("Macros" == tabList.at(i)->tabText(j))
+//                 {
+//                     //qDebug() << "Found 3/6";
+//                     m_wDockManager->getDockWidget(WASMMACROANALYSER)->setWindowTitle(QString());
+//                     //tabList.at(i)->setTabText(j, "");
+//                     tabList.at(i)->setTabToolTip(j, "Macros");
+//                     tabList.at(i)->setTabWhatsThis(j, "Macros");
+//                     done = true;
+//                 }
+//                 else if ("Hide" == tabList.at(i)->tabText(j) && true == done)
+//                 {
+//                     //qDebug() << "Found 6/6";
+//                     m_wDockManager->getDockWidget(WRIGHTHIDE)->setWindowTitle(QString());
+//                     //tabList.at(i)->setTabText(j, "");
+//                     tabList.at(i)->setTabToolTip(j, "Hide");
+//                     tabList.at(i)->setTabWhatsThis(j, "Hide");
+//                 }
+// 
+//                 if (true == done && tabsFound == false)
+//                 {
+//                     //m_wDockManager->rightAreaTabs->setCurrentIndex(j);
+//                     m_wDockManager->rightAreaTabs = tabList.at(i);
+//                     tabsFound = true;
+//                 }
+// 
+//             }
+//         }
+//         if (NULL == m_wDockManager->rightAreaTabs)
+//         {
+//             qDebug() << "MainForm: error, rightAreaTabs == null";
+//             m_wDockManager->rightAreaTabs = tabList.at(tabList.count() - 1);
+//         }
+//         connect(m_wDockManager->rightAreaTabs,
+//                 SIGNAL(currentChanged(int)),
+//                 m_wDockManager,
+//                 SLOT(handleShowHideRight(int))
+//                );
         /*#ifdef Q_OS_WIN
             Sleep(50);
         #else
@@ -1273,45 +1287,45 @@ void MainForm::createDockWidgets()
         //addAct->setEnabled(true);
         //projectCompileAct->setEnabled(true);
         //simulationFlowAct->setEnabled(true);
-        m_wDockManager->dockWidgets = true;
-        if (m_wDockManager->getBreakpointList() != NULL)
-        {
-            connect(m_wDockManager->getBreakpointList(),
-                    SIGNAL(breakpointClicked(QString, int)),
-                    this,
-                    SLOT(scrollToFileLine(QString, int))
-                   );
-        }
-        if (m_wDockManager->getBookmarkList() != NULL)
-        {
-            connect(m_wDockManager->getBookmarkList(),
-                    SIGNAL(bookmarkClicked(QString, int)),
-                    this,
-                    SLOT(scrollToFileLine(QString, int))
-                   );
-        }
+//         m_wDockManager->dockWidgets = true;
+//         if (m_wDockManager->getBreakpointList() != NULL)
+//         {
+//             connect(m_wDockManager->getBreakpointList(),
+//                     SIGNAL(breakpointClicked(QString, int)),
+//                     this,
+//                     SLOT(scrollToFileLine(QString, int))
+//                    );
+//         }
+//         if (m_wDockManager->getBookmarkList() != NULL)
+//         {
+//             connect(m_wDockManager->getBookmarkList(),
+//                     SIGNAL(bookmarkClicked(QString, int)),
+//                     this,
+//                     SLOT(scrollToFileLine(QString, int))
+//                    );
+//         }
 
-        m_wDockManager->hideDockWidgetArea(1);
-        m_wDockManager->hideDockWidgetArea(2);
-        QApplication::processEvents();
-        reloadTabIcons();
-        #ifdef MDS_FEATURE_EXTERNAL_APPS
-            reloadExternalApps();
-        #endif
-    }
-    else
-    {
-        m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
-        #ifdef MDS_FEATURE_SIM_CALLWATCHER
-            m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
-        #endif
-        #ifdef MDS_FEATURE_SIM_REGWATCHER
-            m_wDockManager->addDockWidget(WREGWATCHER, m_projectMan->getActive()->getSimControl());
-        #endif
-    }
+//         m_wDockManager->hideDockWidgetArea(1);
+//         m_wDockManager->hideDockWidgetArea(2);
+//         QApplication::processEvents();
+//         reloadTabIcons();
+//          #ifdef MDS_FEATURE_EXTERNAL_APPS
+//              reloadExternalApps();
+//          #endif
+//     }
+//     else
+//     {
+//         m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
+//         #ifdef MDS_FEATURE_SIM_CALLWATCHER
+//             m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
+//         #endif
+//         #ifdef MDS_FEATURE_SIM_REGWATCHER
+//             m_wDockManager->addDockWidget(WREGWATCHER, m_projectMan->getActive()->getSimControl());
+//         #endif
+//     }
     //QTimer::singleShot(50, this, SLOT(reloadTabIcons()));
-    //emit dockWidgetsCreated;
-    //qDebug() << "MainForm: return CreateDockWidgets()";
+//    emit dockWidgetsCreated;
+    qDebug() << "MainForm: return CreateDockWidgets()";
 }
 
 
@@ -2256,7 +2270,7 @@ void MainForm::projectOpened()
         QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
         //qDebug() << "MainForm: tab connected";
         projectTabConnected = true;
-        tabList = this->findChildren<QTabBar*>();
+        //tabList = this->findChildren<QTabBar*>();
         for (int i = 0; i < tabList.count(); i++)
         {
             for (int j = 0; j < tabList.at(i)->count(); j++)
@@ -2281,28 +2295,28 @@ void MainForm::projectOpened()
         //qDebug() << "projectTabs = ";
         //qDebug() << "projectTabs = done";
     }
-    this->createDockWidgets();
-    if (m_wDockManager->getBreakpointList() != NULL)
-    {
-        m_wDockManager->getBreakpointList()->reload(m_projectMan->getActive()->getBreakpointsListRef());
-        /*if (m_wDockManager->getCentralWidget() != NULL)
-        {
-            m_wDockManager->getCentralWidget()->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
-        }*/
-    }
-    if (m_wDockManager->getBookmarkList() != NULL)
-    {
-        m_wDockManager->getBookmarkList()->reload(m_projectMan->getActive()->getBookmarksListRef());
-        /*if (m_wDockManager->getCentralWidget() != NULL)
-        {
-            m_wDockManager->getCentralWidget()->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
-        }*/
-    }
+//     this->createDockWidgets();
+//     if (m_wDockManager->getBreakpointList() != NULL)
+//     {
+//         m_wDockManager->getBreakpointList()->reload(m_projectMan->getActive()->getBreakpointsListRef());
+//         /*if (m_wDockManager->getCentralWidget() != NULL)
+//         {
+//             m_wDockManager->getCentralWidget()->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
+//         }*/
+//     }
+//     if (m_wDockManager->getBookmarkList() != NULL)
+//     {
+//         m_wDockManager->getBookmarkList()->reload(m_projectMan->getActive()->getBookmarksListRef());
+//         /*if (m_wDockManager->getCentralWidget() != NULL)
+//         {
+//             m_wDockManager->getCentralWidget()->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
+//         }*/
+//     }
 
-    #ifdef MDS_FEATURE_SIM_REGWATCHER
-            RegWatcher *regWatcher = (RegWatcher*)(m_wDockManager->getDockWidget(WREGWATCHER)->widget());
-            regWatcher->importWidgets(m_projectMan->getActive()->getRegWatchers());
-    #endif
+//     #ifdef MDS_FEATURE_SIM_REGWATCHER
+//            RegWatcher *regWatcher = (RegWatcher*)(m_wDockManager->getDockWidget(WREGWATCHER)->widget());
+//            regWatcher->importWidgets(m_projectMan->getActive()->getRegWatchers());
+//     #endif
     
     if (projectTabs != NULL )
     {
@@ -2316,6 +2330,8 @@ void MainForm::projectOpened()
         GuiCfg::getInstance().projectOpened(m_projectMan->getActive()->prjPath);
     }
     m_wDockManager->appendTabBar(m_projectMan->getActive()->prjPath);
+    m_bottomDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_bottomTabs);
+    m_rightDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_rightTabs);
     m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
     //QDir dir(m_projectMan->getActive()->);
     QString absoluteFilePath;
@@ -2388,7 +2404,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         qDebug() << filesToTranslate.at(i);
         if ("psm" != filesToTranslate.at(i).section('.',-1).toLower())
         {
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
             QString text = "File does not have .psm extension " + QDir::cleanPath(filesToTranslate.at(i));
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
@@ -2397,7 +2413,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         std::ifstream inputStream(filesToTranslate.at(i).toStdString());
         if (false == inputStream.is_open())
         {
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
             QString text = "Can not open input file " + QDir::cleanPath(filesToTranslate.at(i));
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
@@ -2406,7 +2422,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         if (false == outputStream.is_open())
         {
             inputStream.close();
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
             QString text = "Can not open output file " + QDir::cleanPath(filesToTranslate.at(i).section('.',0, -2)) + ".asm";
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
@@ -2430,7 +2446,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         }
         else
         {
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
             std::vector<std::pair<unsigned int, std::string> > messages =  translator.getMessages();
             QString text;
             qDebug() << "MainForm: translation errors:";
@@ -2473,8 +2489,9 @@ void MainForm::compileProject()
         return;
     }
 
-    ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->clear();
-    m_wDockManager->setBottomAreaToCompilerInfo();
+    m_projectMan->getActive()->m_dockUi->m_compileInfo->clear();
+//    m_wDockManager->setBottomAreaToCompilerInfo();
+    m_projectMan->getActive()->m_dockUi->setBottomAreaToCompilerInfo();
     this->options = new CompilerOptions();
     QString mainFile;
 
@@ -2506,7 +2523,7 @@ void MainForm::compileProject()
         }
         m_projectMan->getUntracked()->addFile(m_wDockManager->getCentralPath(),m_wDockManager->getCentralName());
 
-        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+        CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                     CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Compilation settings:",
@@ -2729,7 +2746,7 @@ void MainForm::compileProject()
         if (found == true)
         {
             //qDebug() << "MainForm: compiled actual project, actual file" << filePath;
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
             compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                         CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Compilation settings:",
@@ -2923,7 +2940,7 @@ void MainForm::compileProject()
                 QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
             }
 
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
             compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                         CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Compilation settings:",
@@ -3125,7 +3142,7 @@ void MainForm::compileProject()
             return;
         }
 
-        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+        CompileInfo *compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                     CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Compilation settings:",
@@ -3298,7 +3315,7 @@ void MainForm::compileProject()
     //qDebug() << QString::fromStdString(options->m_sourceFile);
     //qDebug() << mainFile;
 
-    CompileInfo* compileInfo = (CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget());
+    CompileInfo* compileInfo = m_projectMan->getActive()->m_dockUi->m_compileInfo;
     if (0 == m_projectMan->getActive()->getAsmType())
     {
         compileInfo->changeAsmMode(true);
@@ -3360,7 +3377,7 @@ void MainForm::compilationFinished(bool success)
     if ( true == success )
     {
         qDebug() << "Success";
-        ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->setFinished(true);
+        m_projectMan->getActive()->m_dockUi->m_compileInfo->setFinished(true);
         /*if (true == this->simulationRequest)
         {
             this->simulationFlowHandle();
@@ -3370,7 +3387,7 @@ void MainForm::compilationFinished(bool success)
     else
     {
         qDebug() << "Not a success";
-        ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->setFinished(false);
+        m_projectMan->getActive()->m_dockUi->m_compileInfo->setFinished(false);
         if (true == this->simulationRequest)
         {
             error(ErrorCode::ERR_SIM_RECOMPILE_FAILED);
@@ -3389,7 +3406,7 @@ void MainForm::compilationFinished(bool success)
 void MainForm::reloadCompileInfo(const std::string &text, CompilerBase::MessageType type)
 {
     //qDebug() << QString::fromStdString(text);
-    ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->appendMessage(QString::fromStdString(text), type);
+    m_projectMan->getActive()->m_dockUi->m_compileInfo->appendMessage(QString::fromStdString(text), type);
 }
 
 
@@ -3461,7 +3478,7 @@ void MainForm::simulationRunHandle()
             this->simulationRunStatus = true;
         }
         #ifdef MDS_FEATURE_SIM_CALLWATCHER
-            ((CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget()))->setRun(simulationRunStatus);
+            m_projectMan->getActive()->m_dockUi->m_callWatcher->setRun(simulationRunStatus);
         #endif
         m_projectMan->getSimulated()->run();
     }
@@ -3657,9 +3674,10 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
                 //qDebug() << "MainForm: simulationBreakpointsEnabled false";
                 m_projectMan->getSimulated()->setBreakpoints(false);
             }
-            m_wDockManager->setBottomAreaToSimulationInfo();
+//             m_wDockManager->setBottomAreaToSimulationInfo();
+            m_projectMan->getActive()->m_dockUi->setBottomAreaToSimulationInfo();
             #ifdef MDS_FEATURE_SIM_CALLWATCHER
-                CallWatcher *watcher = (CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget());
+                CallWatcher *watcher = m_projectMan->getActive()->m_dockUi->m_callWatcher;
                 watcher->setInterruptAddr(m_projectMan->getActive()->intVector);
                 watcher->setSimulated(true);
             #endif
@@ -3770,7 +3788,7 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
         projectConfigAct->setEnabled(true);
         projectCompileAct->setEnabled(true);
         #ifdef MDS_FEATURE_SIM_CALLWATCHER
-            ((CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget()))->setSimulated(false);
+            m_projectMan->getActive()->m_dockUi->m_callWatcher->setSimulated(false);
         #endif
         m_projectMan->getSimulated()->stop();
         //this->unhighlight();
@@ -3857,9 +3875,9 @@ void MainForm::exampleOpen()
 void MainForm::simProjectData()
 {
     //m_wDockManager->addSimDockWidgetP2(m_projectMan->getActive()->prjPath, m_projectMan->getActive()->getSimControl());
-    m_wDockManager->openSimWidgets.at(m_wDockManager->openSimWidgets.count()-1)->setClock(m_projectMan->getActive()->clock,
-                                                                                      m_projectMan->getActive()->clockMult
-                                                                                     );
+//    m_wDockManager->openSimWidgets.at(m_wDockManager->openSimWidgets.count()-1)->setClock(m_projectMan->getActive()->clock,
+//                                                                                      m_projectMan->getActive()->clockMult
+//                                                                                     );
 }
 
 /**
@@ -3876,6 +3894,7 @@ void MainForm::tabifyDockWidgetSlot(QDockWidget *widget1, QDockWidget *widget2)
  */
 void MainForm::addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget)
 {
+    qDebug() << "addDockWidgetSlot";
     this->addDockWidget(area, widget);
 }
 
@@ -4249,16 +4268,18 @@ void MainForm::activeProjectChanged(int index)
     if (index >= 0)
     {
         m_projectMan->setActiveByIndex(index);
-        m_wDockManager->changeSimWidget(index);
+//        m_wDockManager->changeSimWidget(index);
+        m_bottomDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_bottomTabs);
+        m_rightDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_rightTabs);
         m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
-        if (m_wDockManager->getBreakpointList() != NULL)
-        {
-            m_wDockManager->getBreakpointList()->reload(m_projectMan->getActive()->getBreakpointsListRef());
-        }
-        if (m_wDockManager->getBookmarkList() != NULL)
-        {
-            m_wDockManager->getBookmarkList()->reload(m_projectMan->getActive()->getBookmarksListRef());
-        }
+//        if (m_wDockManager->getBreakpointList() != NULL)
+//        {
+//            m_wDockManager->getBreakpointList()->reload(m_projectMan->getActive()->getBreakpointsListRef());
+//        }
+//        if (m_wDockManager->getBookmarkList() != NULL)
+//        {
+//            m_wDockManager->getBookmarkList()->reload(m_projectMan->getActive()->getBookmarksListRef());
+//        }
     }
     //qDebug() << "MainForm: return activeProjectChanged";
 }
@@ -4362,31 +4383,31 @@ void MainForm::closeProject()
         }*/
         //qDebug() << "MainForm: delete active sim widget";
         #ifdef MDS_FEATURE_SIM_REGWATCHER
-            RegWatcher *regWatcher = (RegWatcher*)(m_wDockManager->getDockWidget(WREGWATCHER)->widget());
+            RegWatcher *regWatcher = m_projectMan->getActive()->m_dockUi->m_regWatcher;
             project->setRegWatchers(regWatcher->exportWidgets());
         #endif
-        m_wDockManager->deleteActiveSimWidget();
+//        m_wDockManager->deleteActiveSimWidget();
         m_wDockManager->removeTabBar(project->prjPath);
         //qDebug() << "MainForm: remove dock widget";
         this->removeDockWidget(project->prjDockWidget);
         //qDebug() << "MainForm: close project";
         m_projectMan->closeProject(project);
-        if (m_wDockManager->getBreakpointList() != NULL)
-        {
-            m_wDockManager->getBreakpointList()->reload(m_projectMan->getActive()->getBreakpointsListRef());
-            /*if (m_wDockManager->getCentralWidget() != NULL)
-            {
-                m_wDockManager->getCentralWidget()->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
-            }*/
-        }
-        if (m_wDockManager->getBookmarkList() != NULL)
-        {
-            m_wDockManager->getBookmarkList()->reload(m_projectMan->getActive()->getBookmarksListRef());
-            /*if (m_wDockManager->getCentralWidget() != NULL)
-            {
-                m_wDockManager->getCentralWidget()->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
-            }*/
-        }
+//         if (m_wDockManager->getBreakpointList() != NULL)
+//         {
+//             m_wDockManager->getBreakpointList()->reload(m_projectMan->getActive()->getBreakpointsListRef());
+//             /*if (m_wDockManager->getCentralWidget() != NULL)
+//             {
+//                 m_wDockManager->getCentralWidget()->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
+//             }*/
+//         }
+//         if (m_wDockManager->getBookmarkList() != NULL)
+//         {
+//             m_wDockManager->getBookmarkList()->reload(m_projectMan->getActive()->getBookmarksListRef());
+//             /*if (m_wDockManager->getCentralWidget() != NULL)
+//             {
+//                 m_wDockManager->getCentralWidget()->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
+//             }*/
+//         }
         if (m_projectMan->getOpenProjects().count() == 0)
         {
             m_wDockManager->setCentralWelcome();
@@ -4411,6 +4432,8 @@ void MainForm::closeProject()
             {
                 m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
                 qDebug() << m_projectMan->getActive()->prjPath;
+                m_bottomDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_bottomTabs);
+                m_rightDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_rightTabs);
                 if (m_wDockManager->getTabCount() == 0)
                 {
                     setCentralUntitled(false);
@@ -4428,13 +4451,13 @@ void MainForm::manageBreakpointEmit(QString file, int line)
     //add
     if (0 == result)
     {
-        m_wDockManager->getBreakpointList()->breakpointListAdd(file, line + 1);
+        m_projectMan->getActive()->m_dockUi->m_breakpointList->breakpointListAdd(file, line + 1);
         m_wDockManager->getCentralWidget()->addBreakpointLine(line + 1);
     }
     //remove
     else if (1 == result)
     {
-        m_wDockManager->getBreakpointList()->breakpointListRemove(file, line + 1);
+        m_projectMan->getActive()->m_dockUi->m_breakpointList->breakpointListRemove(file, line + 1);
         m_wDockManager->getCentralWidget()->removeBreakpointLine(line + 1);
     }
     //else project doesnt contain current file - result == -1
@@ -4448,7 +4471,7 @@ void MainForm::manageBreakpointEmit(QString file, int line)
 void MainForm::breakpointsAddLines(QString file, int line, int linesAdded)
 {
     m_projectMan->getActive()->moveBreakpointsAdd(file, line + 1, linesAdded);
-    m_wDockManager->getBreakpointList()->breakpointsAddLines(file, line + 1, linesAdded);
+    m_projectMan->getActive()->m_dockUi->m_breakpointList->breakpointsAddLines(file, line + 1, linesAdded);
     m_wDockManager->getCentralWidget()->moveBreakpointsLines(line + 1, linesAdded, true);
 }
 
@@ -4456,7 +4479,7 @@ void MainForm::breakpointsAddLines(QString file, int line, int linesAdded)
 void MainForm::breakpointsRemoveLines(QString file, int line, int linesRemoved)
 {
     m_projectMan->getActive()->moveBreakpointsRemove(file, line + 1, linesRemoved);
-    m_wDockManager->getBreakpointList()->breakpointsRemoveLines(file, line + 1, linesRemoved);
+    m_projectMan->getActive()->m_dockUi->m_breakpointList->breakpointsRemoveLines(file, line + 1, linesRemoved);
     m_wDockManager->getCentralWidget()->moveBreakpointsLines(line + 1, linesRemoved, false);
 }
 
@@ -4468,13 +4491,13 @@ void MainForm::manageBookmarkEmit(QString file, int line)
     //add
     if (0 == result)
     {
-        m_wDockManager->getBookmarkList()->bookmarkListAdd(file, line + 1);
+        m_projectMan->getActive()->m_dockUi->m_bookmarkList->bookmarkListAdd(file, line + 1);
         m_wDockManager->getCentralWidget()->addBookmarkLine(line + 1);
     }
     //remove
     else if (1 == result)
     {
-        m_wDockManager->getBookmarkList()->bookmarkListRemove(file, line + 1);
+        m_projectMan->getActive()->m_dockUi->m_bookmarkList->bookmarkListRemove(file, line + 1);
         m_wDockManager->getCentralWidget()->removeBookmarkLine(line + 1);
     }
     //else project doesnt contain current file - result == -1
@@ -4490,7 +4513,7 @@ void MainForm::bookmarksAddLines(QString file, int line, int linesAdded)
 {
     //qDebug() << "MainForm: bookmarksAddLines";
     m_projectMan->getActive()->moveBookmarksAdd(file, line + 1, linesAdded);
-    m_wDockManager->getBookmarkList()->bookmarksAddLines(file, line + 1, linesAdded);
+    m_projectMan->getActive()->m_dockUi->m_bookmarkList->bookmarksAddLines(file, line + 1, linesAdded);
     m_wDockManager->getCentralWidget()->moveBookmarksLines(line + 1, linesAdded, true);
 }
 
@@ -4498,7 +4521,7 @@ void MainForm::bookmarksAddLines(QString file, int line, int linesAdded)
 void MainForm::bookmarksRemoveLines(QString file, int line, int linesRemoved)
 {
     m_projectMan->getActive()->moveBookmarksRemove(file, line + 1, linesRemoved);
-    m_wDockManager->getBookmarkList()->bookmarksRemoveLines(file, line + 1, linesRemoved);
+    m_projectMan->getActive()->m_dockUi->m_bookmarkList->bookmarksRemoveLines(file, line + 1, linesRemoved);
     m_wDockManager->getCentralWidget()->moveBookmarksLines(line + 1, linesRemoved, false);
 }
 
@@ -4593,7 +4616,7 @@ void MainForm::pauseSimulation()
             this->simulationDisableBreakpointsAct->setEnabled(true);
             this->simulationRunStatus = false;
             #ifdef MDS_FEATURE_SIM_CALLWATCHER
-                ((CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget()))->setRun(simulationRunStatus);
+                m_projectMan->getActive()->m_dockUi->m_callWatcher->setRun(simulationRunStatus);
             #endif
             return;
         }
@@ -5226,97 +5249,97 @@ void MainForm::shortcutChangeTabRight()
 void MainForm::reloadTabIcons()
 {
     //qDebug() << "reloadTabIcons()";
-    for (int i = 0; i < m_wDockManager->rightAreaTabs->count(); i++)
-    {
-        QString text = m_wDockManager->rightAreaTabs->tabWhatsThis(i);
-        //qDebug() << text;
-        if ("Breakpoints" == text)
-        {
-            //qDebug() << "Found 1/6";
-            QPixmap pixmap(":resources/icons/breakpoint.png");
-            QMatrix rm;
-            rm.rotate(-90);
-            pixmap = pixmap.transformed(rm);
-            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
-            //m_wDockManager->rightAreaTabs->setTabToolTip(i,"Breakpoints");
-        }
-        else if ("Bookmarks" == text)
-        {
-            //qDebug() << "Found 2/6";
-            QPixmap pixmap(":resources/icons/bullet_star.png");
-            QMatrix rm;
-            rm.rotate(-90);
-            pixmap = pixmap.transformed(rm);
-            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
-        }
-        else if ("Macros" == text)
-        {
-            //qDebug() << "Found 3/6";
-            QPixmap pixmap(":resources/icons/brick.png");
-            QMatrix rm;
-            rm.rotate(-90);
-            pixmap = pixmap.transformed(rm);
-            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
-        }
-        else if ("Help" == text)
-        {
-            //qDebug() << "Found 4/6";
-            QPixmap pixmap(":resources/icons/help.png");
-            QMatrix rm;
-            rm.rotate(-90);
-            pixmap = pixmap.transformed(rm);
-            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
-        }
-        else if ("Call Watcher" == text)
-        {
-            //qDebug() << "Found 5/6";
-            QPixmap pixmap(":resources/icons/door_in.png");
-            QMatrix rm;
-            rm.rotate(-90);
-            pixmap = pixmap.transformed(rm);
-            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
-        }
-        else if ("Reg Watcher" == text)
-        {
-            //qDebug() << "Found 5/6";
-            QPixmap pixmap(":resources/icons/reg_watch.png");
-            QMatrix rm;
-            rm.rotate(-90);
-            pixmap = pixmap.transformed(rm);
-            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
-        }
-        else if ("Hide" == text)
-        {
-            //qDebug() << "Found 6/6";
-            QPixmap pixmap(":resources/icons/bullet_arrow_right.png");
-            QMatrix rm;
-            rm.rotate(-90);
-            pixmap = pixmap.transformed(rm);
-            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
-        }
-    }
-    for (int i = 0; i < m_wDockManager->bottomAreaTabs->count(); i++)
-    {
-        QString text = m_wDockManager->bottomAreaTabs->tabText(i);
-        if ("Compiler Messages" == text)
-        {
-            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/messages.png"));
-        }
-        else if ("Simulator" == text)
-        {
-            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/processor.png"));
-        }
-        #ifdef MDS_FEATURE_EXTERNAL_APPS
-            else if ("External Applications" == text)
-            {
-                m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/application_xp_terminal.png"));
-            }
-        #endif
-        else if ("Hide" == text)
-        {
-            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/bullet_arrow_down.png"));
-        }
-    }
+//     for (int i = 0; i < m_wDockManager->rightAreaTabs->count(); i++)
+//     {
+//         QString text = m_wDockManager->rightAreaTabs->tabWhatsThis(i);
+//         //qDebug() << text;
+//         if ("Breakpoints" == text)
+//         {
+//             //qDebug() << "Found 1/6";
+//             QPixmap pixmap(":resources/icons/breakpoint.png");
+//             QMatrix rm;
+//             rm.rotate(-90);
+//             pixmap = pixmap.transformed(rm);
+//             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+//             //m_wDockManager->rightAreaTabs->setTabToolTip(i,"Breakpoints");
+//         }
+//         else if ("Bookmarks" == text)
+//         {
+//             //qDebug() << "Found 2/6";
+//             QPixmap pixmap(":resources/icons/bullet_star.png");
+//             QMatrix rm;
+//             rm.rotate(-90);
+//             pixmap = pixmap.transformed(rm);
+//             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+//         }
+//         else if ("Macros" == text)
+//         {
+//             //qDebug() << "Found 3/6";
+//             QPixmap pixmap(":resources/icons/brick.png");
+//             QMatrix rm;
+//             rm.rotate(-90);
+//             pixmap = pixmap.transformed(rm);
+//             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+//         }
+//         else if ("Help" == text)
+//         {
+//             //qDebug() << "Found 4/6";
+//             QPixmap pixmap(":resources/icons/help.png");
+//             QMatrix rm;
+//             rm.rotate(-90);
+//             pixmap = pixmap.transformed(rm);
+//             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+//         }
+//         else if ("Call Watcher" == text)
+//         {
+//             //qDebug() << "Found 5/6";
+//             QPixmap pixmap(":resources/icons/door_in.png");
+//             QMatrix rm;
+//             rm.rotate(-90);
+//             pixmap = pixmap.transformed(rm);
+//             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+//         }
+//         else if ("Reg Watcher" == text)
+//         {
+//             //qDebug() << "Found 5/6";
+//             QPixmap pixmap(":resources/icons/reg_watch.png");
+//             QMatrix rm;
+//             rm.rotate(-90);
+//             pixmap = pixmap.transformed(rm);
+//             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+//         }
+//         else if ("Hide" == text)
+//         {
+//             //qDebug() << "Found 6/6";
+//             QPixmap pixmap(":resources/icons/bullet_arrow_right.png");
+//             QMatrix rm;
+//             rm.rotate(-90);
+//             pixmap = pixmap.transformed(rm);
+//             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+//         }
+//     }
+//     for (int i = 0; i < m_wDockManager->bottomAreaTabs->count(); i++)
+//     {
+//         QString text = m_wDockManager->bottomAreaTabs->tabText(i);
+//         if ("Compiler Messages" == text)
+//         {
+//             m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/messages.png"));
+//         }
+//         else if ("Simulator" == text)
+//         {
+//             m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/processor.png"));
+//         }
+//         #ifdef MDS_FEATURE_EXTERNAL_APPS
+//             else if ("External Applications" == text)
+//             {
+//                 m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/application_xp_terminal.png"));
+//             }
+//         #endif
+//         else if ("Hide" == text)
+//         {
+//             m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/bullet_arrow_down.png"));
+//         }
+//    }
 }
 
 
@@ -5568,10 +5591,10 @@ void MainForm::reloadExternalApps()
                 extAppAct[i]->setText(apps.at(i).path.section('/', -1));
                 m_externalPopupMenu->addAction(extAppAct[i]);
             }
-            if (true == m_wDockManager->dockWidgets)
-            {
-                ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
-            }
+           if (NULL != m_projectMan->getActive())
+           {
+               m_projectMan->getActive()->m_dockUi->m_extAppOutput->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+           }
         }
         if (true == showToolButton)
         {
@@ -5672,7 +5695,7 @@ void MainForm::startExtApp(int processNumber)
                     this,
                     SLOT(stdoutExtApp(int))
                 );
-            ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+            ExtAppOutput* output = m_projectMan->getActive()->m_dockUi->m_extAppOutput;
             output->cleanOutput(processNumber);
 
             QString args =  externalApp.args;
@@ -5691,7 +5714,8 @@ void MainForm::startExtApp(int processNumber)
             args.replace("%curfilepath%", m_wDockManager->getCentralPath());
             args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
             m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
-            m_wDockManager->setBottomAreaToExtAppOutput();
+//             m_wDockManager->setBottomAreaToExtAppOutput();
+            m_projectMan->getActive()->m_dockUi->setBottomAreaToExtAppOutput();
             output->setActiveTab(processNumber);
             output->getTextEdit(processNumber)->insertPlainText("Application name:\t");
             output->getTextEdit(processNumber)->insertPlainText(externalApp.path.section('/', -1));
@@ -5740,7 +5764,7 @@ void MainForm::stderrExtApp(int processNumber)
         {
             return;
         }
-        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+        ExtAppOutput* output = m_projectMan->getActive()->m_dockUi->m_extAppOutput;
         output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardError());
     #endif
 }
@@ -5753,7 +5777,7 @@ void MainForm::stdoutExtApp(int processNumber)
         {
             return;
         }
-        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+        ExtAppOutput* output = m_projectMan->getActive()->m_dockUi->m_extAppOutput;
         output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardOutput());
     #endif
 }

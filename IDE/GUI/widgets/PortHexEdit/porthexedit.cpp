@@ -72,6 +72,8 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
     m_layout->addWidget(m_lblOutput, 0,6, Qt::AlignLeft);
     m_lblWRK = NULL;
 
+    m_changingHexEdits = false;
+
 	deviceChanged();
    //qDebug() << "PortHexEdit: return PortHexEdit()";
 }
@@ -200,6 +202,7 @@ void PortHexEdit::deviceChanged()
 			return;
 	}*/
     m_size = m_plio->getNumberOfPorts();
+    m_changingHexEdits = true;
 	deleteHexEdit();
 	m_hexEditIn = new HexEdit(this, false, m_size, 8);
     //m_hexEditIn->move(0, 20);
@@ -249,6 +252,7 @@ void PortHexEdit::deviceChanged()
 	connect(m_hexEditIn, SIGNAL(textChanged(int)), this, SLOT(changeValueIn(int)));
     connect(m_hexEditOut, SIGNAL(textChanged(int)), this, SLOT(changeValueOut(int)));
 	//m_layout->addWidget(m_hexEditIn);
+    m_changingHexEdits = false;
 
 	deviceReset();
    //qDebug() << "PortHexEdit: return deviceChanged()";
@@ -410,6 +414,16 @@ void PortHexEdit::updateWidget()
 
 void PortHexEdit::resizeEvent(QResizeEvent */*event*/)
 {
-    m_hexEditIn->fixHeight();
-    m_hexEditOut->fixHeight();
+    if (true == m_changingHexEdits)
+    {
+        return;
+    }
+    if (NULL != m_hexEditIn)
+    {
+        m_hexEditIn->fixHeight();
+    }
+    if (NULL != m_hexEditOut)
+    {
+        m_hexEditOut->fixHeight();
+    }
 }

@@ -17,28 +17,11 @@
 #include "wdockmanager.h"
 #include "../Editor/wtextedit.h"
 #include "../WelcomeScr/welcomescr.h"
-#include "../AsmMacroAnalyser/asmmacroanalyser.h"
-#include "../BreakpointList/breakpointlist.h"
-#include "../BookmarkList/bookmarklist.h"
 #include "../Editor/codeedit.h"
 #include "../Editor/baseeditor.h"
-#include "../PicoBlazeGrid/picoblazegrid.h"
 #include "../TabBar/tabbar.h"
-#include "../CompileInfo/compileinfo.h"
-#include "../HelpDockWidget/helpdockwidget.h"
 #include "../HelpWidget/helpbrowser.h"
 
-#ifdef MDS_FEATURE_EXTERNAL_APPS
-    #include "../ExtAppOutput/extappoutput.h"
-#endif //MDS_FEATURE_EXTERNAL_APPS
-
-#ifdef MDS_FEATURE_SIM_CALLWATCHER
-    #include "../CallWatcher/callwatcher.h"
-#endif //MDS_FEATURE_SIM_CALLWATCHER
-
-#ifdef MDS_FEATURE_SIM_REGWATCHER
-    #include "../RegWatcher/regwatcher.h"
-#endif //MDS_FEATURE_SIM_REGWATCHER
 
 
 
@@ -52,6 +35,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
 {
     //qDebug() << "WDockManager: WDockManager()";
     //wMainWindow = mainWindow;
+    m_parent = parent;
     m_layout = new QVBoxLayout(centralWidget);
     m_centralWidget = centralWidget;
     //wTab = new TabBar(centralWidget);
@@ -62,19 +46,32 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     activeHelpBrowser->hide();
     //wTab->setTabsClosable(true);
     //wTab->setMovable(true);
-    wRight = NULL;
-    wLeft = NULL;
-    wBottom = NULL;
-    bookmarkList = NULL;
-    breakpointList = NULL;
+//     wRight = NULL;
+//     wLeft = NULL;
+//     wBottom = NULL;
+
+//     m_tabBottom = NULL;
+
+//         m_tabRight = new QTabWidget(parent);
+//         QDockWidget *wDockWidget = new QDockWidget("", parent);
+//         wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//         wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//         wDockWidget->setWidget(m_tabRight);
+//         emit addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+    
+    //tabLeft = NULL;
+//     m_tabRight = NULL;
+    
+//     bookmarkList = NULL;
+//     breakpointList = NULL;
     activeCodeEdit = NULL;
     welcomeScr = NULL;
     centralBase = NULL;
-    this->dockWidgets = false;
-    wDockBotPrevHeight = 0;
-    wDockRightPrevWidth = 0;
-    bottomVisible = true;
-    rightVisible = true;
+//     this->dockWidgets = false;
+//     wDockBotPrevHeight = 0;
+//     wDockRightPrevWidth = 0;
+//     bottomVisible = true;
+//     rightVisible = true;
 
     //layout->addWidget(wTab);
     m_layout->addWidget(splitter);
@@ -501,17 +498,17 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
             //qDebug() << "WDockManager: Create splitter";
-            if (this->dockWidgets == true)
-            {
+//             if (this->dockWidgets == true)
+//             {
                 //emit createDockWidgets();
                 //wMainWindow->CreateDockWidgets();
             //}
             //else
             //{
                 //activeCodeEdit->show();
-                this->showDockWidgetArea(1);
-                this->showDockWidgetArea(2);
-            }
+//                 this->showDockWidgetArea(1);
+//                 this->showDockWidgetArea(2);
+//             }
             emit centralCreated();
         }
         else
@@ -645,17 +642,17 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
             //qDebug() << "WDockManager: Create splitter";
-            if (this->dockWidgets == true)
-            {
+//             if (this->dockWidgets == true)
+//             {
             //    emit createDockWidgets();
                 //wMainWindow->CreateDockWidgets();
             //}
             //else
             //{
                 //activeCodeEdit->show();
-                this->showDockWidgetArea(1);
-                this->showDockWidgetArea(2);
-            }
+//                 this->showDockWidgetArea(1);
+//                 this->showDockWidgetArea(2);
+//             }
             emit centralCreated();
         }
         else
@@ -796,17 +793,17 @@ bool WDockManager::addCentralWidget(QString wName, QString wPath)
             //qDebug() << "WDockManager: Create splitter";
             if (wName != NULL && wPath != NULL)
             {
-                if (this->dockWidgets == true)
-                {
-                //    emit createDockWidgets();
-                    //wMainWindow->CreateDockWidgets();
-                //}
-                //else
-                //{
-                    //activeCodeEdit->show();
-                    this->showDockWidgetArea(1);
-                    this->showDockWidgetArea(2);
-                }
+//                 if (this->dockWidgets == true)
+//                 {
+//                 //    emit createDockWidgets();
+//                     //wMainWindow->CreateDockWidgets();
+//                 //}
+//                 //else
+//                 //{
+//                     //activeCodeEdit->show();
+//                     this->showDockWidgetArea(1);
+//                     this->showDockWidgetArea(2);
+//                 }
             }
             emit centralCreated();
         }
@@ -872,140 +869,185 @@ bool WDockManager::addCentralWidget(QString wName, QString wPath)
 }
 
 
-void WDockManager::addDockWidget(WidgetCode code, MCUSimControl* simControl)
-{
-    //qDebug() << "WDockManager: addDockWidget()";
-    WDock *newWDock;
-    if (code == WSIMULATIONINFO)
-    {
-        this->addSimDockWidget(simControl);
-        //qDebug() << "WDockManager: return addDockWidget()";
-        return;
-        //newWDock = new WDock(this, code, (QWidget *)(this->parent()));
-    }
-    else if (code == WCALLWATCHER)
-    {
-        this->addCallWatcher(simControl);
-        return;
-    }
-    else if (code == WREGWATCHER)
-    {
-        this->addRegWatcher(simControl);
-        return;
-    }
-    else
-    {
-        newWDock = new WDock(this, code, (QWidget *)(this->parent()));
-    }
-    if (getDockWidgetArea(newWDock->getArea()) != NULL)
-    {
-        emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-        //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-    }
-    openDockWidgets.append(newWDock);
-    /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
-    {
-        wDockBotPrevHeight = newWDock->getQDockWidget()->height();
-    }*/
-    //qDebug() << "WDockManager: return addDockWidget()";
-}
+// void WDockManager::addDockWidget(WidgetCode code, MCUSimControl* simControl)
+// {
+//     qDebug() << "WDockManager: addDockWidget()";
+//     if (NULL == m_tabBottom)
+//     {
+//         m_tabBottom = new QTabWidget(m_parent);
+//         QDockWidget *wDockWidget = new QDockWidget("", m_parent);
+//         wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//         wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//         wDockWidget->setWidget(m_tabBottom);
+//         emit addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+//     }
+//     if (NULL == m_tabRight)
+//     {
+//         m_tabRight = new QTabWidget(m_parent);
+//         QDockWidget *wDockWidget = new QDockWidget("", m_parent);
+//         wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//         wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//         wDockWidget->setWidget(m_tabRight);
+//         emit addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+//     }
+//     WDock *newWDock;
+//     switch (code)
+//     {
+//         case WSIMULATIONINFO:
+//         {
+//             this->addSimDockWidget(simControl);
+//             break;
+//         }
+//         case WCALLWATCHER:
+//         {
+//             this->addCallWatcher(simControl);
+//             break;
+//         }
+//         case WREGWATCHER:
+//         {
+//             this->addRegWatcher(simControl);
+//             break;
+//         }
+//         case WEXTAPPOUTPUT:
+//         {
+//         }
+//         case WCOMPILEINFO:
+//         {
+//         }
+//         case WBOTTOMHIDE:
+//         {
+//             newWDock = new WDock(this, code, m_tabBottom);
+//             openDockWidgets.append(newWDock);
+//             break;
+//         }
+//         case WBOOKMARKLIST:
+//         {
+//         }
+//         case WBREAKPOINTLIST:
+//         {
+//         }
+//         case WASMMACROANALYSER:
+//         {
+//         }
+//         case WHELPDOCKWIDGET:
+//         {
+//         }
+//         case WRIGHTHIDE:
+//         {
+//             newWDock = new WDock(this, code, m_tabRight);
+//             openDockWidgets.append(newWDock);
+//             break;
+//         }
+//     }
+//     
+//     /*if (getDockWidgetArea(newWDock->getArea()) != NULL)
+//     {
+//         emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//         //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//     }*/
+//     /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+//     {
+//         wDockBotPrevHeight = newWDock->getQDockWidget()->height();
+//     }*/
+//     //qDebug() << "WDockManager: return addDockWidget()";
+// }
 
 
-void WDockManager::addSimDockWidget(MCUSimControl* simControl)
-{
-    //qDebug() << "WDockManager: addSimDockWidgetP1()";
-    //qDebug() << "WDockManager: return addSimDockWidgetP1()";
-    if (false == this->dockWidgets)
-    {
-        WDock *newWDock = new WDock(this, WSIMULATIONINFO, (QWidget *)(this->parent()), simControl);
-        if (getDockWidgetArea(newWDock->getArea()) != NULL)
-        {
-            emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-            //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-        }
-        /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
-        {
-            wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
-        }*/
-        openDockWidgets.append(newWDock);
-        //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-    }
-    else
-    {
-        PicoBlazeGrid *simWidget = new PicoBlazeGrid(this->getDockWidget(WSIMULATIONINFO), simControl);
-        connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
-        //simWidget->setProjectPath(path);
-        simWidget->fixHeight();
-        connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-        this->openSimWidgets.append(simWidget);
-        simWidget->hide();
-    }
-    emit getSimProjectData();
-}
+// void WDockManager::addSimDockWidget(MCUSimControl* simControl)
+// {
+//     //qDebug() << "WDockManager: addSimDockWidgetP1()";
+//     //qDebug() << "WDockManager: return addSimDockWidgetP1()";
+//     if (false == this->dockWidgets)
+//     {
+//         WDock *newWDock = new WDock(this, WSIMULATIONINFO, m_tabBottom, simControl);
+//         /*if (getDockWidgetArea(newWDock->getArea()) != NULL)
+//         {
+//             emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//             //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//         }*/
+//         /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+//         {
+//             wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+//         }*/
+//         openDockWidgets.append(newWDock);
+//         //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+//     }
+//     else
+//     {
+//         PicoBlazeGrid *simWidget = new PicoBlazeGrid(m_tabBottom, simControl);
+//         connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
+//         //simWidget->setProjectPath(path);
+//         simWidget->fixHeight();
+//         connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+//         this->openSimWidgets.append(simWidget);
+//         simWidget->hide();
+//     }
+//     emit getSimProjectData();
+// }
 
 
-void WDockManager::addRegWatcher(MCUSimControl *simControl)
-{
-    #ifdef MDS_FEATURE_SIM_REGWATCHER
-        if (false == this->dockWidgets)
-        {
-            WDock *newWDock = new WDock(this, WREGWATCHER, (QWidget *)(this->parent()), simControl);
-            if (getDockWidgetArea(newWDock->getArea()) != NULL)
-            {
-                emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-                //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-            }
-            /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
-            {
-                wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
-            }*/
-            openDockWidgets.append(newWDock);
-            //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-        }
-        else
-        {
-            RegWatcher *regWatcher = new RegWatcher(this->getDockWidget(WREGWATCHER), simControl);
-            //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
-            //simWidget->fixHeight();
-            //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-            this->openRegWatchers.append(regWatcher);
-            regWatcher->hide();
-        }
-    #endif
-}
+// void WDockManager::addRegWatcher(MCUSimControl *simControl)
+// {
+//     #ifdef MDS_FEATURE_SIM_REGWATCHER
+//         if (false == this->dockWidgets)
+//         {
+//             WDock *newWDock = new WDock(this, WREGWATCHER, m_tabRight, simControl);
+//             /*if (getDockWidgetArea(newWDock->getArea()) != NULL)
+//             {
+//                 emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//                 //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//             }*/
+//             /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+//             {
+//                 wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+//             }*/
+//             openDockWidgets.append(newWDock);
+//             //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+//         }
+//         else
+//         {
+//             RegWatcher *regWatcher = new RegWatcher(m_tabRight, simControl);
+//             //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
+//             //simWidget->fixHeight();
+//             //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+//             this->openRegWatchers.append(regWatcher);
+//             regWatcher->hide();
+//         }
+//     #endif
+// }
 
 
-void WDockManager::addCallWatcher(MCUSimControl *simControl)
-{
-    #ifdef MDS_FEATURE_SIM_CALLWATCHER
-        //qDebug() << "add call watcher";
-        if (false == this->dockWidgets)
-        {
-            WDock *newWDock = new WDock(this, WCALLWATCHER, (QWidget *)(this->parent()), simControl);
-            if (getDockWidgetArea(newWDock->getArea()) != NULL)
-            {
-                qDebug() << "add call watcher 2";
-                emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-                //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-            }
-            /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
-            {
-                wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
-            }*/
-            openDockWidgets.append(newWDock);
-            //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-        }
-        else
-        {
-            CallWatcher *callWatcher = new CallWatcher(this->getDockWidget(WCALLWATCHER), simControl);
-            //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
-            //simWidget->fixHeight();
-            //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-            this->openCallWatchers.append(callWatcher);
-            callWatcher->hide();
-        }
-    #endif
-}
+// void WDockManager::addCallWatcher(MCUSimControl *simControl)
+// {
+//     #ifdef MDS_FEATURE_SIM_CALLWATCHER
+//         //qDebug() << "add call watcher";
+//         if (false == this->dockWidgets)
+//         {
+//             WDock *newWDock = new WDock(this, WCALLWATCHER, m_tabRight, simControl);
+//             /*if (getDockWidgetArea(newWDock->getArea()) != NULL)
+//             {
+//                 qDebug() << "add call watcher 2";
+//                 emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//                 //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+//             }*/
+//             /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+//             {
+//                 wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+//             }*/
+//             openDockWidgets.append(newWDock);
+//             //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+//         }
+//         else
+//         {
+//             CallWatcher *callWatcher = new CallWatcher(m_tabRight, simControl);
+//             //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
+//             //simWidget->fixHeight();
+//             //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+//             this->openCallWatchers.append(callWatcher);
+//             callWatcher->hide();
+//         }
+//     #endif
+// }
 
 
 /*void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
@@ -1016,121 +1058,121 @@ void WDockManager::addCallWatcher(MCUSimControl *simControl)
 }*/
 
 
-QDockWidget* WDockManager::getDockWidget(WidgetCode code)
-{
-    //qDebug() << "WDockManager: getDockWidget()";
-    QList<WDock*>::iterator i;
-    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
-    {
-        if ((*i)->cmpCode(code) == true)
-        {
-            //qDebug() << "WDockManager: return getDockWidget()";
-            return (*i)->getQDockWidget();
-        }
-    }
-    //qDebug() << "WDockManager: return getDockWidget()";
-    return NULL;
-}
+// QDockWidget* WDockManager::getDockWidget(WidgetCode code)
+// {
+//     qDebug() << "WDockManager: getDockWidget()";
+//     QList<WDock*>::iterator i;
+//     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+//     {
+//         if ((*i)->cmpCode(code) == true)
+//         {
+//                 qDebug() << "WDockManager: return getDockWidget()";
+//             return (*i)->getQDockWidget();
+//         }
+//     }
+//     qDebug() << "WDockManager: return getDockWidget()";
+//     return NULL;
+// }
 
 
-QDockWidget* WDockManager::getDockWidgetArea(int area)
-{
+//QDockWidget* WDockManager::getDockWidgetArea(int area)
+//{
     //qDebug() << "WDockManager: getDockWidgetArea()";
-    QList<WDock*>::iterator i;
-    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
-    {
-        if ((*i)->cmpArea(area) == true)
-        {
+//    QList<WDock*>::iterator i;
+//    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+//    {
+//        if ((*i)->cmpArea(area) == true)
+//        {
             //qDebug() << "WDockManager: return getDockWidgetArea()";
-            return (*i)->getQDockWidget();
-        }
-    }
+//            return (*i)->getQDockWidget();
+//        }
+//    }
     //qDebug() << "WDockManager: return getDockWidgetArea()";
-    return NULL;
-}
+//    return NULL;
+//}
 
 
-void WDockManager::hideDockWidgetArea(int area)
-{
-    //qDebug() << "WDockManager: hideDockWidgetArea()";
-    QList<WDock*>::iterator i;
-    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
-    {
-        if (true == (*i)->cmpArea(area))
-        {
-            switch (area)
-            {
-                case 1:
-                {
-                    /*if (wDockRightPrevWidth < (*i)->getQDockWidget()->width())
-                    {
-                        //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
-                        //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
-                        wDockRightPrevWidth = (*i)->getQDockWidget()->width();
-                    }*/
-                    (*i)->getQDockWidget()->setMaximumWidth(0);
-                    (*i)->getQDockWidget()->setMinimumWidth(0);
-                    break;
-                }
-                case 2:
-                {
-                    //if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
-                    //{
-                        //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
-                        //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
-                    //    wDockBotPrevHeight = (*i)->getQDockWidget()->height();
-                    //}
-                    (*i)->getQDockWidget()->setMaximumHeight(0);
-                    (*i)->getQDockWidget()->setMinimumHeight(0);
-                    break;
-                }
-            }
-            //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), 0);
-        }
-    }
-    //qDebug() << "WDockManager: return hideDockWidgetArea()";
-}
+// void WDockManager::hideDockWidgetArea(int area)
+// {
+//     //qDebug() << "WDockManager: hideDockWidgetArea()";
+//     QList<WDock*>::iterator i;
+//     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+//     {
+//         if (true == (*i)->cmpArea(area))
+//         {
+//             switch (area)
+//             {
+//                 case 1:
+//                 {
+//                     /*if (wDockRightPrevWidth < (*i)->getQDockWidget()->width())
+//                     {
+//                         //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
+//                         //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
+//                         wDockRightPrevWidth = (*i)->getQDockWidget()->width();
+//                     }*/
+//                     (*i)->getQDockWidget()->setMaximumWidth(0);
+//                     (*i)->getQDockWidget()->setMinimumWidth(0);
+//                     break;
+//                 }
+//                 case 2:
+//                 {
+//                     //if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
+//                     //{
+//                         //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
+//                         //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
+//                     //    wDockBotPrevHeight = (*i)->getQDockWidget()->height();
+//                     //}
+//                     (*i)->getQDockWidget()->setMaximumHeight(0);
+//                     (*i)->getQDockWidget()->setMinimumHeight(0);
+//                     break;
+//                 }
+//             }
+//             //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), 0);
+//         }
+//     }
+//     //qDebug() << "WDockManager: return hideDockWidgetArea()";
+// }
 
-void WDockManager::showDockWidgetArea(int area)
-{
-    //qDebug() << "WDockManager: showDockWidgetArea()";
-    QList<WDock*>::iterator i;
-    for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
-    {
-        if (true == (*i)->cmpArea(area))
-        {
-            //vybira si automaticky nejmensi
-            switch(area)
-            {
-                case 1:
-                {
-                    if ("Hide" != rightAreaTabs->tabWhatsThis(rightAreaTabs->currentIndex()))
-                    {
-                        //(*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
-                        (*i)->getQDockWidget()->setMaximumWidth(500);
-                        (*i)->getQDockWidget()->setMinimumWidth(300);
-                        wDockRightPrevWidth = 0;
-                    }
-                    break;
-                }
-                case 2:
-                {
-                    if ("Hide" != bottomAreaTabs->tabText(bottomAreaTabs->currentIndex()))
-                    {
-                        //(*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
-                        (*i)->getQDockWidget()->setMaximumHeight(999);
-                        (*i)->getQDockWidget()->setMinimumHeight(280);
-                        //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
-                        wDockBotPrevHeight = 0;
-                    }
-                    break;
-                }
-            }
-        }
-    }
-    //qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
-    //qDebug() << "WDockManager: return showDockWidgetArea()";
-}
+// void WDockManager::showDockWidgetArea(int area)
+// {
+//     //qDebug() << "WDockManager: showDockWidgetArea()";
+// /*    QList<WDock*>::iterator i;
+//     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
+//     {
+//         if (true == (*i)->cmpArea(area))
+//         {
+//             //vybira si automaticky nejmensi
+//             switch(area)
+//             {
+//                 case 1:
+//                 {
+//                     if ("Hide" != rightAreaTabs->tabWhatsThis(rightAreaTabs->currentIndex()))
+//                     {
+//                         //(*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
+//                         (*i)->getQDockWidget()->setMaximumWidth(500);
+//                         (*i)->getQDockWidget()->setMinimumWidth(300);
+//                         wDockRightPrevWidth = 0;
+//                     }
+//                     break;
+//                 }
+//                 case 2:
+//                 {
+//                     if ("Hide" != bottomAreaTabs->tabText(bottomAreaTabs->currentIndex()))
+//                     {
+//                         //(*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
+//                         (*i)->getQDockWidget()->setMaximumHeight(999);
+//                         (*i)->getQDockWidget()->setMinimumHeight(280);
+//                         //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
+//                         wDockBotPrevHeight = 0;
+//                     }
+//                     break;
+//                 }
+//             }
+//         }
+//     }*/
+//     //qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
+//     //qDebug() << "WDockManager: return showDockWidgetArea()";
+// }
 
 
 bool WDockManager::isEmpty()
@@ -1139,30 +1181,36 @@ bool WDockManager::isEmpty()
 }
 
 
-BookmarkList* WDockManager::getBookmarkList()
-{
-    return bookmarkList;
-}
+// BookmarkList* WDockManager::getBookmarkList()
+// {
+//     return bookmarkList;
+// }
 
-BreakpointList* WDockManager::getBreakpointList()
-{
-    return breakpointList;
-}
+// BreakpointList* WDockManager::getBreakpointList()
+// {
+//     return breakpointList;
+// }
 
 
-void WDockManager::createBreakpointList(QDockWidget *wDockWidget)
-{
-    //qDebug() << "WDockManager: createBreakpointList()";
-    breakpointList = new BreakpointList(wDockWidget);
-    //qDebug() << "WDockManager: return createBreakpointList()";
-}
+// void WDockManager::createBreakpointList(QTabWidget *parentTabWidget)
+// {
+//     //qDebug() << "WDockManager: createBreakpointList()";
+//     breakpointList = new BreakpointList(parentTabWidget);
+//     parentTabWidget->addTab(breakpointList, "");
+//     parentTabWidget->setTabIcon(parentTabWidget->count()-1, QIcon(":resources/icons/processor.png"));
+//     parentTabWidget->setTabToolTip(parentTabWidget->count()-1, "Breakpoints");
+//     //qDebug() << "WDockManager: return createBreakpointList()";
+// }
 
-void WDockManager::createBookmarkList(QDockWidget *wDockWidget)
-{
-    //qDebug() << "WDockManager: createBookmarkList()";
-    bookmarkList = new BookmarkList(wDockWidget);
-    //qDebug() << "WDockManager: return createBookmarkList()";
-}
+// void WDockManager::createBookmarkList(QTabWidget *parentTabWidget)
+// {
+//     //qDebug() << "WDockManager: createBookmarkList()";
+//     bookmarkList = new BookmarkList(parentTabWidget);
+//     parentTabWidget->addTab(bookmarkList, "");
+//     parentTabWidget->setTabIcon(parentTabWidget->count()-1, QIcon(":resources/icons/processor.png"));
+//     parentTabWidget->setTabToolTip(parentTabWidget->count()-1, "Bookmarks");
+//     //qDebug() << "WDockManager: return createBookmarkList()";
+// }
 
 
 /*void WDockManager::updateAnalysersSlot(CodeEdit *editor)
@@ -1283,17 +1331,17 @@ void WDockManager::setEditorsReadOnly(bool readonly)
 }
 
 
-void WDockManager::addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget)
-{
-    emit addDockWidget(area, dockWidget);
-}
+// void WDockManager::addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget)
+// {
+//     emit addDockWidget(area, dockWidget);
+// }
 
 
-void WDockManager::unhighlightSimWidget()
-{
-    //qDebug() << "WDockManager: unhighlight";
-    emit unhighlightSim();
-}
+// void WDockManager::unhighlightSimWidget()
+// {
+//     //qDebug() << "WDockManager: unhighlight";
+//     emit unhighlightSim();
+// }
 
 
 void WDockManager::highlightError(QString filename, int line)
@@ -1308,44 +1356,44 @@ void WDockManager::highlightError(QString filename, int line)
 }
 
 
-void WDockManager::handleShowHideBottom(int index)
-{
-    //qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
-    if (NULL == activeCodeEdit)
-    {
-        return;
-    }
-    if ("Hide" == bottomAreaTabs->tabText(index))
-    {
-        if (true == bottomVisible)
-        {
-            hideDockWidgetArea(2);
-            bottomVisible = false;
-            QApplication::processEvents();
-            activeCodeEdit->changeHeight();
-            //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
-        }
-    }
-    else
-    {
-        if (false == bottomVisible)
-        {
-            showDockWidgetArea(2);
-            bottomVisible = true;
-            QApplication::processEvents();
-            activeCodeEdit->changeHeight();
-            //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
-        }
-        /*else
-        {
-            if (bottomAreaTabs->tabText(index) == m_prevBotTabText)
-            {
-                qDebug() << "WDockManager: same clicked, hide bottom";
-            }
-        }
-        m_prevBotTabText = bottomAreaTabs->tabText(index);*/
-    }
-}
+// void WDockManager::handleShowHideBottom(int index)
+// {
+//     //qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
+//     if (NULL == activeCodeEdit)
+//     {
+//         return;
+//     }
+//     if ("Hide" == bottomAreaTabs->tabText(index))
+//     {
+//         if (true == bottomVisible)
+//         {
+//             hideDockWidgetArea(2);
+//             bottomVisible = false;
+//             QApplication::processEvents();
+//             activeCodeEdit->changeHeight();
+//             //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
+//         }
+//     }
+//     else
+//     {
+//         if (false == bottomVisible)
+//         {
+//             showDockWidgetArea(2);
+//             bottomVisible = true;
+//             QApplication::processEvents();
+//             activeCodeEdit->changeHeight();
+//             //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
+//         }
+//         /*else
+//         {
+//             if (bottomAreaTabs->tabText(index) == m_prevBotTabText)
+//             {
+//                 qDebug() << "WDockManager: same clicked, hide bottom";
+//             }
+//         }
+//         m_prevBotTabText = bottomAreaTabs->tabText(index);*/
+//     }
+//}
 
 
 /*void WDockManager::handleShowHideLeft(int index)
@@ -1367,190 +1415,190 @@ void WDockManager::handleShowHideBottom(int index)
 }*/
 
 
-void WDockManager::handleShowHideRight(int index)
-{
+// void WDockManager::handleShowHideRight(int index)
+// {
     //qDebug() << "WDockManager: right changed to" << rightAreaTabs->tabText(index);
-    if (NULL == activeCodeEdit)
-    {
-        return;
-    }
-    if ("Hide" == rightAreaTabs->tabWhatsThis(index))
-    {
-        if (true == rightVisible)
-        {
-            hideDockWidgetArea(1);
-            rightVisible = false;
-        }
-    }
-    else if (false == rightVisible)
-    {
-        showDockWidgetArea(1);
-        rightVisible = true;
-    }
-}
+//     if (NULL == activeCodeEdit)
+//     {
+//         return;
+//     }
+//     if ("Hide" == rightAreaTabs->tabWhatsThis(index))
+//     {
+//         if (true == rightVisible)
+//         {
+//             hideDockWidgetArea(1);
+//             rightVisible = false;
+//         }
+//     }
+//     else if (false == rightVisible)
+//     {
+//         showDockWidgetArea(1);
+//         rightVisible = true;
+//    }
+// }
 
 
-void WDockManager::stopSimSlot()
-{
-    //qDebug() << "WDockManager: stopsimslot";
-    emit stopSimSig();
-}
+// void WDockManager::stopSimSlot()
+// {
+//     //qDebug() << "WDockManager: stopsimslot";
+//     emit stopSimSig();
+// }
 
 
-void WDockManager::clockChangedSlot(double clock, int clockMult)
-{
-    emit clockChangedSig(clock, clockMult);
-}
+// void WDockManager::clockChangedSlot(double clock, int clockMult)
+// {
+//     emit clockChangedSig(clock, clockMult);
+// }
 
-void WDockManager::changeSimWidget(int index)
-{
-    //qDebug() << "WDockManager: changeSimWidget index:" << index;
-    //qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
-    if (this->getDockWidget(WSIMULATIONINFO) == NULL)
-    {
-        qDebug() << "Simulation Dock Widget is null, should never happen";
-        return;
-    }
-    if (index >= openSimWidgets.size())
-    {
-        this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(openSimWidgets.size()-1));
-    }
-    else
-    {
-        this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index));
-    }
-    #ifdef MDS_FEATURE_SIM_CALLWATCHER
-        if (this->getDockWidget(WCALLWATCHER) == NULL)
-        {
-            qDebug() << "Call Watcher Dock Widget is null, should never happen";
-            return;
-        }
-        if (index >= openCallWatchers.size())
-        {
-            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(openCallWatchers.size()-1));
-        }
-        else
-        {
-            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index));
-        }
-    #endif
-    #ifdef MDS_FEATURE_SIM_REGWATCHER
-        if (this->getDockWidget(WREGWATCHER) == NULL)
-        {
-            qDebug() << "Reg Watcher Dock Widget is null, should never happen";
-            return;
-        }
-        if (index >= openRegWatchers.size())
-        {
-            this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(openRegWatchers.size()-1));
-        }
-        else
-        {
-            this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index));
-        }
-    #endif
-    //qDebug() << "WDockManager: changeSimWidget done";
-}
+// void WDockManager::changeSimWidget(int index)
+// {
+//     //qDebug() << "WDockManager: changeSimWidget index:" << index;
+//     //qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
+//     if (this->getDockWidget(WSIMULATIONINFO) == NULL)
+//     {
+//         qDebug() << "Simulation Dock Widget is null, should never happen";
+//         return;
+//     }
+//     if (index >= openSimWidgets.size())
+//     {
+//         this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(openSimWidgets.size()-1));
+//     }
+//     else
+//     {
+//         this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index));
+//     }
+//     #ifdef MDS_FEATURE_SIM_CALLWATCHER
+//         if (this->getDockWidget(WCALLWATCHER) == NULL)
+//         {
+//             qDebug() << "Call Watcher Dock Widget is null, should never happen";
+//             return;
+//         }
+//         if (index >= openCallWatchers.size())
+//         {
+//             this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(openCallWatchers.size()-1));
+//         }
+//         else
+//         {
+//             this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index));
+//         }
+//     #endif
+//     #ifdef MDS_FEATURE_SIM_REGWATCHER
+//         if (this->getDockWidget(WREGWATCHER) == NULL)
+//         {
+//             qDebug() << "Reg Watcher Dock Widget is null, should never happen";
+//             return;
+//         }
+//         if (index >= openRegWatchers.size())
+//         {
+//             this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(openRegWatchers.size()-1));
+//         }
+//         else
+//         {
+//             this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index));
+//         }
+//     #endif
+//     //qDebug() << "WDockManager: changeSimWidget done";
+// }
 
 
-void WDockManager::deleteActiveSimWidget()
-{
-    //qDebug() << "WDockManager: deleteActiveSimWidget";
-    bool removeDocks = false;
-    PicoBlazeGrid *tempGrid = (PicoBlazeGrid*)(this->getDockWidget(WSIMULATIONINFO)->widget());
-    int index = openSimWidgets.indexOf(tempGrid);
-    if (openSimWidgets.count() > 1)
-    {
-        this->openSimWidgets.removeAt(index);
-        if (index == this->openSimWidgets.count())
-        {
-            this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index -1));
-        }
-        else
-        {
-            this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index));
-        }
-        delete tempGrid;
-        tempGrid = NULL;
-    }
-    else
-    {
-        this->openSimWidgets.removeAt(index);
-        removeDocks = true;
-        //delete tempGrid;
-        //tempGrid = NULL;
-    }
-
-    #ifdef MDS_FEATURE_SIM_CALLWATCHER
-    {
-        CallWatcher *tempWatcher = (CallWatcher*)(this->getDockWidget(WCALLWATCHER)->widget());
-        int index2 = openCallWatchers.indexOf(tempWatcher);
-        if (openCallWatchers.count() > 1)
-        {
-            this->openCallWatchers.removeAt(index2);
-            if (index2 == this->openCallWatchers.count())
-            {
-                this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2 -1));
-            }
-            else
-            {
-                this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2));
-            }
-            delete tempWatcher;
-            tempWatcher = NULL;
-        }
-        else
-        {
-            this->openCallWatchers.removeAt(index2);
-            //delete tempWatcher;
-            //tempGrid = NULL;
-        }
-    }
-    #endif
-    #ifdef MDS_FEATURE_SIM_REGWATCHER
-    {
-        RegWatcher *tempWatcher = (RegWatcher*)(this->getDockWidget(WREGWATCHER)->widget());
-        int index2 = openRegWatchers.indexOf(tempWatcher);
-        if (openRegWatchers.count() > 1)
-        {
-            this->openRegWatchers.removeAt(index2);
-            if (index2 == this->openRegWatchers.count())
-            {
-                this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index2 -1));
-            }
-            else
-            {
-                this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index2));
-            }
-            delete tempWatcher;
-            tempWatcher = NULL;
-        }
-        else
-        {
-            this->openRegWatchers.removeAt(index2);
-            //delete tempWatcher;
-            //tempGrid = NULL;
-        }
-    }
-    #endif
-
-    if (true == removeDocks)
-    {
-        while (this->openDockWidgets.count() > 0)
-        {
-            WDock *tmpDock = this->openDockWidgets.at(0);
-            this->openDockWidgets.removeAt(0);
-            delete tmpDock->getQDockWidget();
-            delete tmpDock;
-        }
-        this->breakpointList = NULL;
-        this->bookmarkList = NULL;
-        this->bottomAreaTabs = NULL;
-        this->rightAreaTabs = NULL;
-        this->dockWidgets = false;
-    }
-    //qDebug() << "WDockManager: deleteActiveSimWidget done";
-}
+// void WDockManager::deleteActiveSimWidget()
+// {
+//     //qDebug() << "WDockManager: deleteActiveSimWidget";
+//     bool removeDocks = false;
+//     PicoBlazeGrid *tempGrid = (PicoBlazeGrid*)(this->getDockWidget(WSIMULATIONINFO)->widget());
+//     int index = openSimWidgets.indexOf(tempGrid);
+//     if (openSimWidgets.count() > 1)
+//     {
+//         this->openSimWidgets.removeAt(index);
+//         if (index == this->openSimWidgets.count())
+//         {
+// //            this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index -1));
+//         }
+//         else
+//         {
+// //            this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index));
+//         }
+//         delete tempGrid;
+//         tempGrid = NULL;
+//     }
+//     else
+//     {
+//         this->openSimWidgets.removeAt(index);
+//         removeDocks = true;
+//         //delete tempGrid;
+//         //tempGrid = NULL;
+//     }
+// 
+//     #ifdef MDS_FEATURE_SIM_CALLWATCHER
+//     {
+//         CallWatcher *tempWatcher = (CallWatcher*)(this->getDockWidget(WCALLWATCHER)->widget());
+//         int index2 = openCallWatchers.indexOf(tempWatcher);
+//         if (openCallWatchers.count() > 1)
+//         {
+//             this->openCallWatchers.removeAt(index2);
+//             if (index2 == this->openCallWatchers.count())
+//             {
+// //                this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2 -1));
+//             }
+//             else
+//             {
+// //                this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2));
+//             }
+//             delete tempWatcher;
+//             tempWatcher = NULL;
+//         }
+//         else
+//         {
+//             this->openCallWatchers.removeAt(index2);
+//             //delete tempWatcher;
+//             //tempGrid = NULL;
+//         }
+//     }
+//     #endif
+//     #ifdef MDS_FEATURE_SIM_REGWATCHER
+//     {
+//         RegWatcher *tempWatcher = (RegWatcher*)(this->getDockWidget(WREGWATCHER)->widget());
+//         int index2 = openRegWatchers.indexOf(tempWatcher);
+//         if (openRegWatchers.count() > 1)
+//         {
+//             this->openRegWatchers.removeAt(index2);
+//             if (index2 == this->openRegWatchers.count())
+//             {
+// //                this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index2 -1));
+//             }
+//             else
+//             {
+// //                this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index2));
+//             }
+//             delete tempWatcher;
+//             tempWatcher = NULL;
+//         }
+//         else
+//         {
+//             this->openRegWatchers.removeAt(index2);
+//             //delete tempWatcher;
+//             //tempGrid = NULL;
+//         }
+//     }
+//     #endif
+// 
+//     if (true == removeDocks)
+//     {
+//         /*while (this->openDockWidgets.count() > 0)
+//         {
+//             WDock *tmpDock = this->openDockWidgets.at(0);
+//             this->openDockWidgets.removeAt(0);
+//             delete tmpDock->getQDockWidget();
+//             delete tmpDock;
+//         }
+//         this->breakpointList = NULL;
+//         this->bookmarkList = NULL;
+//         this->bottomAreaTabs = NULL;
+//         this->rightAreaTabs = NULL;
+//         this->dockWidgets = false;*/
+//     }
+//     //qDebug() << "WDockManager: deleteActiveSimWidget done";
+// }
 
 
 void WDockManager::closeFile(QString path, bool openUntitled)
@@ -1665,9 +1713,9 @@ void WDockManager::setCentralWelcome()
 }
 
 
-void WDockManager::compilationFinishedSlot(bool success)
-{
-}
+// void WDockManager::compilationFinishedSlot(bool success)
+// {
+// }
 
 
 void WDockManager::welcomeScrExample()
@@ -1799,8 +1847,8 @@ void WDockManager::removeTabBar(QString projectPath)
         delete centralBase;
         centralBase = NULL;
         activeCodeEdit = NULL;
-        this->hideDockWidgetArea(1);
-        this->hideDockWidgetArea(2);
+//         this->hideDockWidgetArea(1);
+//         this->hideDockWidgetArea(2);
         emit centralClosed();
     }
     /*if (NULL == wTab && openCentralWidgets.count() != 0)
@@ -1825,55 +1873,55 @@ void WDockManager::removeTabBar(QString projectPath)
 }
 
 
-void WDockManager::setBottomAreaToCompilerInfo()
-{
-    if (false == bottomVisible)
-    {
-        showDockWidgetArea(2);
-    }
-    for (int i = 0; i < bottomAreaTabs->count(); i++)
-    {
-        if ("Compiler Messages" == bottomAreaTabs->tabText(i))
-        {
-            bottomAreaTabs->setCurrentIndex(i);
-            break;
-        }
-    }
-}
+// void WDockManager::setBottomAreaToCompilerInfo()
+// {
+//     if (false == bottomVisible)
+//     {
+//         showDockWidgetArea(2);
+//     }
+//     for (int i = 0; i < bottomAreaTabs->count(); i++)
+//     {
+//         if ("Compiler Messages" == bottomAreaTabs->tabText(i))
+//         {
+//             bottomAreaTabs->setCurrentIndex(i);
+//             break;
+//         }
+//     }
+// }
 
 
-void WDockManager::setBottomAreaToExtAppOutput()
-{
-    if (false == bottomVisible)
-    {
-        showDockWidgetArea(2);
-    }
-    for (int i = 0; i < bottomAreaTabs->count(); i++)
-    {
-        if ("External Applications" == bottomAreaTabs->tabText(i))
-        {
-            bottomAreaTabs->setCurrentIndex(i);
-            break;
-        }
-    }
-}
+// void WDockManager::setBottomAreaToExtAppOutput()
+// {
+//     if (false == bottomVisible)
+//     {
+//         showDockWidgetArea(2);
+//     }
+//     for (int i = 0; i < bottomAreaTabs->count(); i++)
+//     {
+//         if ("External Applications" == bottomAreaTabs->tabText(i))
+//         {
+//             bottomAreaTabs->setCurrentIndex(i);
+//             break;
+//         }
+//     }
+// }
 
 
-void WDockManager::setBottomAreaToSimulationInfo()
-{
-    if (false == bottomVisible)
-    {
-        showDockWidgetArea(2);
-    }
-    for (int i = 0; i < bottomAreaTabs->count(); i++)
-    {
-        if ("Simulator" == bottomAreaTabs->tabText(i))
-        {
-            bottomAreaTabs->setCurrentIndex(i);
-            break;
-        }
-    }
-}
+// void WDockManager::setBottomAreaToSimulationInfo()
+// {
+//     if (false == bottomVisible)
+//     {
+//         showDockWidgetArea(2);
+//     }
+//     for (int i = 0; i < bottomAreaTabs->count(); i++)
+//     {
+//         if ("Simulator" == bottomAreaTabs->tabText(i))
+//         {
+//             bottomAreaTabs->setCurrentIndex(i);
+//             break;
+//         }
+//     }
+// }
 
 
 void WDockManager::changeTab(bool next)
@@ -1944,291 +1992,300 @@ void WDockManager::setHelpBrowserPath(const QUrl &url)
 ///// WDock
 /////
 
-WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
-    : QObject(parentWindow)
-{
-    //qDebug() << "WDock: WDock()";
-    switch (code)
-    {
-        case WBOOKMARKLIST:
-        {
-            wDockWidget = new QDockWidget("Bookmarks", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            QLabel *lbl = new QLabel("Bookmarks", wDockWidget);
-
-            wDockWidget->setTitleBarWidget(lbl);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
-            parent->createBookmarkList(wDockWidget);
-            area = 1;
-            wDockWidget->setWidget(parent->getBookmarkList());
-	        break;
-        }
-        case WBREAKPOINTLIST:
-        {
-            wDockWidget = new QDockWidget("Breakpoints", parentWindow);
-            //wDockWidget->setToolTip("Breakpoints");
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            QLabel *lbl = new QLabel("Breakpoints", wDockWidget);
-
-            wDockWidget->setTitleBarWidget(lbl);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
-            parent->createBreakpointList(wDockWidget);
-            area = 1;
-            wDockWidget->setWidget(parent->getBreakpointList());
-	        break;
-        }
-        case WCOMPILEINFO:
-        {
-            wDockWidget = new QDockWidget("Compiler Messages", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
-            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            //QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
-            CompileInfo *newWidget = new CompileInfo(wDockWidget);
-            newWidget->setFont(QFont("UbuntuMono", 10));
-            area = 2;
-            newWidget->setReadOnly(true);
-            wDockWidget->setWidget(newWidget);
-            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
-            parent->connect(newWidget, SIGNAL(errorClicked(QString, int)), parent, SLOT(highlightError(QString, int)));
-	        break;
-        }
-        case WSIMULATIONINFO:
-        {
-            qDebug() << "WDock: invalid usage of constructor";
-            /*wDockWidget = new QDockWidget("Simulation Info", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
-            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, mainWindow->getProjectMan()->getActive()->getSimControl());
-            newWidget->setProjectPath(mainWindow->getProjectMan()->getActive()->prjPath);
-            area = 2;
-            wDockWidget->setWidget(newWidget);
-            newWidget->fixHeight();
-            qDebug() << "WSimulationInfo: height fixed";*/
-	        break;
-        }
-        /*case wAnalysVar:
-        {
-            wDockWidget = new QDockWidget("Variables", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
-            AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
-            area = 1;
-            wDockWidget->setWidget(newDock);
-            newDock->connect(newDock, SIGNAL(itemDoubleClicked(QListWidgetItem *)), parent, SLOT(changeLine(QListWidgetItem *)));
-            break;
-        }
-        case wAnalysFunc:
-        {
-            wDockWidget = new QDockWidget("Functions", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
-            AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
-            area = 1;
-            wDockWidget->setWidget(newDock);
-            break;
-        }*/
-        case WBOTTOMHIDE:
-        {
-            wDockWidget = new QDockWidget("Hide", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
-            //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
-            QWidget *newDock = new QWidget(wDockWidget);
-            area = 2;
-            wDockWidget->setWidget(newDock);
-            //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
-            //wDockWidget->setTitleBarWidget(pshTitle);
-            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(hideBottomArea(bool)));
-            //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
-            break;
-        }
-        case WRIGHTHIDE:
-        {
-            wDockWidget = new QDockWidget("Hide", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
-            QWidget *newDock = new QWidget(wDockWidget);
-            area = 1;
-            wDockWidget->setWidget(newDock);
-            //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
-            //wDockWidget->setTitleBarWidget(pshTitle);
-            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(hideBottomArea(bool)));
-            //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
-            break;
-        }
-        case WASMMACROANALYSER:
-        {
-            wDockWidget = new QDockWidget("Macros", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            QLabel *lbl = new QLabel("Macros", wDockWidget);
-
-            wDockWidget->setTitleBarWidget(lbl);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            AsmMacroAnalyser *newDock = new AsmMacroAnalyser(wDockWidget);
-            area = 1;
-            wDockWidget->setWidget(newDock);
-            break;
-        }
-        #ifdef MDS_FEATURE_EXTERNAL_APPS
-        case WEXTAPPOUTPUT:
-        {
-            wDockWidget = new QDockWidget("External Applications", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
-            ExtAppOutput *newDock = new ExtAppOutput(wDockWidget);
-            area = 2;
-            wDockWidget->setWidget(newDock);
-            break;
-        }
-        #endif // MDS_FEATURE_EXTERNAL_APPS
-        case WHELPDOCKWIDGET:
-        {
-            wDockWidget = new QDockWidget("Help", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            QLabel *lbl = new QLabel("Help", wDockWidget);
-
-            wDockWidget->setTitleBarWidget(lbl);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            HelpDockWidget *newDock = new HelpDockWidget(wDockWidget);
-            area = 1;
-            wDockWidget->setWidget(newDock);
-            connect(newDock, SIGNAL(showHelpContent(const QUrl &)), parent, SLOT(setHelpBrowserPath(const QUrl &)));
-            break;
-        }
-        case WCALLWATCHER:
-        {
-            qDebug() << "WDockManager: invalid use of wcallwatcher constructor, should never happen";
-            break;
-        }
-        case WREGWATCHER:
-        {
-            qDebug() << "WDockManager: invalid use of wregwatcher constructor, should never happen";
-            break;
-        }
-        default:
-        {
-            qDebug() << "WDockManager: unknown widget code";
-        }
-    }
-    this->code=code;
-    //qDebug() << "WDock: return WDock()";
-}
-
-
-
-WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, MCUSimControl* simControl)
-    : QObject(parentWindow)
-{
-    switch (code)
-    {
-        case WSIMULATIONINFO:
-        {
-            wDockWidget = new QDockWidget("Simulator", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
-            PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, simControl);
-            connect(parent, SIGNAL(unhighlightSim()), newWidget, SLOT(unhighlight()));
-            //newWidget->setProjectPath(path);
-            area = 2;
-            wDockWidget->setWidget(newWidget);
-            wDockWidget->show();
-            newWidget->fixHeight();
-            connect(newWidget, SIGNAL(stopSimSig()), parent, SLOT(stopSimSlot()));
-            connect(newWidget, SIGNAL(clockChanged(double, int)), parent, SLOT(clockChangedSlot(double, int)));
-            parent->openSimWidgets.append(newWidget);
-            //qDebug() << "WSimulationInfo: height fixed";
-            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
-            break;
-        }
-        case WCALLWATCHER:
-        {
-            #ifdef MDS_FEATURE_SIM_CALLWATCHER
-                wDockWidget = new QDockWidget("Call Watcher", parentWindow);
-                wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-                wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-                QLabel *lbl = new QLabel("Call Watcher", wDockWidget);
-
-                wDockWidget->setTitleBarWidget(lbl);
-                parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-                CallWatcher *newDock = new CallWatcher(wDockWidget, simControl);
-                area = 1;
-                wDockWidget->setWidget(newDock);
-            #endif
-            break;
-        }
-        case WREGWATCHER:
-        {
-            #ifdef MDS_FEATURE_SIM_REGWATCHER
-                wDockWidget = new QDockWidget("Reg Watcher", parentWindow);
-                wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-                wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-                QLabel *lbl = new QLabel("Reg Watcher", wDockWidget);
-
-                wDockWidget->setTitleBarWidget(lbl);
-                parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-                RegWatcher *newDock = new RegWatcher(wDockWidget, simControl);
-                area = 1;
-                wDockWidget->setWidget(newDock);
-            #endif
-            break;
-        }
-        default:
-        {
-            qDebug() << "WDockManager: unknown widget code";
-        }
-    }
-    this->code = code;
-}
-
-
-
-WDock::~WDock()
-{
-    /*if (wDockWidget != NULL)
-    {
-        delete wDockWidget;
-    }*/
-}
-
-
-
-QDockWidget* WDock::getQDockWidget()
-{
-    return wDockWidget;
-}
-
-
-
-bool WDock::cmpCode(WidgetCode code)
-{
-    return (this->code==code);
-}
-
-
-bool WDock::cmpArea(int area)
-{
-    return (this->area==area);
-}
-
-
-int WDock::getArea()
-{
-    return this->area;
-}
+// WDock::WDock(WDockManager *parent, WidgetCode code, QTabWidget *parentTabWidget)
+//     : QObject(parentTabWidget)
+// {
+//     //qDebug() << "WDock: WDock()";
+//     switch (code)
+//     {
+//         case WBOOKMARKLIST:
+//         {
+//             /*wDockWidget = new QDockWidget("Bookmarks", parentTabWidget);
+//             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             QLabel *lbl = new QLabel("Bookmarks", wDockWidget);
+// 
+//             wDockWidget->setTitleBarWidget(lbl);
+//             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);*/
+//             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+//             parent->createBookmarkList(parentTabWidget);
+//             area = 1;
+//             //wDockWidget->setWidget(parent->getBookmarkList());
+// 	        break;
+//         }
+//         case WBREAKPOINTLIST:
+//         {
+//             /*wDockWidget = new QDockWidget("Breakpoints", parentTabWidget);
+//             //wDockWidget->setToolTip("Breakpoints");
+//             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             QLabel *lbl = new QLabel("Breakpoints", wDockWidget);
+// 
+//             wDockWidget->setTitleBarWidget(lbl);
+//             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);*/
+//             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+//             parent->createBreakpointList(parentTabWidget);
+//             area = 1;
+//             //wDockWidget->setWidget(parent->getBreakpointList());
+// 	        break;
+//         }
+//         case WCOMPILEINFO:
+//         {
+//             /*wDockWidget = new QDockWidget("Compiler Messages", parentTabWidget);
+//             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);*/
+//             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+//             //QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
+//             CompileInfo *newWidget = new CompileInfo(parentTabWidget);
+//             newWidget->setFont(QFont("UbuntuMono", 10));
+//             area = 2;
+//             newWidget->setReadOnly(true);
+//             //wDockWidget->setWidget(newWidget);
+//             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
+//             parent->connect(newWidget, SIGNAL(errorClicked(QString, int)), parent, SLOT(highlightError(QString, int)));
+// 	        break;
+//         }
+//         case WSIMULATIONINFO:
+//         {
+//             qDebug() << "WDock: invalid usage of constructor";
+//             /*wDockWidget = new QDockWidget("Simulation Info", parentWindow);
+//             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+//             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+//             PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, mainWindow->getProjectMan()->getActive()->getSimControl());
+//             newWidget->setProjectPath(mainWindow->getProjectMan()->getActive()->prjPath);
+//             area = 2;
+//             wDockWidget->setWidget(newWidget);
+//             newWidget->fixHeight();
+//             qDebug() << "WSimulationInfo: height fixed";*/
+// 	        break;
+//         }
+//         /*case wAnalysVar:
+//         {
+//             wDockWidget = new QDockWidget("Variables", parentWindow);
+//             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+//             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+//             AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
+//             area = 1;
+//             wDockWidget->setWidget(newDock);
+//             newDock->connect(newDock, SIGNAL(itemDoubleClicked(QListWidgetItem *)), parent, SLOT(changeLine(QListWidgetItem *)));
+//             break;
+//         }
+//         case wAnalysFunc:
+//         {
+//             wDockWidget = new QDockWidget("Functions", parentWindow);
+//             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+//             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
+//             AnalyserWidget *newDock = new AnalyserWidget(wDockWidget);
+//             area = 1;
+//             wDockWidget->setWidget(newDock);
+//             break;
+//         }*/
+//         case WBOTTOMHIDE:
+//         {
+//             /*wDockWidget = new QDockWidget("Hide", parentTabWidget);
+//             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+//             //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);*/
+//             QWidget *newDock = new QWidget(parentTabWidget);
+//             area = 2;
+//             //wDockWidget->setWidget(newDock);
+//             //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
+//             //wDockWidget->setTitleBarWidget(pshTitle);
+//             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(hideBottomArea(bool)));
+//             //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
+//             break;
+//         }
+//         case WRIGHTHIDE:
+//         {
+//             /*wDockWidget = new QDockWidget("Hide", parentTabWidget);
+//             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);*/
+//             //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
+//             QWidget *newDock = new QWidget(parentTabWidget);
+//             area = 1;
+//             //wDockWidget->setWidget(newDock);
+//             //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
+//             //wDockWidget->setTitleBarWidget(pshTitle);
+//             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(hideBottomArea(bool)));
+//             //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
+//             break;
+//         }
+//         case WASMMACROANALYSER:
+//         {
+//             /*wDockWidget = new QDockWidget("Macros", parentTabWidget);
+//             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             QLabel *lbl = new QLabel("Macros", wDockWidget);
+// 
+//             wDockWidget->setTitleBarWidget(lbl);
+//             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);*/
+//             AsmMacroAnalyser *newDock = new AsmMacroAnalyser(parentTabWidget);
+//             area = 1;
+//             //wDockWidget->setWidget(newDock);
+//             break;
+//         }
+//         #ifdef MDS_FEATURE_EXTERNAL_APPS
+//         case WEXTAPPOUTPUT:
+//         {
+//             /*wDockWidget = new QDockWidget("External Applications", parentTabWidget);
+//             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);*/
+//             ExtAppOutput *newDock = new ExtAppOutput(parentTabWidget);
+//             area = 2;
+//             //wDockWidget->setWidget(newDock);
+//             break;
+//         }
+//         #endif // MDS_FEATURE_EXTERNAL_APPS
+//         case WHELPDOCKWIDGET:
+//         {
+//             /*wDockWidget = new QDockWidget("Help", parentTabWidget);
+//             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             QLabel *lbl = new QLabel("Help", wDockWidget);
+// 
+//             wDockWidget->setTitleBarWidget(lbl);
+//             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);*/
+//             HelpDockWidget *newDock = new HelpDockWidget(parentTabWidget);
+//             area = 1;
+//             //wDockWidget->setWidget(newDock);
+//             connect(newDock, SIGNAL(showHelpContent(const QUrl &)), parent, SLOT(setHelpBrowserPath(const QUrl &)));
+//             break;
+//         }
+//         case WCALLWATCHER:
+//         {
+//             qDebug() << "WDockManager: invalid use of wcallwatcher constructor, should never happen";
+//             break;
+//         }
+//         case WREGWATCHER:
+//         {
+//             qDebug() << "WDockManager: invalid use of wregwatcher constructor, should never happen";
+//             break;
+//         }
+//         default:
+//         {
+//             qDebug() << "WDockManager: unknown widget code";
+//         }
+//     }
+//     this->code=code;
+//     //qDebug() << "WDock: return WDock()";
+// }
+// 
+// 
+// 
+// WDock::WDock(WDockManager *parent, WidgetCode code, QTabWidget *parentTabWidget, MCUSimControl* simControl)
+//     : QObject(parent)
+// {
+//     switch (code)
+//     {
+//         case WSIMULATIONINFO:
+//         {
+//             //wDockWidget = new QDockWidget("Simulator", parentWindow);
+//             //wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+//             //parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+//             //wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
+//             //PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, simControl);
+//             PicoBlazeGrid *newWidget = new PicoBlazeGrid(parentTabWidget, simControl);
+//             connect(parent, SIGNAL(unhighlightSim()), newWidget, SLOT(unhighlight()));
+//             //newWidget->setProjectPath(path);
+//             area = 2;
+//             //wDockWidget->setWidget(newWidget);
+//             parentTabWidget->addTab(newWidget, "");
+//             parentTabWidget->setTabIcon(parentTabWidget->count()-1, QIcon(":resources/icons/processor.png"));
+//             parentTabWidget->setTabToolTip(parentTabWidget->count()-1, "Simulator");
+//             //wDockWidget->show();
+//             newWidget->fixHeight();
+//             connect(newWidget, SIGNAL(stopSimSig()), parent, SLOT(stopSimSlot()));
+//             connect(newWidget, SIGNAL(clockChanged(double, int)), parent, SLOT(clockChangedSlot(double, int)));
+//             parent->openSimWidgets.append(newWidget);
+//             //qDebug() << "WSimulationInfo: height fixed";
+//             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
+//             break;
+//         }
+//         case WCALLWATCHER:
+//         {
+//             #ifdef MDS_FEATURE_SIM_CALLWATCHER
+//                 /*wDockWidget = new QDockWidget("Call Watcher", parentTabWidget);
+//                 wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//                 wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//                 QLabel *lbl = new QLabel("Call Watcher", wDockWidget);
+// 
+//                 wDockWidget->setTitleBarWidget(lbl);
+//                 parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);*/
+//                 CallWatcher *newDock = new CallWatcher(parentTabWidget, simControl);
+//                 parentTabWidget->addTab(newDock, "");
+//                 parentTabWidget->setTabIcon(parentTabWidget->count()-1, QIcon(":resources/icons/processor.png"));
+//                 parentTabWidget->setTabToolTip(parentTabWidget->count()-1, "Call Watcher");
+//                 area = 1;
+//             #endif
+//             break;
+//         }
+//         case WREGWATCHER:
+//         {
+//             #ifdef MDS_FEATURE_SIM_REGWATCHER
+//                /*wDockWidget = new QDockWidget("Reg Watcher", parentTabWidget);
+//                 wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+//                 wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+//                 QLabel *lbl = new QLabel("Reg Watcher", wDockWidget);
+// 
+//                 wDockWidget->setTitleBarWidget(lbl);
+//                 parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);*/
+//                 RegWatcher *newDock = new RegWatcher(parentTabWidget, simControl);
+//                 parentTabWidget->addTab(newDock, "");
+//                 parentTabWidget->setTabIcon(parentTabWidget->count()-1, QIcon(":resources/icons/processor.png"));
+//                 parentTabWidget->setTabToolTip(parentTabWidget->count()-1, "Memory Watcher");
+//                 area = 1;
+//                 //wDockWidget->setWidget(newDock);
+//             #endif
+//             break;
+//         }
+//         default:
+//         {
+//             qDebug() << "WDockManager: unknown widget code";
+//         }
+//     }
+//     this->code = code;
+// }
+// 
+// 
+// 
+// WDock::~WDock()
+// {
+//     /*if (wDockWidget != NULL)
+//     {
+//         delete wDockWidget;
+//     }*/
+// }
+// 
+// 
+// 
+// QDockWidget* WDock::getQDockWidget()
+// {
+//     return wDockWidget;
+// }
+// 
+// 
+// 
+// bool WDock::cmpCode(WidgetCode code)
+// {
+//     return (this->code==code);
+// }
+// 
+// 
+// bool WDock::cmpArea(int area)
+// {
+//     return (this->area==area);
+// }
+// 
+// 
+// int WDock::getArea()
+// {
+//     return this->area;
+// }
