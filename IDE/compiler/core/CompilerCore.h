@@ -365,6 +365,11 @@ class CompilerCore : public CompilerBase,
             m_baseIncludeDir = directory;
         }
 
+        void setParserExtension ( CompilerParserExtension * parserExtension )
+        {
+            m_parserExtension = parserExtension;
+        }
+
     ////    Inline Private Operations    ////
     private:
         /**

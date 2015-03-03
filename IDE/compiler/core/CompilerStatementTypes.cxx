@@ -653,6 +653,7 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_DIR_EXPAND:           out << "ASMPICOBLAZE_DIR_EXPAND";           break;
         case ASMPICOBLAZE_DIR_NOEXPAND:         out << "ASMPICOBLAZE_DIR_NOEXPAND";         break;
         case ASMPICOBLAZE_DIR_TITLE:            out << "ASMPICOBLAZE_DIR_TITLE";            break;
+        case ASMPICOBLAZE_DIR_ENTITY:           out << "ASMPICOBLAZE_DIR_ENTITY";            break;
         case ASMPICOBLAZE_DIR_MESSG:            out << "ASMPICOBLAZE_DIR_MESSG";            break;
         case ASMPICOBLAZE_DIR_ERROR:            out << "ASMPICOBLAZE_DIR_ERROR";            break;
         case ASMPICOBLAZE_DIR_WARNING:          out << "ASMPICOBLAZE_DIR_WARNING";          break;

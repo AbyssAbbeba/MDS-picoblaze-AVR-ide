@@ -145,16 +145,16 @@ uint32_t CompilerLexerUtils::escapeSequence ( CompilerParserInterface * compiler
     return value;
 }
 
-int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
-                                             const YYLTYPE * location,
-                                             const char * str,
-                                             unsigned int max,
-                                             int base )
+unsigned long long CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
+                                                            const YYLTYPE * location,
+                                                            const char * str,
+                                                            unsigned int max,
+                                                            int base )
 {
-    unsigned long number;
+    unsigned long long number;
     if ( ( strlen(str) > max )
             ||
-         ( ULONG_MAX == ( number = strtoul(str, nullptr, base) ) ) )
+         ( ULLONG_MAX == ( number = strtoull(str, nullptr, base) ) ) )
     {
         compiler->lexerMessage ( location,
                                  CompilerBase::MT_ERROR,
@@ -163,7 +163,7 @@ int CompilerLexerUtils::convertStrToNumber ( CompilerParserInterface * compiler,
         return 1; // Some "neutral dummy value"
     }
 
-    return int(number);
+    return number;
 }
 
 double CompilerLexerUtils::str2float ( CompilerParserInterface * compiler,

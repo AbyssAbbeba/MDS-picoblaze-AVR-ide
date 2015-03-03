@@ -244,7 +244,7 @@ void AdaptableSimOperations::setValue ( unsigned int destination,
             break;
     }
 }
-#include<iostream>//DEBUG
+
 inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int source,
                                                               AdaptableSimInstruction::OperParam parameters,
                                                               const std::vector<unsigned char> & permutation )
@@ -254,15 +254,13 @@ inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int sourc
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
          == parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_ZERO ) )
     {
-std::cout<<"Affect zero = true\n";
         bool prevZero = true;
         if ( false == parameters.ignoreZero() )
         {
             prevZero = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_ZERO);
         }
-std::cout<<"prevZero = "<<prevZero<<", value = "<<source<<"\n";
+
         m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_ZERO, ( prevZero && ( 0 == source ) ) );
-std::cout<<"SETTING ZERO TO: "<<( prevZero && ( 0 == source ) )<<"\n";
     }
 
     if ( AdaptableSimInstruction::OperParam::P_AFFECT

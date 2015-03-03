@@ -71,6 +71,7 @@
 // Include additional compiler specific header files.
 #ifdef MDS_FEATURE_C_COMPILER
 #   include "C/CompilerCPreProc.h"
+#   include "C/CompilerCParserExtension.h"
 #endif // MDS_FEATURE_C_COMPILER
 
 // Parser prototypes (the core uses them to initiate syntactical analysis).
@@ -204,6 +205,8 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                          */
                         return MESC_OK;
                     }
+
+                    compilerCore->setParserExtension(new CompilerCParserExtension());
 
                     // Initialize lexical analyzer.
                     CompilerCLexer_lex_init_extra ( compilerCore, &yyscanner );

@@ -93,10 +93,22 @@ WSPACE  ([ \t]|\u00A0)+
 NLINE   (\r?\n)|(\n?\r)
 /* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'. */
 XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})|(\\[abfnrtve\\"'?])
-/* Floating point number. */
-FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
-/* An identifier in the language. */
+/* Floating point numbers. */
+DFLOAT  ([0-9]+[eE][+-]?[0-9]+)|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?)
+XFLOAT  (0x(([0-9a-fA-F]+\.[0-9a-fA-F]*)|(\.[0-9a-fA-F]+))[pP][0-9]+)
+FLOAT   {DFLOAT}|{XFLOAT}
+/* Identifier. */
 ID      [_a-zA-Z][_a-zA-Z0-9]*
+/* Integer suffixes. */
+U       [uU]
+L       [lL]
+LL      {L}{L}
+UL      ({U}{L})|({L}{U})
+ULL     ({U}{L}{L})|({L}{L}{U})
+/* Float suffix. */
+F_SFX   [Ff]?[Ll]?
+/* Hexadecimal integer. */
+HEX     0x[0-9a-fA-F]+
 
 
 /*
@@ -104,6 +116,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
  */
 /* Inside a string, e.g. "my string" */
 %x STR
+%x LSTR
 
 
 /* -------------------------------------------------------------------------- */
@@ -128,6 +141,8 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 ";"             { return EOS;               }
 "__at__"        { return LOCATION_SPEC;     }
 "__asm__"       { return INLINE_ASSEMBLY;   }
+"__critical__"  { return CRITICAL_BLOCK;    }
+"..."           { return ELIPSIS;           }
 
  /* Keywords */
 "break"         { return KW_BREAK;          }
@@ -146,7 +161,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "switch"        { return KW_SWITCH;         }
 "while"         { return KW_WHILE;          }
 
- /* Data types */
+ /* Data types, etc. */
 "auto"          { return DATA_AUTO;         }
 "char"          { return DATA_CHAR;         }
 "const"         { return DATA_CONST;        }
@@ -166,6 +181,9 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "unsigned"      { return DATA_UNSIGNED;     }
 "void"          { return DATA_VOID;         }
 "volatile"      { return DATA_VOLATILE;     }
+"_Complex"      { return DATA_COMPLEX;      }
+"_Bool"         { return DATA_BOOL;         }
+"_Imaginary"    { return DATA_IMAGINARY;    }
 
  /* Brackets */
 "("             { return B_RND_LEFT;        }
@@ -216,46 +234,169 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "++"            { return O_INCREMENT;       }
 
  /*
-  *  Numbers
+  *  Constants
   */
 
- /* Integral */
+ /* Binary integers */
 0b[01]+         {
-                    // Binary number.
                     yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
                     return INTEGER;
                 }
-0x[0-9a-fA-F]+  {
-                    // Hexadecimal number.
-                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
-                    return INTEGER;
+0b[01]+{U}      {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
+                    return U_INTEGER;
                 }
+0b[01]+{L}      {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
+                    return L_INTEGER;
+                }
+0b[01]+{LL}     {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
+                    return LL_INTEGER;
+                }
+0b[01]+{UL}     {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
+                    return UL_INTEGER;
+                }
+0b[01]+{ULL}    {
+                    yytext[yyleng-3] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
+                    return ULL_INTEGER;
+                }
+
+ /* Octal integers */
 0[0-7]+         {
-                    // Octal integer.
                     yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
                     return INTEGER;
                 }
+0[0-7]+{U}      {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
+                    return U_INTEGER;
+                }
+0[0-7]+{L}      {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
+                    return L_INTEGER;
+                }
+0[0-7]+{LL}     {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
+                    return LL_INTEGER;
+                }
+0[0-7]+{UL}     {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
+                    return UL_INTEGER;
+                }
+0[0-7]+{ULL}    {
+                    yytext[yyleng-3] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 1), 22, 8);
+                    return ULL_INTEGER;
+                }
+
+ /* Decimal integers */
 [0-9]+          {
-                    // Decimal integer.
                     yylval->integer = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
                     return INTEGER;
                 }
-
- /* Real numbers */
-{FLOAT}         {
-                    // Floating point number.
-                    yylval->real = str2float ( yyextra, yylloc, yytext );
-                    return REAL;
+[0-9]+{U}       {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
+                    return U_INTEGER;
+                }
+[0-9]+{L}       {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
+                    return L_INTEGER;
+                }
+[0-9]+{LL}      {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
+                    return LL_INTEGER;
+                }
+[0-9]+{UL}      {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
+                    return UL_INTEGER;
+                }
+[0-9]+{ULL}     {
+                    yytext[yyleng-3] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, yytext, 20, 10);
+                    return ULL_INTEGER;
                 }
 
- /* Single character literals */
-'{XESC}'        {
-                    // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+ /* Hexadecimal integers */
+{HEX}           {
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return INTEGER;
+                }
+{HEX}{U}        {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return U_INTEGER;
+                }
+{HEX}{L}        {
+                    yytext[yyleng-1] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return L_INTEGER;
+                }
+{HEX}{LL}       {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return LL_INTEGER;
+                }
+{HEX}{UL}       {
+                    yytext[yyleng-2] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return UL_INTEGER;
+                }
+{HEX}{ULL}      {
+                    yytext[yyleng-3] = '\0';
+                    yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
+                    return ULL_INTEGER;
+                }
 
-                    yytext[strlen(yytext) - 1] = '\0';
+ /* Floating constants. */
+{FLOAT}{F_SFX}  {
+                    // Floating point number.
+                    int symbol;
+
+                    switch ( yytext[yyleng-1] )
+                    {
+                        case 'f':
+                        case 'F':
+                            yytext[yyleng-1] = '\0';
+                            symbol = FLOAT;
+                            break;
+                        case 'l':
+                        case 'L':
+                            yytext[yyleng-1] = '\0';
+                            symbol = LONG_DOUBLE;
+                            break;
+                        default:
+                            symbol = DOUBLE;
+                    }
+
+                    yylval->real = str2float ( yyextra, yylloc, yytext );
+                    return symbol;
+                }
+
+ /* Character constants. */
+L?'{XESC}'       {
+                    // Handle C escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+
+                    int isL = ( 'L' == yytext[0] ) ? 1 : 0;
+
+                    yytext[yyleng - 1] = '\0';
 
                     int size; // Size of the binary value in bytes
-                    yylval->integer = (long long) escapeSequence(yyextra, yylloc, yytext+1, &size);
+                    yylval->integer = (long long) escapeSequence(yyextra, yylloc, ( yytext + 1 + isL ), &size);
+
 
                     // Check whether the conversion was successful
                     if ( 0 == size )
@@ -267,36 +408,64 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
                         yyterminate();
                     }
 
-                    return INTEGER;
+                    if ( 0 == isL )
+                    {
+                        return CHARACTER;
+                    }
+                    else
+                    {
+                        return L_CHARACTER;
+                    }
                 }
 '.'             {
                     yylval->integer = (int64_t) (yytext[1]);
-                    return INTEGER;
+                    return CHARACTER;
+                }
+L'.'            {
+                    yylval->integer = (int64_t) (yytext[2]);
+                    return L_CHARACTER;
                 }
 
- /* Identifiers */
+ /* Identifiers. */
 {ID}            {
                     // Arbitrary identifier, e.g. `abc'.
                     yylval->symbol = yytext;
-                    return IDENTIFIER;
+
+                    switch ( ((CompilerCParserExtension*) (yyextra->m_parserExtension))->findIdentifier(yytext) )
+                    {
+                        case CompilerCParserExtension::TYPE_UNSPECIFIED:
+                            return IDENTIFIER;
+                        case CompilerCParserExtension::TYPE_TYPEDEF:
+                            return TYPEDEF_NAME;
+                        case CompilerCParserExtension::TYPE_ENUM_CONST:
+                            return ENUM_CONST;
+                    }
                 }
 
- /* Strings */
-<INITIAL>\"     {
+ /* String literals. */
+<INITIAL>L?\"   {
                     // Beginning of a string, i.e. --> "some string"
-                    yy_push_state(STR, yyscanner);
+                    if ( 'L' == yytext[0] )
+                    {
+                        yy_push_state(LSTR, yyscanner);
+                    }
+                    else
+                    {
+                        yy_push_state(STR, yyscanner);
+                    }
                     yyextra->m_strMaxSize = 32;
                     yylval->string.size = 0;
                     yylval->string.data = (char*) malloc(yyextra->m_strMaxSize);
                 }
-<STR>
+<STR,LSTR>
 {
     \"                  {
                             // End of the string, i.e. "my string" <--
+                            bool isL = ( LSTR == YY_START );
                             yy_pop_state(yyscanner);
                             if ( INITIAL == YY_START )
                             {
-                                return STRING;
+                                return ( isL ? L_STRING : STRING );
                             }
                             else
                             {
@@ -321,10 +490,11 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
                             yylloc->last_column = 1;
 
                             // A string has to be terminated at the same line which it was started on
+                            bool isL = ( LSTR == YY_START );
                             yy_pop_state(yyscanner);
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("unterminated string or character constant")
+                                                    QObject::tr("unterminated string literal")
                                                                .toStdString(),
                                                     true );
 
@@ -338,11 +508,11 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 
                             if ( INITIAL == YY_START )
                             {
-                                return STRING;
+                                return ( isL ? L_STRING : STRING );
                             }
                         }
     {XESC}              {
-                            // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+                            // Handle C escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
 
                             int size; // Size of the binary value in bytes
                             uint32_t value = escapeSequence(yyextra, yylloc, yytext, &size);
@@ -370,7 +540,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
                             yy_pop_state(yyscanner);
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
-                                                    QObject::tr("unterminated string or character constant")
+                                                    QObject::tr("unterminated string literal")
                                                                .toStdString(),
                                                     true );
 
