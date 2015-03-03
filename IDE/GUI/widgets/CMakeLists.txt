@@ -37,6 +37,7 @@ add_subdirectory(BookmarkList)
 add_subdirectory(BreakpointList)
 add_subdirectory(Tools)
 add_subdirectory(TabBar)
+add_subdirectory(DockUi)
 
 if ( MDS_FEATURE_VHDL_WIZARD )
     add_subdirectory(VHDLGen)

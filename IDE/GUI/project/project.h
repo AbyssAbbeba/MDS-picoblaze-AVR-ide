@@ -47,6 +47,7 @@ class QColor;
 class DataFile;
 class DbgFile;
 class CompatibilityMode;
+class DockUi;
 
 
 /*typedef enum LangType {
@@ -195,6 +196,8 @@ class Project : public QObject
         int clockMult;
 
         int m_untitledCounter;
+        
+        DockUi *m_dockUi;
 
     public slots:
         void setMainFile(QString path, QString name);
