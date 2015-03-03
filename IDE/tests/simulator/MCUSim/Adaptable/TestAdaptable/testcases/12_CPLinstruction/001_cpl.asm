@@ -1,6 +1,6 @@
 ;==============================================================================;
 ; Settings TEST
-    device "001_memory.procdef"
+    device "001_cpl.procdef"
 ;==============================================================================;
 ;
 ; Tested:   Memory, Word size, registers, data memory settings

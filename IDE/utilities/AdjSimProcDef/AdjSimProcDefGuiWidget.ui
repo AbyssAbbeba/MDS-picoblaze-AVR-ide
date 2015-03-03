@@ -466,7 +466,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-76</y>
+            <y>0</y>
             <width>265</width>
             <height>394</height>
            </rect>
@@ -535,6 +535,11 @@
                       <item>
                        <property name="text">
                         <string>Direct Port</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Reg &gt; Data</string>
                        </property>
                       </item>
                      </widget>
@@ -1011,6 +1016,11 @@
                         <string>Direct Port</string>
                        </property>
                       </item>
+                      <item>
+                       <property name="text">
+                        <string>Reg &gt; Data</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                    </layout>
@@ -1038,7 +1048,7 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>159</width>
+                           <width>194</width>
                            <height>447</height>
                           </rect>
                          </property>
@@ -1485,6 +1495,11 @@
                         <string>Direct Port</string>
                        </property>
                       </item>
+                      <item>
+                       <property name="text">
+                        <string>Reg &gt; Data</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                    </layout>
@@ -1512,7 +1527,7 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>159</width>
+                           <width>194</width>
                            <height>447</height>
                           </rect>
                          </property>
@@ -2871,8 +2886,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-82</y>
-            <width>265</width>
+            <y>0</y>
+            <width>167</width>
             <height>400</height>
            </rect>
           </property>
@@ -3230,8 +3245,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>282</width>
-            <height>318</height>
+            <width>202</width>
+            <height>247</height>
            </rect>
           </property>
           <attribute name="label">

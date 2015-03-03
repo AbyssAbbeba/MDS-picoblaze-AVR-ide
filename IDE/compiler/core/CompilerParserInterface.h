@@ -35,6 +35,10 @@
 // Used for i18n only
 #include <QObject>
 
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include "boost/filesystem.hpp"
+
 // Make sure that the data type of locations is declared (see Bison manual for details)
 #if ! defined ( YYLTYPE ) && ! defined ( YYLTYPE_IS_DECLARED )
     typedef struct YYLTYPE
@@ -166,9 +170,28 @@ class CompilerParserInterface
 
         /**
          * @brief
+         * @param[in] filename
+         */
+        virtual void setVirtualFileName ( const std::string & filename ) = 0;
+
+        /**
+         * @brief
          * @param[in,out] codeTree
          */
         virtual void processCodeTree ( CompilerStatement * codeTree ) = 0;
+
+        /**
+         * @brief
+         * @param[in] fileNumber
+         * @return
+         */
+        virtual const std::string & getFileName ( int fileNumber = -1 ) const = 0;
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual const boost::filesystem::path & getBasePath() const = 0;
 
         /// @name Methods and attributes specific for Bison and Flex
         //@{

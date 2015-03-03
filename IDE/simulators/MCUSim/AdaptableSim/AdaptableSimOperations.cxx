@@ -99,10 +99,10 @@ bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID opera
             instCbMove(inst, operands[0], operands[1]);
             break;
         case OP_MOVE_BIT:
-            instMoveBit(parameters, operands[0], operands[1], operands[1]);
+            instMoveBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_CB_MOVE_BIT:
-            instCbMoveBit(parameters, operands[0], operands[1], operands[1]);
+            instCbMoveBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_SWAP:
             instSwap(inst, operands[0], operands[1]);
@@ -111,10 +111,10 @@ bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID opera
             instCbSwap(inst, operands[0], operands[1]);
             break;
         case OP_SWAP_BIT:
-            instSwapBit(parameters, operands[0], operands[1], operands[1]);
+            instSwapBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_CB_SWAP_BIT:
-            instCbSwapBit(parameters, operands[0], operands[1], operands[1]);
+            instCbSwapBit(parameters, operands[0], operands[1], operands[2]);
             break;
         case OP_ADD:
             instAdd(inst, operands[0], operands[1], operands[2]);
@@ -204,6 +204,8 @@ unsigned int AdaptableSimOperations::getValue ( unsigned int addrVal,
             return ( ( true == jump ) ? addrVal :m_programMemory->read(addrVal) );
         case AdaptableSimInstruction::OperParam::A_PORT:
             return m_io->read(addrVal);
+        case AdaptableSimInstruction::OperParam::A_REG_DATA:
+            return m_dataMemory->read(m_registers->read(addrVal));
     }
 
     // Control flow should never reach this point.
@@ -221,19 +223,28 @@ void AdaptableSimOperations::setValue ( unsigned int destination,
             break;
         case AdaptableSimInstruction::OperParam::A_REG_DIR:
             m_registers->write(destination, value);
+            break;
         case AdaptableSimInstruction::OperParam::A_REG_INDR:
             m_registers->write(m_registers->read(destination), value);
+            break;
         case AdaptableSimInstruction::OperParam::A_DATA_DIR:
             m_dataMemory->write(destination, value);
+            break;
         case AdaptableSimInstruction::OperParam::A_DATA_INDR:
             m_dataMemory->write(m_dataMemory->read(destination), value);
+            break;
         case AdaptableSimInstruction::OperParam::A_PROGRAM:
             m_programMemory->write(destination, value);
+            break;
         case AdaptableSimInstruction::OperParam::A_PORT:
             m_io->write(destination, value);
+            break;
+        case AdaptableSimInstruction::OperParam::A_REG_DATA:
+            m_dataMemory->write(m_registers->read(destination), value);
+            break;
     }
 }
-
+#include<iostream>//DEBUG
 inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int source,
                                                               AdaptableSimInstruction::OperParam parameters,
                                                               const std::vector<unsigned char> & permutation )
@@ -243,13 +254,15 @@ inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int sourc
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
          == parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_ZERO ) )
     {
+std::cout<<"Affect zero = true\n";
         bool prevZero = true;
         if ( false == parameters.ignoreZero() )
         {
             prevZero = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_ZERO);
         }
-
+std::cout<<"prevZero = "<<prevZero<<", value = "<<source<<"\n";
         m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_ZERO, ( prevZero && ( 0 == source ) ) );
+std::cout<<"SETTING ZERO TO: "<<( prevZero && ( 0 == source ) )<<"\n";
     }
 
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
@@ -628,7 +641,14 @@ inline void AdaptableSimOperations::instAdd ( const AdaptableSimInstruction & in
     {
         if ( true == m_statusFlags->getFlag ( AdaptableSimInstruction::OperParam::F_CARRY ) )
         {
-            result++;
+            if ( true == subtract )
+            {
+                result--;
+            }
+            else
+            {
+                result++;
+            }
         }
     }
 

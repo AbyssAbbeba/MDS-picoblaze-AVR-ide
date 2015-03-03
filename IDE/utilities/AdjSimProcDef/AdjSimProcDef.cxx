@@ -264,6 +264,7 @@ std::ostream & operator << ( std::ostream & out,
             case AdjSimProcDef::Instruction::Operand::T_DATA_INDR: out << "DATA INDR"; break;
             case AdjSimProcDef::Instruction::Operand::T_PROGRAM:   out << "PROGRAM";   break;
             case AdjSimProcDef::Instruction::Operand::T_PORT:      out << "PORT";      break;
+            case AdjSimProcDef::Instruction::Operand::T_REG_DATA:  out << "REG_DATA";  break;
         }
         out << std::endl;
         out << "        Size: " << definition.m_operands[i].m_size << std::endl;
