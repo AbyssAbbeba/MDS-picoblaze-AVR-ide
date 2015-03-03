@@ -97,7 +97,8 @@ class AdjSimProcDef
                     T_DATA_DIR,
                     T_DATA_INDR,
                     T_PROGRAM,
-                    T_PORT
+                    T_PORT,
+                    T_REG_DATA
                 } m_type;
 
                 enum Number
@@ -179,7 +180,7 @@ class AdjSimProcDef
                 OP_SHIFT_LEFT_C,    ///<
                 OP_SHIFT_RIGHT_C,   ///<
                 OP_ROTATE_LEFT,     ///<
-                OP_ROTATE_RIGHT     ///<
+                OP_ROTATE_RIGHT,    ///<
             };
 
             Next m_next;

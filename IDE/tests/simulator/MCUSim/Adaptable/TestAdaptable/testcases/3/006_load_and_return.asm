@@ -27,8 +27,8 @@ start:
                 JUMP    $
 
 print_decimal:  COMPARE s5, #10
-                JUMP C, start
-                LDRET s0, #39
+                JUMPC   start
+                LDRET   s0, #39
                 
 
         ;; step

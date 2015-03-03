@@ -100,7 +100,8 @@ class AdaptableSimInstruction
                 A_DATA_DIR  = 3,
                 A_DATA_INDR = 4,
                 A_PROGRAM   = 5,
-                A_PORT      = 6
+                A_PORT      = 6,
+                A_REG_DATA  = 7
                 // Max. (=upper bound) = 15
             };
 

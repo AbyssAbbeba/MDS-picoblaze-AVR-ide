@@ -431,6 +431,7 @@ inline CompilerStatement * AsmAdaptableTreeDecoder::resolveInstruction ( const s
                     break;
                 case AdjSimProcDef::Instruction::Operand::T_REG_INDR:
                 case AdjSimProcDef::Instruction::Operand::T_DATA_INDR:
+                case AdjSimProcDef::Instruction::Operand::T_REG_DATA:
                     type = '@';
                     break;
                 case AdjSimProcDef::Instruction::Operand::T_REG_DIR:

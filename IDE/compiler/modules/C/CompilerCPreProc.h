@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
  * @file CompilerCPreProc.h
@@ -78,8 +78,10 @@ class CompilerCPreProc : private CompilerCPreProcSupport,
         CompilerCPreProc ( CompilerParserInterface * compilerCore,
                            const CompilerOptions * opts )
                          :
-                           CompilerCPreProcInterface(compilerCore, opts),
-                           m_macroTable ( opts ) {}
+                           CompilerCPreProcInterface ( compilerCore, opts ),
+                           m_macroTable ( compilerCore, opts, m_locationStack )
+        {
+        }
 
     ////    Public Operations    ////
     public:
@@ -207,8 +209,21 @@ class CompilerCPreProc : private CompilerCPreProcSupport,
                               char * line,
                               unsigned int pos );
 
+        /**
+         * @brief
+         * @param[out] tokens
+         * @param[in] arguments
+         * @param[in] length
+         */
+        inline void tokenize ( std::vector<char*> & tokens,
+                               char * arguments,
+                               unsigned int length );
+
     ////    Private Attributes    ////
     private:
+        ///
+        unsigned int m_lineMerges;
+
         ///
         InMode m_inmode;
 

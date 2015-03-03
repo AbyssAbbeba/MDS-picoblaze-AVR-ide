@@ -26,6 +26,10 @@ class CompilerParserInterface;
 #include <vector>
 #include <utility>
 
+// Compiler header files.
+#include "CompilerSourceLocation.h"
+#include "CompilerParserInterface.h"
+
 // C compiler preprocessor header files.
 #include "CompilerCPreProcSupport.h"
 
@@ -48,6 +52,13 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
             EXP_EXPRESSION = 2  ///<
         };
 
+        class MacroException
+        {
+            public:
+                MacroException ( const std::string & message ) : m_message ( message ) {}
+                std::string m_message;
+        };
+
     ////    Private Datatypes    ////
     private:
         /**
@@ -67,22 +78,6 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
             PRE_DEF__STDC_ISO_10646             ///<
         };
 
-    ////    Private Static Constants    ////
-    private:
-        ///
-        constexpr static const char * STDC_VERSION = "199901L";
-
-        /// Language keywords.
-        static const std::set<std::string> KEYWORDS;
-
-        /// C++ named operators
-        static const std::map<std::string, std::string> NAMED_OPERATORS;
-
-        /// C++ named operators
-        static const std::map<std::string, std::pair<bool, PredefinedMacro>> PREDEFINED_MACROS;
-
-    ////    Private Datatypes    ////
-    private:
         /**
          * @brief
          */
@@ -110,13 +105,31 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
             std::set<std::string> m_macros;
         };
 
+    ////    Private Static Constants    ////
+    private:
+        ///
+        static const char * STDC_VERSION;
+
+        /// Language keywords.
+        static const std::set<std::string> KEYWORDS;
+
+        /// C++ named operators
+        static const std::map<std::string, std::string> NAMED_OPERATORS;
+
+        /// C++ named operators
+        static const std::map<std::string, std::pair<bool, PredefinedMacro>> PREDEFINED_MACROS;
+
     ////    Constructors and Destructors    ////
     public:
         /**
          * @brief
+         * @param[in,out] compilerCore
          * @param[in] opts
+         * @param[in,out] locationStack
          */
-        CompilerCPreProcMacros ( const CompilerOptions * opts );
+        CompilerCPreProcMacros ( CompilerParserInterface * compilerCore,
+                                 const CompilerOptions * opts,
+                                 std::vector<CompilerSourceLocation> & locationStack );
 
     ////    Public Operations    ////
     public:
@@ -151,18 +164,24 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
          */
         void undef ( char * macro );
 
-    ////    Private Operations    ////
+    ////    Inline Private Operations    ////
     private:
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] file
+         */
+        inline void getFileOrLine ( Buffer & out,
+                                    bool file );
+
         /**
          * @brief
          * @param[in,out] out
          * @param[in] date
          */
-        void getTimeOrDate ( Buffer & out,
-                             bool date );
+        inline void getTimeOrDate ( Buffer & out,
+                                    bool date );
 
-    ////    Inline Private Operations    ////
-    private:
         /**
          * @brief
          * @param[in] word
@@ -252,7 +271,13 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
     ////    Private Attributes    ////
     private:
         ///
+        CompilerParserInterface * const m_compilerCore;
+
+        ///
         const CompilerOptions * const m_opts;
+
+        ///
+        std::vector<CompilerSourceLocation> & m_locationStack;
 
         ///
         std::map<std::string,Macro> m_table;

@@ -18,6 +18,8 @@
 #include "AdaptableSimStack.h"
 #include "AdaptableSimProgramMemory.h"
 
+#include<iostream>//DEBUG
+
 AdaptableSimInstructionSet * AdaptableSimInstructionSet::link ( MCUSimEventLogger               * eventLogger,
                                                                 AdaptableSimIO                  * io,
                                                                 AdaptableSimStack               * stack,
@@ -179,6 +181,8 @@ void AdaptableSimInstructionSet::performOP ( const AdaptableSimInstruction & ins
             }
         }
     }
+
+std::cout << "SimDebug: opCode = " << opCode<<", operation=" << inst.m_operation << ", operands={"<<operands[0]<<", "<<operands[1]<<", "<<operands[2]<<"}, instuction=" << inst;
 
     bool condPositive = operationSwitch ( inst.m_operation, operands, inst );
 

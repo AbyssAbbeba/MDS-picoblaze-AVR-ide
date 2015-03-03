@@ -43,7 +43,7 @@ WAIT:   LOAD    s0,#250
         ;; pc == 5
         SUB     s0,#1
         COMPARE     s0,#1
-        jump    NZ,WAIT
+        jumpNZ  WAIT
         DIS
         
 INTERRUPT:
@@ -52,8 +52,8 @@ INTERRUPT:
             
             STORE       s0,0
             STORE       s1,1
-            IN          S2,0
-            OUT         S2,0
+            INPUT          S2,0
+            OUTPUT         S2,0
             RETURN
 
 org     3ffh
