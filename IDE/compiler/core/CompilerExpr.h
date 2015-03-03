@@ -90,17 +90,15 @@ class CompilerExpr : public CompilerSerializable
             OPER_TERNARY         = 19,   ///<
             OPER_COLON           = 20,   ///<
             OPER_INDEX           = 21,   ///<
-            OPER_POST_INC        = 22,   ///<
-            OPER_POST_DEC        = 23,   ///<
             OPER_PRE_INC         = 24,   ///<
             OPER_PRE_DEC         = 25,   ///<
             OPER_DATATYPE        = 26,   ///<
+            OPER_FIXED_DATATYPE  = 33,   ///<
             OPER_ARROW           = 27,   ///<
             OPER_COMMA           = 28,   ///<
             OPER_SIZEOF          = 29,   ///<
-            OPER_DATAATTR        = 30,   ///<
-            OPER_PTRATTR         = 31,   ///<
-            OPER_CUSTOM_DATATYPE = 32    ///<
+            OPER_CUSTOM_DATATYPE = 32,   ///<
+            OPER_CAST            = 34,   ///<
         };
 
     ////    Constructors and Destructors    ////

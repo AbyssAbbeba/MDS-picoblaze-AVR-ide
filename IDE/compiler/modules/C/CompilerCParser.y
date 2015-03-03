@@ -41,18 +41,20 @@
 // Symbol semantic value.
 %union
 {
-    CompilerExpr      * expr;   //
-    CompilerStatement * stmt;   //
+    CompilerExpr      * expr;    //
+    CompilerStatement * stmt;    //
 
-    int64_t integer;            //
-    double real;                //
-    char * symbol;              //
+    CompilerExpr::Operator oper; //
+
+    int64_t integer;             //
+    double real;                 //
+    char * symbol;               //
 
     struct
     {
-        char * data;            //
-        unsigned int size;      //
-    } string;                   //
+        char * data;             //
+        unsigned int size;       //
+    } string;                    //
 };
 
 
@@ -62,10 +64,9 @@
  */
 %code requires
 {
-
     #include "CompilerParserInterface.h"
-    // C Datatypes enum
-    #include "CompilerCDatatypes.h"
+    #include "CompilerCParserExtension.h"
+    #include "CompilerCDeclaration.h"
 
     #ifndef YY_TYPEDEF_YY_SCANNER_T
     #define YY_TYPEDEF_YY_SCANNER_T
@@ -128,6 +129,8 @@
 %token EOS              ";"
 %token LOCATION_SPEC    "__at__"
 %token INLINE_ASSEMBLY  "__asm__"
+%token CRITICAL_BLOCK   "__critical__"
+%token ELIPSIS          "..."
 
 %token KW_BREAK         "break"
 %token KW_CASE          "case"
@@ -164,6 +167,9 @@
 %token DATA_UNSIGNED    "unsigned"
 %token DATA_VOLATILE    "volatile"
 %token DATA_VOID        "void"
+%token DATA_COMPLEX     "_Complex"
+%token DATA_BOOL        "_Bool"
+%token DATA_IMAGINARY   "_Imaginary"
 
 %token B_RND_LEFT       "("
 %token B_RND_RIGHT      ")"
@@ -211,52 +217,47 @@
 %token O_DECREMENT      "--"
 %token O_INCREMENT      "++"
 
-/* Operator precedence (the one declared later has the higher precedence). */
-%left ","
-%right "&=" "^=" "|="
-%right "<<=" ">>="
-%right "*=" "/=" "%="
-%right "+=" "-="
-%right "="
-%right "?" ":"
-%left "||"
-%left "&&"
-%left "|"
-%left "^"
-%left "&"
-%left "==" "!="
-%left ">=" ">"
-%left "<" "<="
-%left "<<" ">>"
-%left "+" "-"
-%left "*" "/" "%"
-%right "~" "!"
-%right UPLUS UMINUS
-%right "++" "--"
-%left POST_INC POST_DEC
-%left "." "->"
-%left FCALL
-%left "[" "]"
-%left "(" ")"
-
 /* Precedence for non operators, placed here to solve certain shift/reduce conflicts. */
+%nonassoc IFX
 %nonassoc "else"
 
 /* Terminal symbols with semantic value. */
-%token<symbol>    IDENTIFIER    "idenfifier"
-%token<string>    STRING        "string"
-%token<integer>   INTEGER       "integer"
-%token<real>      REAL          "real number"
+%token<symbol>    IDENTIFIER    "identifier"
+%token<symbol>    TYPEDEF_NAME  "type name"
+%token<symbol>    ENUM_CONST    "enumeration constant"
+%token<string>    STRING        "string literal"
+%token<string>    L_STRING      "long string literal"
+%token<integer>   CHARACTER     "character constant"
+%token<integer>   L_CHARACTER   "long character constant"
+%token<integer>   INTEGER       "integer constant"
+%token<integer>   U_INTEGER     "unsigned integer constant"
+%token<integer>   L_INTEGER     "long integer constant"
+%token<integer>   LL_INTEGER    "long long integer constant"
+%token<integer>   UL_INTEGER    "unsigned long integer constant"
+%token<integer>   ULL_INTEGER   "unsigned long long integer constant"
+%token<real>      FLOAT         "floating constant"
+%token<real>      DOUBLE        "double floating constant"
+%token<real>      LONG_DOUBLE   "long double floating constant"
 
 /*
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
+// Operators.
+%type<oper> unary-operator                      assignment-operator
 // Expressions.
-%type<expr>     expr            e_expr      id      string      param       param_list      indexes     datatype
-%type<expr>     decl            decl_list   dt      dt_attr     union       union_body      expr_list   member_access
-%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations    at
-// Statements - general.
-%type<stmt>     statements      stmt        cases   scope       switch_body function
+%type<expr> constant                            integer-constant                floating-constant
+%type<expr> enumeration-constant                character-constant              string-literal string
+%type<expr> lstring                             identifier                      identifier-opt
+%type<expr> primary-expression                  postfix-expression              argument-expression-list
+%type<expr> argument-expression-list-opt        unary-expression                cast-expression
+%type<expr> multiplicative-expression           additive-expression             shift-expression
+%type<expr> relational-expression               equality-expression             AND-expression
+%type<expr> exclusive-OR-expression             inclusive-OR-expression         logical-AND-expression
+%type<expr> logical-OR-expression               conditional-expression          assignment-expression
+%type<expr> assignment-expression-opt           expression                      expression-opt
+%type<expr> constant-expression
+// Statements.
+/* %type<stmt> */
 
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed.
 %destructor
@@ -281,7 +282,7 @@
 } <string>
 
 // The start symbol.
-%start input
+%start translation-unit
 
 // -----------------------------------------------------------------------------
 // GRAMMAR RULES
@@ -289,487 +290,930 @@
 
 %%
 
-// The start symbol, i.e. the entire program code.
-input:
-      statements                    {
-                                        compiler->processCodeTree($statements);
-                                        YYACCEPT;
-                                    }
-    | /* empty */                   {
-                                        compiler->processCodeTree(nullptr);
-                                        YYACCEPT;
-                                    }
+// =============================================================================
+// PART 1: Expressions
+// =============================================================================
+
+constant:
+    integer-constant
+    {
+        $$ = $[integer-constant];
+    }
+
+    | floating-constant
+    {
+        $$ = $[floating-constant];
+    }
+
+    | enumeration-constant
+    {
+        $$ = $[enumeration-constant];
+    }
+
+    | character-constant
+    {
+        $$ = $[character-constant];
+    }
 ;
 
-// Sequence of statements.
-statements:
-      stmt                          { $$ = $stmt;                 }
-    | statements stmt               { $$ = $1->appendLink($stmt); }
+integer-constant:
+    INTEGER
+    {
+        $$ = new CompilerExpr ( $[INTEGER], LOC(@$) );
+    }
+
+    | U_INTEGER
+    {
+        $$ = new CompilerExpr ( $[U_INTEGER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_UNSIGNED,
+                                LOC(@$) );
+    }
+
+    | L_INTEGER
+    {
+        $$ = new CompilerExpr ( $[L_INTEGER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_LONG,
+                                LOC(@$) );
+    }
+
+    | LL_INTEGER
+    {
+        $$ = new CompilerExpr ( $[LL_INTEGER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_LONG_LONG,
+                                LOC(@$) );
+    }
+
+    | UL_INTEGER
+    {
+        $$ = new CompilerExpr ( $[UL_INTEGER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                new CompilerExpr ( CompilerCDeclaration::DT_UNSIGNED,
+                                                   CompilerExpr::OPER_FIXED_DATATYPE,
+                                                   CompilerCDeclaration::DT_LONG ),
+                                LOC(@$) );
+    }
+
+    | ULL_INTEGER
+    {
+        $$ = new CompilerExpr ( $[ULL_INTEGER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                new CompilerExpr ( CompilerCDeclaration::DT_UNSIGNED,
+                                                   CompilerExpr::OPER_FIXED_DATATYPE,
+                                                   CompilerCDeclaration::DT_LONG_LONG ),
+                                LOC(@$) );
+    }
 ;
 
-// Single statement.
-stmt:
-      ";"                           { $$ = nullptr; /* the null statement */ }
-    | scope                         { $$ = $scope; }
-    | expr_list ";"                 { $$ = new CompilerStatement(LOC(@$), C_STMT_EXPR, $expr_list); }
-    | "break" ";"                   { $$ = new CompilerStatement(LOC(@$), C_STMT_BREAK); }
-    | "continue" ";"                { $$ = new CompilerStatement(LOC(@$), C_STMT_CONTINUE); }
-    | "return" e_expr ";"           { $$ = new CompilerStatement(LOC(@$), C_STMT_RETURN, $e_expr); }
-    | declarations                  { $$ = new CompilerStatement(LOC(@$), C_STMT_VAR, $declarations); }
-    | function                      { $$ = $function; }
-    | "typedef" datatype id ";"     {
-                                         $$ = new CompilerStatement(LOC(@$), C_STMT_TYPEDEF, $datatype->appendLink($id));
-                                    }
-    | "if" "(" expr_list ")" stmt   {
-                                        CompilerStatement *ifBlock = new CompilerStatement(LOC(@1), C_STMT_IF, $3);
-                                        ifBlock->createBranch($5);
+floating-constant:
+    FLOAT
+    {
+        $$ = new CompilerExpr ( $[FLOAT], LOC(@$) );
+    }
 
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_CONDITION);
-                                        $$->createBranch(ifBlock);
-                                    }
-    | "if" "(" expr_list ")" stmt "else" stmt
-                                    {
-                                        CompilerStatement *ifBlock = new CompilerStatement(LOC(@1), C_STMT_IF, $3);
-                                        ifBlock->createBranch($5);
+    | DOUBLE
+    {
+        $$ = new CompilerExpr ( $[DOUBLE],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_LONG,
+                                LOC(@$) );
+    }
 
-                                        CompilerStatement *elseBlock = new CompilerStatement(LOC(@6), C_STMT_ELSE);
-                                        elseBlock->createBranch($7);
-
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_CONDITION);
-                                        $$->createBranch(ifBlock->appendLink(elseBlock));
-                                    }
-    | "for" "(" e_expr ";" e_expr ";" e_expr ")" stmt
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FOR, $3->appendLink($5)->appendLink($7));
-                                        $$->createBranch($9);
-                                    }
-    | "for" "(" declarations e_expr ";" e_expr ")" stmt
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$),
-                                                                   C_STMT_FOR,
-                                                                   $3->appendLink($4)->appendLink($6));
-                                        $$->createBranch($8);
-                                    }
-    | "while" "(" expr_list ")" stmt
-                                    { $$ = (new CompilerStatement(LOC(@$), C_STMT_WHILE, $3))->createBranch($5); }
-    | "do" stmt "while" "(" expr_list ")" ";"
-                                    { $$ = (new CompilerStatement(LOC(@$), C_STMT_DO_WHILE, $5))->createBranch($2); }
-    | "switch" "(" expr_list ")" "{" switch_body "}"
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_SWITCH, $3);
-                                        $$->createBranch($switch_body);
-                                    }
-    | "goto" id                     { $$ = new CompilerStatement(LOC(@$), C_STMT_GOTO, $id); }
+    | LONG_DOUBLE
+    {
+        $$ = new CompilerExpr ( $[LONG_DOUBLE],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_LONG_LONG,
+                                LOC(@$) );
+    }
 ;
 
-// `switch' statement body.
-switch_body:
-      /* empty */                   { $$ = nullptr;                                            }
-    | cases statements              { $$ = $cases->createBranch($statements);                  }
-    | switch_body cases statements  { $$ = $1->appendLink($cases->createBranch($statements));  }
+enumeration-constant:
+    ENUM_CONST
+    {
+        $$ = new CompilerExpr ( $[ENUM_CONST], LOC(@$) );
+    }
 ;
 
-// Sequence of `case:' and/or `default:' statements, used inside `switch' statement.
-cases:
-      "case" expr ":"               { $$ = new CompilerStatement(LOC(@$), C_STMT_CASE, $expr); }
-    | "default" ":"                 { $$ = new CompilerStatement(LOC(@$), C_STMT_DEFAULT);     }
-    | cases "case" expr ":"         { $$ = $1->appendArgsLink($expr);                          }
-    | cases "default" ":"           {
-                                        $1->completeDelete();
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_DEFAULT);
-                                    }
+character-constant:
+    CHARACTER
+    {
+        $$ = new CompilerExpr ( $[CHARACTER], LOC(@$) );
+    }
+
+    | L_CHARACTER
+    {
+        $$ = new CompilerExpr ( $[L_CHARACTER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_LONG,
+                                LOC(@$) );
+    }
 ;
 
-// Scope.
-scope:
-      "{" /* empty */ "}"           { $$ = new CompilerStatement(LOC(@$), C_STMT_SCOPE); }
-    | "{" statements "}"            {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_SCOPE);
-                                        $$->createBranch($statements);
-                                    }
+string-literal:
+    string
+    {
+        $$ = $[string];
+    }
+
+    | lstring
+    {
+        $$ = $[lstring];
+    }
 ;
 
-function:
-      dt_attr datatype id "(" param_list ")" stmt
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list));
-                                        $$->createBranch($stmt);
-                                    }
-    | dt_attr datatype id "(" param_list ")" at stmt
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list)->appendLink($at));
-                                        $$->createBranch($stmt);
-                                    }
-    | "inline" dt_attr datatype id "(" param_list ")" stmt
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_INLINE_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list));
-                                        $$->createBranch($stmt);
-                                    }
-;
-
-// Identifier.
-id:
-      IDENTIFIER                    { $$ = new CompilerExpr($IDENTIFIER, LOC(@$)); }
-;
-
-ptr_attr:
-      /* empty */                   { $$ = nullptr; }
-    | "*" ptr_attr                  {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_PTR),
-                                                              CompilerExpr::OPER_PTRATTR,
-                                                              $2,
-                                                              LOC(@$));
-                                    }
-    | "const"                       {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_CONST),
-                                                              CompilerExpr::OPER_PTRATTR,
-                                                              LOC(@$));
-                                    }
-    | "restrict"                    {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_RESTRICT),
-                                                              CompilerExpr::OPER_PTRATTR,
-                                                              LOC(@$));
-                                    }
-;
-
-decl:
-      id                            { $$ = $id; }
-    | id indexes                    { $$ = new CompilerExpr($1, CompilerExpr::OPER_INDEX, $2, LOC(@$)); }
-    | id indexes "=" "{" expr_list "}"
-                                    {
-                                        $$ = new CompilerExpr($1,
-                                                              CompilerExpr::OPER_INDEX,
-                                                              $2->appendLink($5),
-                                                              LOC(@$));
-                                    }
-    | decl "=" expr                 { $$ = new CompilerExpr($1, CompilerExpr::OPER_ASSIGN, $expr, LOC(@$)); }
-;
-
-// List of function parameters.
-decl_list:
-      decl                          { $$ = $decl;                 }
-    | decl_list "," decl            { $$ = $1->appendLink($decl); }
-;
-
-declarations:
-    dt_attr datatype decl_list ";"  {
-/*                                         if ( nullptr == $dt_attr ) */
-/*                                         { */
-/*                                             @$.first_line = @datatype.first_line; */
-/*                                             @$.first_column = @datatype.first_column; */
-/*                                         } */
-                                        $$ = $dt_attr->appendLink($datatype)->appendLink($decl_list);
-                                    }
-;
-
-param:
-      datatype id                   { $$ = $datatype->appendLink($id); }
-;
-
-// List of function parameters.
-param_list:
-      /* empty */                   { $$ = nullptr;                }
-    | param                         { $$ = $param;                 }
-    | param_list "," param          { $$ = $1->appendLink($param); }
-;
-
-// Expression, possibly empty.
-e_expr:
-      /* empty */                   { $$ = new CompilerExpr(LOC(@$)); }
-    | expr_list                     { $$ = $expr_list;                }
-;
-
-expr_list:
-      expr                          { $$ = $expr; }
-    | expr_list "," expr            { $$ = new CompilerExpr($1, CompilerExpr::OPER_COMMA, $3, LOC(@$)); }
-;
-
-// String constant.
 string:
-      STRING                        { $$ = new CompilerExpr(CompilerValue((unsigned char*) $STRING.data, $STRING.size, false), LOC(@$)); }
-    | string STRING                 { $$ = $1->appendLink(new CompilerExpr(CompilerValue((unsigned char*) $STRING.data,$STRING.size, false),LOC(@$)));}
+    STRING
+    {
+        $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[STRING].data, $[STRING].size, false), LOC(@$) );
+    }
+
+    | string STRING
+    {
+        $$ = $1;
+        $$->m_location = LOC(@$);
+        CompilerValue::Data::CharArray & lStr = $$->m_lValue.m_data.m_array;
+        lStr.m_data = (unsigned char*) realloc(lStr.m_data, lStr.m_size + $[STRING].size + 1);
+        memcpy(lStr.m_data + lStr.m_size, $[STRING].data, $[STRING].size);
+        lStr.m_size += $[STRING].size;
+        lStr.m_data[lStr.m_size] = '\0';
+        free($[STRING].data);
+    }
 ;
 
-datatype:
-      dt                            { $$ = $dt;                          }
-    | datatype dt                   { $$ = $1->appendLink($dt);          }
-    | enum                          {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_ENUM),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              $1,
-                                                              LOC(@$));
-                                    }
-    | struct                        {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_STRUCT),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              $1,
-                                                              LOC(@$));
-                                    }
-    | union                         {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_UNION),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              $1,
-                                                              LOC(@$));
-                                    }
+lstring:
+    L_STRING
+    {
+        $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[L_STRING].data, $[L_STRING].size, false),
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_LONG,
+                                LOC(@$) );
+    }
+
+    | lstring STRING
+    {
+        $$ = $1;
+        $$->m_location = LOC(@$);
+        CompilerValue::Data::CharArray & lStr = $$->m_lValue.m_data.m_array;
+        lStr.m_data = (unsigned char*) realloc(lStr.m_data, lStr.m_size + $[STRING].size + 1);
+        memcpy(lStr.m_data + lStr.m_size, $[STRING].data, $[STRING].size);
+        lStr.m_size += $[STRING].size;
+        lStr.m_data[lStr.m_size] = '\0';
+        free($[STRING].data);
+    }
 ;
 
-// Datatypes
-dt:
-     id                             {
-                                        $$ = new CompilerExpr($id,
-                                                              CompilerExpr::OPER_CUSTOM_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "*" ptr_attr                  {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_PTR),
-                                                              CompilerExpr::OPER_PTRATTR,
-                                                              $ptr_attr,
-                                                              LOC(@$));
-                                    }
-    | "char"                        {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_CHAR),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "double"                      {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_DOUBLE),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "float"                       {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_FLOAT),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "int"                         {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_INT),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "long"                        {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_LONG),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "short"                       {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_SHORT),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "signed"                      {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_SIGNED),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "unsigned"                    {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_UNSIGNED),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | "void"                        {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_VOID),
-                                                              CompilerExpr::OPER_DATATYPE,
-                                                              LOC(@$));
-                                    }
-    | at                            { $$ = $at; }
+identifier:
+    IDENTIFIER
+    {
+        $$ = new CompilerExpr ( $[IDENTIFIER], LOC(@$) );
+    }
 ;
 
-at:
-      "__at__" "(" string "," expr ")"
-                                    { $$ = new CompilerExpr($string, CompilerExpr::OPER_AT, $expr, LOC(@$)); }
+identifier-opt:
+    /* empty */
+    {
+        $$ = nullptr;
+    }
+
+    | identifier
+    {
+        $$ = $[identifier];
+    }
 ;
 
-dt_attr:
-      /* Empty */                   { $$ = new CompilerExpr(); }
-    | "auto"                        {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_AUTO),
-                                                              CompilerExpr::OPER_DATAATTR,
-                                                              LOC(@$));
-                                    }
-    | "const"                       {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_CONST),
-                                                              CompilerExpr::OPER_DATAATTR,
-                                                              LOC(@$));
-                                    }
-    | "extern"                      {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_EXTERN),
-                                                              CompilerExpr::OPER_DATAATTR,
-                                                              LOC(@$));
-                                    }
-    | "register"                    {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_REGISTER),
-                                                              CompilerExpr::OPER_DATAATTR,
-                                                              LOC(@$));
-                                    }
-    | "static"                      {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_STATIC),
-                                                              CompilerExpr::OPER_DATAATTR,
-                                                              LOC(@$));
-                                    }
-    | "volatile"                    {
-                                        $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_VOLATILE),
-                                                              CompilerExpr::OPER_DATAATTR,
-                                                              LOC(@$));
-                                    }
+// -----------------------------------------------------------------------------
+// PART 1.1: Primary expressions
+// -----------------------------------------------------------------------------
+
+primary-expression:
+    identifier
+    {
+        $$ = $[identifier];
+    }
+
+    | constant
+    {
+        $$ = $[constant];
+    }
+
+    | string-literal
+    {
+        $$ = $[string-literal];
+    }
+
+    | "(" expression ")"
+    {
+        $$ = $[expression];
+    }
 ;
 
-struct:
-      "struct" id "{" struct_body "}"   {
-                                            $$ = new CompilerExpr($id,
-                                                                  CompilerExpr::OPER_DATATYPE,
-                                                                  $struct_body,
-                                                                  LOC(@$));
-                                        }
-    | "struct" "{" struct_body "}"      {
-                                            $$ = new CompilerExpr(CompilerExpr::OPER_DATATYPE,
-                                                                  $struct_body,
-                                                                  LOC(@$));
-                                        }
-    | "struct" id                       { $$ = new CompilerExpr($id, CompilerExpr::OPER_DATATYPE, LOC(@$)); }
-    | "struct" id "{" "}"               { $$ = new CompilerExpr($id, CompilerExpr::OPER_DATATYPE, LOC(@$)); }
-    | "struct" "{" "}"                  { $$ = nullptr; }
+// -----------------------------------------------------------------------------
+// PART 1.2: Postfix operators
+// -----------------------------------------------------------------------------
+
+postfix-expression:
+    primary-expression
+    {
+        $$ = $[primary-expression];
+    }
+
+    | postfix-expression "[" expression "]"
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_INDEX,
+                                $[expression],
+                                LOC(@$) );
+    }
+
+    | postfix-expression "(" argument-expression-list-opt ")"
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_CALL,
+                                $[argument-expression-list-opt],
+                                LOC(@$) );
+    }
+
+    | postfix-expression "." identifier
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_DOT,
+                                $[identifier],
+                                LOC(@$) );
+    }
+
+    | postfix-expression "->" identifier
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_ARROW,
+                                $[identifier],
+                                LOC(@$) );
+    }
+
+    | postfix-expression "++"
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_INC,
+                                LOC(@$) );
+    }
+
+    | postfix-expression "--"
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_DEC,
+                                LOC(@$) );
+    }
+
+    | "(" type-name ")" "{" initializer-list "}"
+    {
+        $$ = new CompilerExpr ( $[type-name],
+                                CompilerExpr::OPER_CAST,
+                                $[initializer-list]
+                                LOC(@$) );
+    }
+
+    | "(" type-name ")" "{" initializer-list "," "}"
+    {
+        $$ = new CompilerExpr ( $[type-name],
+                                CompilerExpr::OPER_CAST,
+                                $[initializer-list]
+                                LOC(@$) );
+    }
 ;
 
-struct_body:
-      declarations                      { $$ = $declarations;                 }
-    | struct_body declarations          { $$ = $1->appendLink($declarations); }
+argument-expression-list:
+      assignment-expression
+    | argument-expression-list "," assignment-expression
 ;
 
-enum:
-      "enum" id "{" enum_body "}"       {
-                                            $$ = new CompilerExpr($id, CompilerExpr::OPER_DATATYPE, $enum_body, LOC(@$));
-                                        }
-    | "enum" "{" enum_body "}"          {
-                                            $$ = new CompilerExpr(CompilerExpr::OPER_DATATYPE, $enum_body, LOC(@$));
-                                        }
-    | "enum" id                         {
-                                            $$ = new CompilerExpr($id, CompilerExpr::OPER_DATATYPE, LOC(@$));
-                                        }
+argument-expression-list-opt:
+      /* empty */
+    | argument-expression-list
 ;
 
-enum_body:
-      /* Empty */                       { $$ = nullptr;                                                          }
-    | id                                { $$ = $id;                                                              }
-    | id "=" expr                       { $$ = new CompilerExpr($id, CompilerExpr::OPER_ASSIGN, $expr, LOC(@$)); }
-    | enum_body "," id                  { $$ = new CompilerExpr($1, CompilerExpr::OPER_COMMA, $id, LOC(@$));     }
+// -----------------------------------------------------------------------------
+// PART 1.3: Unary operators
+// -----------------------------------------------------------------------------
+
+unary-expression:
+      postfix-expression
+    | "++" unary-expression
+    | "--" unary-expression
+    | unary-operator cast-expression
+    | "sizeof" unary-expression
+    | "sizeof" "(" type-name ")"
 ;
 
-union:
-      "union" id "{" union_body "}"     {
-                                            $$ = new CompilerExpr($id,
-                                                                  CompilerExpr::OPER_DATATYPE,
-                                                                  $union_body,
-                                                                  LOC(@$));
-                                        }
-    | "union" "{" union_body "}"        {
-                                            $$ = new CompilerExpr(CompilerExpr::OPER_DATATYPE,
-                                                                  $union_body,
-                                                                  LOC(@$));
-                                        }
-    | "union" id                        { $$ = new CompilerExpr($id, CompilerExpr::OPER_DATATYPE, LOC(@$)); }
-    | "union" id "{" "}"                { $$ = new CompilerExpr($id, CompilerExpr::OPER_DATATYPE, LOC(@$)); }
-    | "union" "{" "}"                   { $$ = nullptr; }
+unary-operator:
+      "&"
+    | "*"
+    | "+"
+    | "-"
+    | "~"
+    | "!"
 ;
 
-union_body:
-     declarations                       { $$ = $declarations;                 }
-    | union_body declarations           { $$ = $1->appendLink($declarations); }
+// -----------------------------------------------------------------------------
+// PART 1.4: Cast operators
+// -----------------------------------------------------------------------------
+
+cast-expression:
+      unary-expression
+    | "(" type-name ")" cast-expression
 ;
 
-// Expression.
-expr:
-    // Single value expressions.    z
-      id                            { $$ = $id;                                                                  }
-    | string                        { $$ = $string;                                                              }
-    | INTEGER                       { $$ = new CompilerExpr($INTEGER, LOC(@$));                                  }
-    | REAL                          { $$ = new CompilerExpr($REAL, LOC(@$));                                     }
+// -----------------------------------------------------------------------------
+// PART 1.5: Multiplicative operators
+// -----------------------------------------------------------------------------
 
-    // Parentheses.
-    | "(" expr ")"                  { $$ = $2;                                                                   }
-
-    // Binary operators.
-    | expr "/" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_DIV,         $3, LOC(@$));   }
-    | expr "+" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD,         $3, LOC(@$));   }
-    | expr "-" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB,         $3, LOC(@$));   }
-    | expr "*" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MULT,        $3, LOC(@$));   }
-    | expr "%" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MOD,         $3, LOC(@$));   }
-    | expr "<<" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,         $3, LOC(@$));   }
-    | expr ">>" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,         $3, LOC(@$));   }
-    | expr "&&" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND,        $3, LOC(@$));   }
-    | expr "||" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR,         $3, LOC(@$));   }
-    | expr "&" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BAND,        $3, LOC(@$));   }
-    | expr "|" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BOR,         $3, LOC(@$));   }
-    | expr "^" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_BXOR,        $3, LOC(@$));   }
-    | expr "==" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,          $3, LOC(@$));   }
-    | expr "!=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,          $3, LOC(@$));   }
-    | expr "<" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LT,          $3, LOC(@$));   }
-    | expr "<=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,          $3, LOC(@$));   }
-    | expr ">" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GT,          $3, LOC(@$));   }
-    | expr ">=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,          $3, LOC(@$));   }
-    | expr "=" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ASSIGN,      $3, LOC(@$));   }
-    | expr "+=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD_ASSIGN,  $3, LOC(@$));   }
-    | expr "-=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB_ASSIGN,  $3, LOC(@$));   }
-    | expr "*=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MUL_ASSIGN,  $3, LOC(@$));   }
-    | expr "/=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_DIV_ASSIGN,  $3, LOC(@$));   }
-    | expr "%=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MOD_ASSIGN,  $3, LOC(@$));   }
-    | expr "<<=" expr               {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL_ASSIGN,  $3, LOC(@$));   }
-    | expr ">>=" expr               {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR_ASSIGN,  $3, LOC(@$));   }
-    | expr "&=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_AND_ASSIGN,  $3, LOC(@$));   }
-    | expr "|=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ORB_ASSIGN,  $3, LOC(@$));   }
-    | expr "^=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_XOR_ASSIGN,  $3, LOC(@$));   }
-
-    // Unary operators.
-    | "~" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_CMPL, LOC(@$));               }
-    | "!" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_NOT, LOC(@$));                }
-    | "+" expr  %prec UPLUS         { $$ = new CompilerExpr($2, CompilerExpr::OPER_INT_PROM, LOC(@$));           }
-    | "-" expr  %prec UMINUS        { $$ = new CompilerExpr($2, CompilerExpr::OPER_ADD_INV, LOC(@$));            }
-    | "++" expr                     { $$ = new CompilerExpr($2, CompilerExpr::OPER_PRE_INC, LOC(@$));            }
-    | "--" expr                     { $$ = new CompilerExpr($2, CompilerExpr::OPER_PRE_DEC, LOC(@$));            }
-    | expr "++" %prec POST_INC      { $$ = new CompilerExpr($1, CompilerExpr::OPER_POST_INC, LOC(@$));           }
-    | expr "--" %prec POST_DEC      { $$ = new CompilerExpr($1, CompilerExpr::OPER_POST_DEC, LOC(@$));           }
-    | "&" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_REF, LOC(@$));                }
-    | "*" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_DEREF, LOC(@$));              }
-
-
-    // Ternary operator.
-    | expr "?" expr ":" expr        {
-                                        CompilerExpr *choices = new CompilerExpr($3,
-                                                                                 CompilerExpr::OPER_COLON,
-                                                                                 $5,
-                                                                                 LOC(@$));
-                                        $$ = new CompilerExpr($1, CompilerExpr::OPER_TERNARY, choices, LOC(@$));
-                                    }
-
-    // sizeof
-    | "sizeof" "(" expr ")"         {
-                                        $$ = new CompilerExpr($3, CompilerExpr::OPER_SIZEOF, LOC(@$));
-                                    }
-
-    // Array element access.
-    | id indexes                    { $$ = new CompilerExpr($id, CompilerExpr::OPER_INDEX, $indexes, LOC(@$));   }
-
-    // Struct index
-    | member_access                 { $$ = $member_access; }
-
-    // Function call
-    | id "(" ")" %prec FCALL              { $$ = new CompilerExpr($id, CompilerExpr::OPER_CALL, LOC(@$));        }
-    | id "(" expr_list ")" %prec FCALL   { $$ = new CompilerExpr($id, CompilerExpr::OPER_CALL, $3, LOC(@$));    }
+multiplicative-expression:
+      cast-expression
+    | multiplicative-expression "*" cast-expression
+    | multiplicative-expression "/" cast-expression
+    | multiplicative-expression "%" cast-expression
 ;
 
-indexes:
-      "[" expr "]"                  { $$ = $expr;                                                                }
-    | indexes "[" expr "]"          { $$ = new CompilerExpr($1, CompilerExpr::OPER_INDEX, $expr, LOC(@$));       }
+// -----------------------------------------------------------------------------
+// PART 1.6: Additive operators
+// -----------------------------------------------------------------------------
+
+additive-expression:
+      multiplicative-expression
+    | additive-expression "+" multiplicative-expression
+    | additive-expression "-" multiplicative-expression
 ;
 
-member_access:
-      expr "." id                    { $$ = new CompilerExpr($expr, CompilerExpr::OPER_DOT, $id, LOC(@$));       }
-    | expr "->" id                   { $$ = new CompilerExpr($expr, CompilerExpr::OPER_ARROW, $id, LOC(@$));     }
+// -----------------------------------------------------------------------------
+// PART 1.7: Bitwise shift operators
+// -----------------------------------------------------------------------------
+
+shift-expression:
+      additive-expression
+    | shift-expression "<<" additive-expression
+    | shift-expression ">>" additive-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.8: Relational operators
+// -----------------------------------------------------------------------------
+
+relational-expression:
+      shift-expression
+    | relational-expression "<" shift-expression
+    | relational-expression ">" shift-expression
+    | relational-expression "<=" shift-expression
+    | relational-expression ">=" shift-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.9: Equality operators
+// -----------------------------------------------------------------------------
+
+equality-expression:
+      relational-expression
+    | equality-expression "==" relational-expression
+    | equality-expression "!=" relational-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.10: Bitwise AND operator
+// -----------------------------------------------------------------------------
+
+AND-expression:
+      equality-expression
+    | AND-expression "&" equality-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.11: Bitwise exclusive OR operator
+// -----------------------------------------------------------------------------
+
+exclusive-OR-expression:
+      AND-expression
+    | exclusive-OR-expression "^" AND-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.12: Bitwise inclusive OR operator
+// -----------------------------------------------------------------------------
+
+inclusive-OR-expression:
+      exclusive-OR-expression
+    | inclusive-OR-expression "|" exclusive-OR-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.13: Logical AND operator
+// -----------------------------------------------------------------------------
+
+logical-AND-expression:
+      inclusive-OR-expression
+    | logical-AND-expression "&&" inclusive-OR-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.14: Logical OR operator
+// -----------------------------------------------------------------------------
+
+logical-OR-expression:
+      logical-AND-expression
+    | logical-OR-expression "||" logical-AND-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.15: Conditional operator
+// -----------------------------------------------------------------------------
+
+conditional-expression:
+      logical-OR-expression
+    | logical-OR-expression "?" expression ":" conditional-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.16: Assignment operators
+// -----------------------------------------------------------------------------
+
+assignment-expression:
+      conditional-expression
+    | unary-expression assignment-operator assignment-expression
+;
+
+assignment-expression-opt:
+      /* empty */
+    | assignment-expression
+;
+
+assignment-operator:
+      "="
+    | "*="
+    | "/="
+    | "%="
+    | "+="
+    | "-="
+    | "<<="
+    | ">>="
+    | "&="
+    | "^="
+    | "|="
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.17: Comma operator
+// -----------------------------------------------------------------------------
+
+expression:
+      assignment-expression
+    | expression "," assignment-expression
+;
+
+expression-opt:
+      /* empty */
+    | expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 1.17: Constant expression
+// -----------------------------------------------------------------------------
+
+constant-expression:
+      conditional-expression
+;
+
+// =============================================================================
+// PART 2: Declarations
+// =============================================================================
+
+declaration:
+      declaration-specifiers init-declarator-list-opt ";"
+;
+
+declaration-specifiers:
+      storage-class-specifier declaration-specifiers-opt
+    | type-specifier declaration-specifiers-opt
+    | type-qualifier declaration-specifiers-opt
+    | function-specifier declaration-specifiers-opt
+    | allocation-specifier declaration-specifiers-opt
+;
+
+declaration-specifiers-opt:
+      /* empty */
+    | declaration-specifiers
+;
+
+init-declarator-list-opt:
+      /* empty */
+    | init-declarator-list
+;
+
+init-declarator-list:
+      init-declarator
+    | init-declarator-list "," init-declarator
+;
+
+init-declarator:
+      declarator
+    | declarator "=" initializer
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.1: Storage class specifiers
+// -----------------------------------------------------------------------------
+
+storage-class-specifier:
+      "typedef"
+    | "extern"
+    | "static"
+    | "auto"
+    | "register"
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.2: Type specifiers
+// -----------------------------------------------------------------------------
+
+type-specifier:
+      "void"
+    | "char"
+    | "short"
+    | "int"
+    | "long"
+    | "float"
+    | "double"
+    | "signed"
+    | "unsigned"
+    | "_Bool"
+    | "_Complex"
+    | "_Imaginary"
+    | struct-or-union-specifier
+    | enum-specifier
+    | typedef-name
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.2.1:  Structure and union specifiers
+// -----------------------------------------------------------------------------
+
+struct-or-union-specifier:
+      struct-or-union identifier-opt "{" struct-declaration-list "}"
+    | struct-or-union identifier
+;
+
+struct-or-union:
+      "struct"
+    | "union"
+;
+
+struct-declaration-list:
+      struct-declaration
+    | struct-declaration-list struct-declaration
+;
+
+struct-declaration:
+      specifier-qualifier-list struct-declarator-list ";"
+;
+
+specifier-qualifier-list:
+      specifier-qualifier
+    | specifier-qualifier-list specifier-qualifier
+;
+
+specifier-qualifier:
+      type-specifier
+    | type-qualifier
+;
+
+struct-declarator-list:
+      struct-declarator
+    | struct-declarator-list "," struct-declarator
+;
+
+struct-declarator:
+      declarator
+    | declarator-opt ":" constant-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.2.2:  Enumeration specifiers
+// -----------------------------------------------------------------------------
+
+enum-specifier:
+      "enum" identifier-opt "{" enumerator-list "}"
+    | "enum" identifier-opt "{" enumerator-list "," "}"
+    | "enum" identifier
+;
+
+enumerator-list:
+      enumerator
+    | enumerator-list "," enumerator
+;
+
+enumerator:
+      enumeration-constant
+    | enumeration-constant "=" constant-expression
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.3:  Type qualifier
+// -----------------------------------------------------------------------------
+
+type-qualifier:
+      "const"
+    | "restrict"
+    | "volatile"
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.4:  Function specifier
+// -----------------------------------------------------------------------------
+
+function-specifier:
+      "inline"
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.5:  Declarator
+// -----------------------------------------------------------------------------
+
+declarator:
+      pointer-opt direct-declarator
+;
+
+declarator-opt:
+      /* empty */
+    | declarator
+;
+
+direct-declarator:
+      identifier
+    | "(" declarator ")"
+    | direct-declarator "[" type-qualifier-list-opt assignment-expression-opt "]"
+    | direct-declarator "[" "static" type-qualifier-list-opt assignment-expression "]"
+    | direct-declarator "[" type-qualifier-list "static" assignment-expression "]"
+    | direct-declarator "[" type-qualifier-list-opt "*" "]"
+    | direct-declarator "(" parameter-type-list ")"
+    | direct-declarator "(" identifier-list-opt ")"
+;
+
+pointer:
+      "*" type-qualifier-list-opt
+    | "*" type-qualifier-list-opt pointer
+;
+
+pointer-opt:
+      /* empty */
+    | pointer
+;
+
+type-qualifier-list:
+      type-qualifier
+    | type-qualifier-list type-qualifier
+;
+
+type-qualifier-list-opt:
+      /* empty */
+    | type-qualifier-list
+;
+
+parameter-type-list:
+      parameter-list
+    | parameter-list "," "..."
+;
+
+parameter-list:
+      parameter-declaration
+    | parameter-list "," parameter-declaration
+;
+
+parameter-declaration:
+      declaration-specifiers declarator
+    | declaration-specifiers abstract-declarator-opt
+;
+
+identifier-list:
+      identifier
+    | identifier-list "," identifier
+;
+
+identifier-list-opt:
+      /* empty */
+    | identifier-list
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.6:  Type names
+// -----------------------------------------------------------------------------
+
+type-name:
+      specifier-qualifier-list abstract-declarator-opt
+;
+
+abstract-declarator:
+      pointer
+    | pointer-opt direct-abstract-declarator
+;
+
+abstract-declarator-opt:
+      /* empty */
+    | abstract-declarator
+;
+
+direct-abstract-declarator:
+      "(" abstract-declarator ")"
+    | direct-abstract-declarator-opt "[" assignment-expression-opt "]"
+    | direct-abstract-declarator-opt "[" "*" "]"
+    | direct-abstract-declarator-opt "[" parameter-type-list "]"
+;
+
+direct-abstract-declarator-opt:
+      /* empty */
+    | direct-abstract-declarator
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.7:  Type definitions
+// -----------------------------------------------------------------------------
+/* (CompilerCParserExtension*) (compiler->m_parserExtension) */
+typedef-name:
+      TYPEDEF_NAME
+;
+
+// -----------------------------------------------------------------------------
+// PART 2.8:  Initialization
+// -----------------------------------------------------------------------------
+
+initializer:
+      assignment-expression
+    | "{" initializer-list "}"
+    | "{" initializer-list "," "}"
+;
+
+initializer-list:
+      designation-opt initializer
+    | initializer-list "," designation-opt initializer
+;
+
+designation:
+      designator-list "="
+;
+
+designation-opt:
+      /* empty */
+    | designation
+;
+
+designator-list:
+      designator
+    | designator-list designator
+;
+
+designator:
+      "[" constant-expression "]"
+    | "." identifier
+;
+
+// =============================================================================
+// PART 3: Statements and blocks
+// =============================================================================
+
+statement:
+      labeled-statement
+    | compound-statement
+    | expression-statement
+    | selection-statement
+    | iteration-statement
+    | jump-statement
+    | inline-assembly
+;
+
+// -----------------------------------------------------------------------------
+// PART 3.1:  Labeled statements
+// -----------------------------------------------------------------------------
+
+labeled-statement:
+      identifier ":" statement
+    | "case" constant-expression ":" statement
+    | "default" constant-expression ":" statement
+;
+
+// -----------------------------------------------------------------------------
+// PART 3.2:  Compound statement
+// -----------------------------------------------------------------------------
+
+compound-statement:
+      critical-specifier-opt "{" block-item-list-opt "}"
+;
+
+block-item-list:
+      block-item
+    | block-item-list block-item
+;
+
+block-item-list-opt:
+      /* empty */
+    | block-item-list
+;
+
+block-item:
+      declaration
+    | statement
+;
+
+// -----------------------------------------------------------------------------
+// PART 3.3: Expression and null statements
+// -----------------------------------------------------------------------------
+
+expression-statement:
+    expression-opt ";"
+;
+
+// -----------------------------------------------------------------------------
+// PART 3.4: Selection statements
+// -----------------------------------------------------------------------------
+
+selection-statement:
+      "if" "(" expression ")" statement %prec IFX
+    | "if" "(" expression ")" statement "else" statement
+    | "switch" "(" expression ")" statement
+;
+
+// -----------------------------------------------------------------------------
+// PART 3.5: Iteration statements
+// -----------------------------------------------------------------------------
+
+iteration-statement:
+      "while" "(" expression ")" statement
+    | "do" statement "while" "(" expression ")" ";"
+    | "for" "(" expression-opt ";" expression-opt ";" expression-opt ")" statement
+    | "for" "(" declaration expression-opt ";" expression-opt ")" statement
+;
+
+// -----------------------------------------------------------------------------
+// PART 3.6: Jump statements
+// -----------------------------------------------------------------------------
+
+jump-statement:
+      "goto" identifier ";"
+    | "continue" ";"
+    | "break" ";"
+    | "return" expression-opt ";"
+;
+
+// =============================================================================
+// PART 4: External definitions
+// =============================================================================
+
+translation-unit:
+      external-declaration
+    | translation-unit external-declaration
+;
+
+external-declaration:
+      function-definition
+    | declaration
+;
+
+// -----------------------------------------------------------------------------
+// PART 4.1: Function definitions
+// -----------------------------------------------------------------------------
+
+function-definition:
+      declaration-specifiers declarator declaration-list-opt compound-statement
+;
+
+declaration-list:
+      declaration
+    | declaration-list declaration
+;
+
+declaration-list-opt:
+      /* empty */
+    | declaration-list
+;
+
+// =============================================================================
+// PART 5: Implementation specific extensions
+// =============================================================================
+
+allocation-specifier:
+      "__at__" "(" string-literal "," integer-constant ")"
+/*                                     { $$ = new CompilerExpr($string, CompilerExpr::OPER_AT, $expr, LOC(@$)); } */
+;
+
+critical-specifier-opt:
+      /* empty */
+    | "__critical__"
+;
+
+inline-assembly:
+      "__asm__" "(" string-literal ")" ";"
 ;
 
 %%
 
 // -----------------------------------------------------------------------------
-// EPILOGUE - FUNCTION DEFINITIONS
+// EPILOGUE
 // -----------------------------------------------------------------------------
 
 // Definition of the error reporting function used by Bison.

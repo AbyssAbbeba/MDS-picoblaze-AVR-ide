@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Compiler
@@ -31,6 +31,7 @@
 #include "CompilerStatementTypes.h"
 #include "CompilerSourceLocation.h"
 #include "CompilerLocationTracker.h"
+#include "CompilerParserExtension.h"
 
 // Used for i18n only
 #include <QObject>
@@ -69,6 +70,7 @@ class CompilerParserInterface
             m_strMaxSize = 0;
             m_insertEol = false;
             m_insertEof = false;
+            m_parserExtension = nullptr;
         }
 
     ////    Public Operations    ////
@@ -305,6 +307,11 @@ class CompilerParserInterface
         {
             m_insertEof = false;
             m_yyllocStack.clear();
+
+            if ( nullptr != m_parserExtension )
+            {
+                delete m_parserExtension;
+            }
         }
 
     ////    Public Attributes    ////
@@ -314,6 +321,9 @@ class CompilerParserInterface
 
         /// Stack to keep track of locations across multiple input buffers
         std::vector<YYLTYPE> m_yyllocStack;
+
+        ///
+        CompilerParserExtension * m_parserExtension;
 
     ////    Protected Attributes    ////
     private:

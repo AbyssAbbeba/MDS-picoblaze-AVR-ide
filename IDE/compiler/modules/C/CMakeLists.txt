@@ -31,14 +31,17 @@ include_directories ( "${CMAKE_SOURCE_DIR}"
 ## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME}
 
+              # Parser support
+              CompilerCParserExtension.cxx
+
               # Preprocessor
               CompilerCPreProc.cxx
               CompilerCPreProcMacros.cxx
               CompilerCPreProcSupport.cxx
 
               # Semantic analyzer.
-              CompilerCDataType.cxx
-              CompilerCFuncTable.cxx
+              CompilerCScopes.cxx
+              CompilerCDeclaration.cxx
               CompilerCSemanticAnalyzer.cxx )
 
 # Link a target to given libraries

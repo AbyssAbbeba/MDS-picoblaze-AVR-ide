@@ -54,11 +54,11 @@ namespace CompilerLexerUtils
      * @param[in] base
      * @return
      */
-    int convertStrToNumber ( CompilerParserInterface * compiler,
-                             const YYLTYPE * location,
-                             const char * str,
-                             unsigned int max,
-                             int base );
+    unsigned long long convertStrToNumber ( CompilerParserInterface * compiler,
+                                            const YYLTYPE * location,
+                                            const char * str,
+                                            unsigned int max,
+                                            int base );
 
     /**
      * @brief
