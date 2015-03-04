@@ -1214,13 +1214,15 @@ bool GuiCfg::loadConfig()
         qDebug() << "GuiCfg: no app version";
         this->sessionClear();
         this->saveSession();
-        this->setDefaultAll();
         this->saveConfig();
         return true;
     }
     this->setDefaultProject();
     return false;
 }
+
+
+
 
 
 void GuiCfg::saveConfig()
