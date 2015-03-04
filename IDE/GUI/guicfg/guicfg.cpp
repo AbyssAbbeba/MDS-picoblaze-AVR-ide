@@ -156,19 +156,14 @@ void GuiCfg::setHighlightOpt(GuiCfg_Items::HighlightLang lang, GuiCfg_Items::Hig
 }
 
 
-void GuiCfg::setDefaultIDEGeneral()
+void GuiCfg::setDefaultIDEGeneral(bool trial)
 {
     this->splash = true;
     this->tipsOnStart = false;
     this->sessionRestoration = true;
     this->language = "English";
     this->version = QString::fromStdString(MDS_VERSION);
-    QFileInfo cfgInfo(this->configPath);
-    if (cfgInfo.exists())
-    {
-        this->trial = cfgInfo.lastModified();
-    }
-    else
+    if (true == trial)
     {
         this->trial = QDateTime::currentDateTime();
     }
@@ -384,9 +379,9 @@ void GuiCfg::setDefaultPaths(bool release)
     }
 }
 
-void GuiCfg::setDefaultAll()
+void GuiCfg::setDefaultAll(bool trial)
 {
-    this->setDefaultIDEGeneral();
+    this->setDefaultIDEGeneral(trial);
     this->setDefaultIDEShortcuts();
     this->setDefaultEditFont();
     this->setDefaultEditGeneral();
@@ -1234,10 +1229,13 @@ void GuiCfg::saveConfig()
     QDomElement xmlVersion = domDoc.createElement("Version");
     xmlVersion.setAttribute("version", this->version);
     xmlRoot.appendChild(xmlVersion);
-    
-    QDomElement xmlTrial = domDoc.createElement("Trial");
-    xmlTrial.setAttribute("period", this->trial.toString());
-    xmlRoot.appendChild(xmlTrial);
+
+    if (this->trial.isValid())
+    {
+        QDomElement xmlTrial = domDoc.createElement("Trial");
+        xmlTrial.setAttribute("period", this->trial.toString());
+        xmlRoot.appendChild(xmlTrial);
+    }
     //IDEGeneral
     QDomElement xmlIDEGeneral = domDoc.createElement("IDEGeneral");
     QDomElement xmlSplash = domDoc.createElement("Option");

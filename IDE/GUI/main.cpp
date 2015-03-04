@@ -68,7 +68,11 @@ int main(int argc, char *argv[])
         qDebug() << array;
     }*/
 
-    GuiCfg::getInstance().setDefaultAll();
+    #ifdef MDS_VARIANT_TRIAL
+        GuiCfg::getInstance().setDefaultAll(true);
+    #else
+        GuiCfg::getInstance().setDefaultAll(false);
+    #endif
     GuiCfg::getInstance().setDefaultPaths(true);
 
     bool openFile = false;
