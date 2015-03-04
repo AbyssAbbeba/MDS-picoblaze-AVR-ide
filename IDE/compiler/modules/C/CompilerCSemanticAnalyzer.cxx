@@ -43,9 +43,9 @@ void CompilerCSemanticAnalyzer::process ( CompilerStatement * codeTree )
     {
         switch ( node->type() )
         {
-            case C_STMT_FUNC:
-                std::cout << "f("<<node->args()<<"): " << node->branch() << '\n';
-                break;
+//             case C_STMT_FUNC:
+//                 std::cout << "f("<<node->args()<<"): " << node->branch() << '\n';
+//                 break;
             default:
                 break;
         }

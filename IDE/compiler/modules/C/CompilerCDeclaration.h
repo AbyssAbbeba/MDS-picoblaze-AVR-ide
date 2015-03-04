@@ -37,42 +37,37 @@ class CompilerCDeclaration
         /**
          * @brief
          */
-        enum Attribute
-        {
-            A_CONST        = 0x001, ///<
-            A_STATIC       = 0x002, ///<
-            A_EXTERN       = 0x004, ///<
-            A_AUTO         = 0x008, ///<
-            A_VOLATILE     = 0x010, ///<
-            A_REGISTER     = 0x020, ///<
-            A_RESTRICT     = 0x040, ///<
-            A_REFERENCE    = 0x080, ///<
-            A_REFERS2CONST = 0x100, ///<
-            A_FUNCTION     = 0x200, ///<
-            A_INLINE       = 0x400, ///<
-        };
-
-        /**
-         * @brief
-         */
         enum Type
         {
-            DT_VOID      = 1,       ///<
-            DT_CHAR      = 2,       ///<
-            DT_SHORT     = 4,       ///<
-            DT_INT       = 5,       ///<
-            DT_FLOAT     = 6,       ///<
-            DT_DOUBLE    = 7,       ///<
-            DT_BOOL      = 8,       ///<
-
-            DT_ENUM      = 1 << 8,  ///<
-            DT_UNION     = 2 << 8,  ///<
-            DT_STRUCT    = 3 << 8,  ///<
-
-            DT_UNSIGNED  = 1 << 16, ///<
-            DT_LONG      = 2 << 16, ///<
-            DT_LONG_LONG = 4 << 16, ///<
-            DT_COMPLEX   = 8 << 16, ///<
+            DT_VOID             = 1 <<  0, ///<
+            DT_CHAR             = 2 <<  0, ///<
+            DT_SHORT            = 4 <<  0, ///<
+            DT_INT              = 8 <<  0, ///<
+            DT_LONG             = 1 <<  4, ///<
+            DT_LONG_LONG        = 2 <<  4, ///<
+            DT_FLOAT            = 4 <<  4, ///<
+            DT_DOUBLE           = 8 <<  4, ///<
+            DT_LONG_DOUBLE      = 1 <<  8, ///<
+            DT_BOOL             = 2 <<  8, ///<
+            DT_COMPLEX          = 4 <<  8, ///<
+            DT_IMAGINARY        = 8 <<  8, ///<
+            DT_UNSIGNED         = 1 << 12, ///<
+            DT_SIGNED           = 2 << 12, ///<
+            DT_ENUM             = 4 << 12, ///<
+            DT_UNION            = 8 << 12, ///<
+            DT_STRUCT           = 1 << 16, ///<
+            A_CONST             = 2 << 16, ///<
+            A_STATIC            = 4 << 16, ///<
+            A_EXTERN            = 8 << 16, ///<
+            A_AUTO              = 1 << 20, ///<
+            A_VOLATILE          = 2 << 20, ///<
+            A_REGISTER          = 4 << 20, ///<
+            A_RESTRICT          = 8 << 20, ///<
+            A_REFERENCE         = 1 << 24, ///<
+            A_REFERS2CONST      = 2 << 24, ///<
+            A_FUNCTION          = 4 << 24, ///<
+            A_INLINE            = 8 << 24, ///<
+            A_TYPEDEF           = 1 << 28, ///<
         };
 
         /**
@@ -107,16 +102,13 @@ class CompilerCDeclaration
         Type m_type;
 
         ///
-        Attribute m_attribute;
-
-        ///
         CompilerSourceLocation m_location;
 
         ///
         unsigned int m_pointer;
 
         ///
-        std::vector<unsigned int> * m_array;
+        std::vector<CompilerCDeclaration *> * m_array;
 
         ///
         std::string * m_id;

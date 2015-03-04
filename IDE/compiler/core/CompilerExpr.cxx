@@ -344,8 +344,8 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_LOR:             out << "||";              break;
         case CompilerExpr::OPER_LXOR:            out << "^^";              break;
         case CompilerExpr::OPER_LAND:            out << "&&";              break;
-        case CompilerExpr::OPER_LOW:             out << "LOW ";            break;
-        case CompilerExpr::OPER_HIGH:            out << "HIGH ";           break;
+        case CompilerExpr::OPER_LOW:             out << "low";             break;
+        case CompilerExpr::OPER_HIGH:            out << "high";            break;
         case CompilerExpr::OPER_EQ:              out << "==";              break;
         case CompilerExpr::OPER_NE:              out << "!=";              break;
         case CompilerExpr::OPER_LT:              out << "<";               break;
@@ -354,7 +354,7 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_GT:              out << ">";               break;
         case CompilerExpr::OPER_SHR:             out << ">>";              break;
         case CompilerExpr::OPER_SHL:             out << "<<";              break;
-        case CompilerExpr::OPER_CALL:            out << "<CALL>";          break;
+        case CompilerExpr::OPER_CALL:            out << "call";            break;
         case CompilerExpr::OPER_INT_PROM:        out << "<+pos>";          break;
         case CompilerExpr::OPER_ADD_INV:         out << "<-neg>";          break;
         case CompilerExpr::OPER_CMPL:            out << "~";               break;
@@ -374,20 +374,30 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_ASSIGN:          out << "=";               break;
         case CompilerExpr::OPER_NAND:            out << "!&";              break;
         case CompilerExpr::OPER_HASH:            out << "#";               break;
-        case CompilerExpr::OPER_REF:             out << "&";               break;
+        case CompilerExpr::OPER_REF:             out << "&ref";            break;
         case CompilerExpr::OPER_DEREF:           out << "*";               break;
-        case CompilerExpr::OPER_TERNARY:         out << "?:";              break;
+        case CompilerExpr::OPER_CONDITION:       out << "?:";              break;
         case CompilerExpr::OPER_COLON:           out << ":";               break;
-        case CompilerExpr::OPER_INDEX:           out << "[]";              break;
-        case CompilerExpr::OPER_INC:        out << "post++";          break;
-        case CompilerExpr::OPER_DEC:        out << "post--";          break;
+        case CompilerExpr::OPER_INDEX:           out << "[index]";         break;
+        case CompilerExpr::OPER_INC:             out << "post++";          break;
+        case CompilerExpr::OPER_DEC:             out << "post--";          break;
         case CompilerExpr::OPER_PRE_INC:         out << "++pre";           break;
         case CompilerExpr::OPER_PRE_DEC:         out << "--pre";           break;
         case CompilerExpr::OPER_DATATYPE:        out << "datatype";        break;
-        case CompilerExpr::OPER_ARROW:           out << "arrow";           break;
-        case CompilerExpr::OPER_COMMA:           out << "comma";           break;
+        case CompilerExpr::OPER_ARROW:           out << "->";              break;
+        case CompilerExpr::OPER_COMMA:           out << ",";               break;
         case CompilerExpr::OPER_SIZEOF:          out << "sizeof";          break;
+        case CompilerExpr::OPER_FIXED_DATATYPE:  out << "fixed-datatype";  break;
+        case CompilerExpr::OPER_CAST:            out << "cast";            break;
+        case CompilerExpr::OPER_ADDR:            out << "&addr";           break;
+        case CompilerExpr::OPER_DECLARATION:     out << "declaration";     break;
+        case CompilerExpr::OPER_INIT:            out << "=init";           break;
+        case CompilerExpr::OPER_PAIR:            out << "pair";            break;
+        case CompilerExpr::OPER_POINTER:         out << "*pointer";        break;
+        case CompilerExpr::OPER_ARRAY:           out << "[array]";         break;
+        case CompilerExpr::OPER_FUNCTION:        out << "function";        break;
     }
+
     return out;
 }
 
