@@ -236,11 +236,6 @@ MainForm::MainForm()
             SLOT(unhighlightSimWidget())
            );*/
 /*    connect(m_wDockManager,
-            SIGNAL(stopSimSig()),
-            this,
-            SLOT(stopSimSlot())
-           );*/
-/*    connect(m_wDockManager,
             SIGNAL(clockChangedSig(double, int)),
             this,
             SLOT(clockChangedSlot(double, int))
@@ -3925,6 +3920,7 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project, SIGNAL(changeFamily(QString)), this, SLOT(changeProjectFamily(QString)));
     connect(project, SIGNAL(closeProject()), this, SLOT(closeProject()));
     connect(project, SIGNAL(breakpointReached()), this, SLOT(pauseSimulation()));
+    connect(project, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
 }
 
 
@@ -4707,10 +4703,10 @@ void MainForm::scrollToFileLine(QString file, int line)
 }
 
 
-void MainForm::clockChangedSlot(double clock, int clockMult)
+/*void MainForm::clockChangedSlot(double clock, int clockMult)
 {
     m_projectMan->getActive()->setClock(clock, clockMult);
-}
+}*/
 
 
 void MainForm::requestMacrosCodeEdits()

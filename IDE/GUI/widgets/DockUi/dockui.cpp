@@ -47,6 +47,9 @@ DockUi::DockUi(QObject *parent)
 
     m_bottomTabs = NULL;
     m_rightTabs = NULL;
+    
+    m_bottomHidden = false;
+    m_rightHidden = false;
 }
 
 
@@ -234,8 +237,9 @@ void DockUi::handleRightHide()
         }
         QTabBar *tabBar = m_rightTabs->findChild<QTabBar *>(QLatin1String("qt_tabwidget_tabbar"));
         m_rightTabs->setFixedWidth(tabBar->width());
+        m_rightHidden = true;
     }
-    else
+    else if (true == m_rightHidden)
     {
         for (int i = 0; i < m_rightTabs->count(); i++)
         {
@@ -244,6 +248,7 @@ void DockUi::handleRightHide()
         }
         m_rightTabs->setMaximumWidth(600);
         m_rightTabs->setMinimumWidth(320);
+        m_rightHidden = false;
     }
 }
 
@@ -258,8 +263,9 @@ void DockUi::handleBottomHide()
         }
         QTabBar *tabBar = m_bottomTabs->findChild<QTabBar *>(QLatin1String("qt_tabwidget_tabbar"));
         m_bottomTabs->setFixedHeight(tabBar->height());
+        m_bottomHidden = true;
     }
-    else
+    else if (true == m_bottomHidden)
     {
         for (int i = 0; i < m_bottomTabs->count(); i++)
         {
@@ -268,5 +274,6 @@ void DockUi::handleBottomHide()
         }
         m_bottomTabs->setMaximumHeight(600);
         m_bottomTabs->setMinimumHeight(300);
+        m_bottomHidden = false;
     }
 }
