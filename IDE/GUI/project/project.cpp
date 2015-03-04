@@ -25,6 +25,7 @@
 #include "../errordialog/errordlg.h"
 #include "../compatibilitymode/compatibilitymode.h"
 #include "../widgets/DockUi/dockui.h"
+#include "../widgets/PicoBlazeGrid/picoblazegrid.h"
 
 
 
@@ -895,6 +896,17 @@ Project::Project(QFile *file, ProjectMan *parent)
             prjTreeWidget->expandAll();
             m_dockUi = new DockUi(this);
             m_dockUi->createWidgets(m_simControlUnit);
+            m_dockUi->m_simulationInfo->setClock(clock, clockMult);
+            connect(m_dockUi->m_simulationInfo,
+                    SIGNAL(clockChanged(double, int)),
+                    this,
+                    SLOT(clockChangedSlot(double, int))
+                   );
+            connect(m_dockUi->m_simulationInfo,
+                    SIGNAL(stopSimSig()),
+                    this,
+                    SIGNAL(stopSimSig())
+                   );
         }
     }
     /*for (int i = 0; i < fileCount; i++)
@@ -1019,6 +1031,17 @@ Project::Project(ProjectMan *parent)
     prjTreeWidget->expandAll();
     m_dockUi = new DockUi(this);
     m_dockUi->createWidgets(m_simControlUnit);
+    m_dockUi->m_simulationInfo->setClock(clock, clockMult);
+    connect(m_dockUi->m_simulationInfo,
+            SIGNAL(clockChanged(double, int)),
+            this,
+            SLOT(clockChangedSlot(double, int))
+            );
+    connect(m_dockUi->m_simulationInfo,
+            SIGNAL(stopSimSig()),
+            this,
+            SIGNAL(stopSimSig())
+            );
     //qDebug() << "Project: return Project()";
 }
 
@@ -1288,6 +1311,17 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     prjTreeWidget->expandAll();
     m_dockUi = new DockUi(this);
     m_dockUi->createWidgets(m_simControlUnit);
+    m_dockUi->m_simulationInfo->setClock(clock, clockMult);
+    connect(m_dockUi->m_simulationInfo,
+            SIGNAL(clockChanged(double, int)),
+            this,
+            SLOT(clockChangedSlot(double, int))
+           );
+    connect(m_dockUi->m_simulationInfo,
+            SIGNAL(stopSimSig()),
+            this,
+            SIGNAL(stopSimSig())
+           );
     //qDebug() << "Project: return Project() blank";
 }
 
@@ -2926,4 +2960,10 @@ void Project::setRegWatchers(QList<RegWatcherExportStruct> regWatchers)
 QList<RegWatcherExportStruct> Project::getRegWatchers()
 {
     return m_regWatchers;
+}
+
+
+void Project::clockChangedSlot(double clock, int clockMult)
+{
+    setClock(clock, clockMult);
 }

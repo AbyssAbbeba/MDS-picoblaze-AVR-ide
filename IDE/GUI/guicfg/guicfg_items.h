@@ -19,6 +19,7 @@
 #include <QFont>
 #include <QColor>
 #include <QString>
+#include <QDateTime>
 
 
 class GuiCfg_Items
@@ -200,6 +201,8 @@ class GuiCfg_Items
         QList<QString> sessionFileParentProjects;
 
         QString version;
+
+        QDateTime trial;
         
 };
 

@@ -215,6 +215,7 @@ class Project : public QObject
         void closeProjectSlot();
         void breakpointReachedSlot();
         void requestProjectPath();
+        void clockChangedSlot(double clock, int clockMult);
 
     signals:
         //void highlightLine(QString file, int line, QColor *color);
@@ -234,6 +235,7 @@ class Project : public QObject
         void changeFamily(QString family);
         void closeProject();
         void breakpointReached();
+        void stopSimSig();
         
     private:
         //void xmlBreakpointAdd(QString file, unsigned int line);
