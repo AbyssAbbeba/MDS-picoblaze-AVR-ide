@@ -58,7 +58,7 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setHighlightOpt(GuiCfg::HighlightLang lang, GuiCfg::HighlightRole role, GuiCfg::HighlightOpt opts);
 
-        void setDefaultIDEGeneral();
+        void setDefaultIDEGeneral(bool trial);
 
         void setDefaultIDEShortcuts();
 
@@ -76,7 +76,7 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setDefaultPaths(bool release);
 
-        void setDefaultAll();
+        void setDefaultAll(bool trial = false);
 
         void setTabWidth(int width);
         
