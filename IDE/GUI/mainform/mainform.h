@@ -171,7 +171,7 @@ class MainForm : public QMainWindow
         void interfaceConfig();
         void projectOpened();
         void stopSimSlot();
-        void clockChangedSlot(double clock, int clockMult);
+//        void clockChangedSlot(double clock, int clockMult);
         void activeProjectChanged(int index);
         void enableSimActs();
         void disableSimActs();

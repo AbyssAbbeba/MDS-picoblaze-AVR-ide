@@ -62,6 +62,10 @@ class DockUi : public QObject
     private slots:
         void handleRightHide();
         void handleBottomHide();
+
+    private:
+        bool m_bottomHidden;
+        bool m_rightHidden;
 };
 
 

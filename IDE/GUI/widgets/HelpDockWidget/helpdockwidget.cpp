@@ -49,16 +49,17 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
     layoutIndex->addWidget((QWidget*)(helpEngine->indexWidget()));
     wIndex->setLayout(layoutIndex);
 
-    /*QWidget *wSearch = new QWidget(this);
-    QVBoxLayout *layoutSearch = new QVBoxLayout(wSearch);
-    QLabel *lblSearch = new QLabel("Search", wSearch);
-    layoutSearch->addWidget(lblSearch);
-    layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->queryWidget()));
-    layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->resultWidget()));
-    wSearch->setLayout(layoutSearch);*/
+//     QWidget *wSearch = new QWidget(this);
+//     QVBoxLayout *layoutSearch = new QVBoxLayout(wSearch);
+//     //QLabel *lblSearch = new QLabel("Search", wSearch);
+//     //layoutSearch->addWidget(lblSearch);
+//     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->queryWidget()));
+//     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->resultWidget()));
+//     wSearch->setLayout(layoutSearch);
 
     tabs->addTab(wCnt, "Content");
     tabs->addTab(wIndex, "Index");
+//    tabs->addTab(wSearch, "Search");
     
     layout->addWidget(tabs);
     this->setLayout(layout);

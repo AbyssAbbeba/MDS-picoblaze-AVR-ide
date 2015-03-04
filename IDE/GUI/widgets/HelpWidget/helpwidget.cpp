@@ -50,18 +50,17 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     layoutIndex->addWidget((QWidget*)(helpEngine->indexWidget()));
     wIndex->setLayout(layoutIndex);
 
-    /*QWidget *wSearch = new QWidget(this);
+    QWidget *wSearch = new QWidget(this);
     QVBoxLayout *layoutSearch = new QVBoxLayout(wSearch);
-    QLabel *lblSearch = new QLabel("Search", wSearch);
-    layoutSearch->addWidget(lblSearch);
+    //QLabel *lblSearch = new QLabel("Search", wSearch);
+    //layoutSearch->addWidget(lblSearch);
     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->queryWidget()));
     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->resultWidget()));
-    wSearch->setLayout(layoutSearch);*/
+    wSearch->setLayout(layoutSearch);
 
     tabs->addTab(wCnt, "Content");
     tabs->addTab(wIndex, "Index");
-    //tabs->addTab(wSearch, "Search");
-
+    tabs->addTab(wSearch, "Search");
 
     QSplitter *helpPanel = new QSplitter(Qt::Horizontal, this);
     helpPanel->insertWidget(0, tabs);
@@ -89,4 +88,15 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
             this->textBrowser,
             SLOT(setSource(const QUrl &))
            );
+    connect((QWidget*)(helpEngine->searchEngine()->queryWidget()),
+            SIGNAL(search()),
+            this,
+            SLOT(querySearch())
+           );
+}
+
+
+void HelpWidget::querySearch()
+{
+    
 }
