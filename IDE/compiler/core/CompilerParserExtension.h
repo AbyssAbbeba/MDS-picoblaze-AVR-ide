@@ -18,6 +18,8 @@
 
 class CompilerParserExtension
 {
+    public:
+        virtual ~CompilerParserExtension() {}
 };
 
 #endif // COMPILERPARSEREXTENSION_H

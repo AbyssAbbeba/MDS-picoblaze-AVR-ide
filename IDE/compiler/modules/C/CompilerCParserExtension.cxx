@@ -16,6 +16,7 @@
 
 CompilerCParserExtension::CompilerCParserExtension()
 {
+    m_typedef = false;
     m_scopes.resize(1);
 }
 
@@ -33,7 +34,7 @@ void CompilerCParserExtension::newIdentifier ( const std::string & id,
                                                Type type )
 {
     const auto it = m_scopes.back().find(id);
-    if ( m_scopes.back().cend() != it )
+    if ( m_scopes.back().cend() == it )
     {
         m_scopes.back()[id] = type;
     }

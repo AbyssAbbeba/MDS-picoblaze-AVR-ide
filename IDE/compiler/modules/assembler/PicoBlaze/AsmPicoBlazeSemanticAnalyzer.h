@@ -106,6 +106,11 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
                               DataFile & dataFile,
                               const std::string & fileName );
 
+        /**
+         * @brief
+         */
+        inline void genSummary();
+
     ////    Protected Attributes    ////
     protected:
         ///

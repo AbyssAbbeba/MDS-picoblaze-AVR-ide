@@ -130,6 +130,10 @@ set ( MDS_H "${MDS_H}#define MDS_VARIANT_${MDS_VARIANT_UPPER_CASE}\n" )
 set ( MDS_H "${MDS_H}#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
 set ( MDS_H "${MDS_H}#define MDS_TARGET_${MDS_TARGET_UPPER_CASE}\n" )
 
+if ( ( MDS_VARIANT STREQUAL "Noncommercial" ) AND ( MDS_GRADE STREQUAL "Basic" ) )
+    set ( MDS_H "${MDS_H}#define MDS_CODE_LIMITATION 256\n" )
+endif()
+
 if ( MDS_VARIANT STREQUAL "Trial" )
     set ( MDS_H "${MDS_H}#define MDS_TRIAL_PERIOD ${MDS_TRIAL_PERIOD}\n" )
 endif()

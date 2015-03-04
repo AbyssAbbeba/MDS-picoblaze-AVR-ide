@@ -314,6 +314,11 @@ class CompilerCore : public CompilerBase,
                                            MessageType type,
                                            const std::string & text,
                                            bool forceAsUnique = false ) override;
+            /**
+             * @brief
+             * @param[in] text
+             */
+            virtual void printSummary ( const std::string & text ) override;
 
             /**
              * @brief

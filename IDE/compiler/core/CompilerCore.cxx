@@ -239,6 +239,11 @@ void CompilerCore::semanticMessage ( const CompilerSourceLocation & location,
     coreMessage(location, type, text, forceAsUnique);
 }
 
+void CompilerCore::printSummary ( const std::string & text )
+{
+    m_msgInterface->message(text, MT_REMARK);
+}
+
 bool CompilerCore::successful() const
 {
     return m_success;
