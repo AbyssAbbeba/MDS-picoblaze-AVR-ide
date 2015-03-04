@@ -841,25 +841,34 @@ namespace CompilerStatementTypes
 
         ///@name C
         //@{
-            C_STMT_EXPR,                        ///<
-            C_STMT_BREAK,                       ///<
-            C_STMT_CONTINUE,                    ///<
-            C_STMT_RETURN,                      ///<
-            C_STMT_VAR,                         ///<
-            C_STMT_FUNC,                        ///<
-            C_STMT_IF,                          ///<
-            C_STMT_CONDITION,                   ///<
-            C_STMT_ELSE,                        ///<
-            C_STMT_FOR,                         ///<
-            C_STMT_WHILE,                       ///<
-            C_STMT_DO_WHILE,                    ///<
-            C_STMT_SWITCH,                      ///<
-            C_STMT_CASE,                        ///<
-            C_STMT_DEFAULT,                     ///<
-            C_STMT_SCOPE,                       ///<
-            C_STMT_INLINE_FUNC,                 ///<
-            C_STMT_TYPEDEF,                     ///<
-            C_STMT_GOTO,                        ///<
+            C_LABEL,
+            C_CASE,
+            C_DEFAULT,
+
+            C_COMPOUND,
+            C_CRITICAL_COMPOUND,
+
+            C_DECLARATION,
+            C_EXPRESSION,
+            C_NULL,
+
+            C_IF_ELSE,
+            C_IF,
+            C_ELSE,
+            C_SWITCH,
+
+            C_WHILE,
+            C_DO_WHILE,
+            C_FOR,
+            C_FOR_DECL,
+
+            C_GOTO,
+            C_CONTINUE,
+            C_BREAK,
+            C_RETURN,
+
+            C_FUNCTION_DEF,
+            C_INLINE_ASSEMBLY,
         //@}
 
         STATEMENTTYPE__MAX__                    ///<

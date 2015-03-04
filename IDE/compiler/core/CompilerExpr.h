@@ -40,7 +40,7 @@ class CompilerExpr : public CompilerSerializable
          */
         enum Operator
         {
-            OPER_NONE            = 0,    ///< This makes only the m_lValue valid.
+            OPER_NONE            = 0,    ///<
             OPER_ADD             = L'+', ///<
             OPER_SUB             = L'-', ///<
             OPER_MULT            = L'*', ///<
@@ -85,20 +85,26 @@ class CompilerExpr : public CompilerSerializable
             OPER_ADD_INV         = 14,   ///<
             OPER_INT_PROM        = 15,   ///<
             OPER_NAND            = 16,   ///<
-            OPER_REF             = 17,   ///< Reference
+            OPER_REF             = 17,   ///<
             OPER_DEREF           = 18,   ///< Dereference
-            OPER_TERNARY         = 19,   ///<
+            OPER_CONDITION       = 19,   ///<
             OPER_COLON           = 20,   ///<
             OPER_INDEX           = 21,   ///<
             OPER_PRE_INC         = 24,   ///<
             OPER_PRE_DEC         = 25,   ///<
             OPER_DATATYPE        = 26,   ///<
-            OPER_FIXED_DATATYPE  = 33,   ///<
             OPER_ARROW           = 27,   ///<
             OPER_COMMA           = 28,   ///<
             OPER_SIZEOF          = 29,   ///<
-            OPER_CUSTOM_DATATYPE = 32,   ///<
-            OPER_CAST            = 34,   ///<
+            OPER_FIXED_DATATYPE  = 333,   ///<
+            OPER_CAST            = 334,   ///<
+            OPER_ADDR            = 335,   ///<
+            OPER_DECLARATION     = 336,   ///<
+            OPER_INIT            = 337,   ///<
+            OPER_PAIR            = 338,   ///<
+            OPER_POINTER         = 339,   ///<
+            OPER_ARRAY           = 430,   ///<
+            OPER_FUNCTION        = 431,   ///<
         };
 
     ////    Constructors and Destructors    ////
