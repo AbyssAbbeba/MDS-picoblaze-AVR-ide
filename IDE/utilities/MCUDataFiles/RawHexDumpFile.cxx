@@ -103,7 +103,7 @@ void RawHexDumpFile::save ( const std::string & filename,
             throw DataFileException(DataFileException::EXP_IO_ERROR);
         }
 
-        if ( opCode & 0xfe0000 )
+        if ( opCode & 0xfc0000 )
         {
             opCode = 0;
         }

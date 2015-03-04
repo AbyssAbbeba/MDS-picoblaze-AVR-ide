@@ -768,25 +768,28 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_INS_REGBANK_B:        out << "ASMPICOBLAZE_INS_REGBANK_B";        break;
         case ASMPICOBLAZE_INS_OUTPUTK_KK_P:     out << "ASMPICOBLAZE_INS_OUTPUTK_KK_P";     break;
 
-        case C_STMT_EXPR:                       out << "C_STMT_EXPR";                       break;
-        case C_STMT_BREAK:                      out << "C_STMT_BREAK";                      break;
-        case C_STMT_CONTINUE:                   out << "C_STMT_CONTINUE";                   break;
-        case C_STMT_RETURN:                     out << "C_STMT_RETURN";                     break;
-        case C_STMT_VAR:                        out << "C_STMT_VAR";                        break;
-        case C_STMT_FUNC:                       out << "C_STMT_FUNC";                       break;
-        case C_STMT_IF:                         out << "C_STMT_IF";                         break;
-        case C_STMT_CONDITION:                  out << "C_STMT_CONDITION";                  break;
-        case C_STMT_ELSE:                       out << "C_STMT_ELSE";                       break;
-        case C_STMT_FOR:                        out << "C_STMT_FOR";                        break;
-        case C_STMT_WHILE:                      out << "C_STMT_WHILE";                      break;
-        case C_STMT_DO_WHILE:                   out << "C_STMT_DO_WHILE";                   break;
-        case C_STMT_SWITCH:                     out << "C_STMT_SWITCH";                     break;
-        case C_STMT_CASE:                       out << "C_STMT_CASE";                       break;
-        case C_STMT_DEFAULT:                    out << "C_STMT_DEFAULT";                    break;
-        case C_STMT_SCOPE:                      out << "C_STMT_SCOPE";                      break;
-        case C_STMT_INLINE_FUNC:                out << "C_STMT_INLINE_FUNC";                break;
-        case C_STMT_TYPEDEF:                    out << "C_STMT_TYPEDEF";                    break;
-        case C_STMT_GOTO:                       out << "C_STMT_GOTO";                       break;
+        case C_LABEL:                           out << "C_LABEL";                           break;
+        case C_CASE:                            out << "C_CASE";                            break;
+        case C_DEFAULT:                         out << "C_DEFAULT";                         break;
+        case C_COMPOUND:                        out << "C_COMPOUND";                        break;
+        case C_CRITICAL_COMPOUND:               out << "C_CRITICAL_COMPOUND";               break;
+        case C_DECLARATION:                     out << "C_DECLARATION";                     break;
+        case C_EXPRESSION:                      out << "C_EXPRESSION";                      break;
+        case C_NULL:                            out << "C_NULL";                            break;
+        case C_IF_ELSE:                         out << "C_IF_ELSE";                         break;
+        case C_IF:                              out << "C_IF";                              break;
+        case C_ELSE:                            out << "C_ELSE";                            break;
+        case C_SWITCH:                          out << "C_SWITCH";                          break;
+        case C_WHILE:                           out << "C_WHILE";                           break;
+        case C_DO_WHILE:                        out << "C_DO_WHILE";                        break;
+        case C_FOR:                             out << "C_FOR";                             break;
+        case C_FOR_DECL:                        out << "C_FOR_DECL";                        break;
+        case C_GOTO:                            out << "C_GOTO";                            break;
+        case C_CONTINUE:                        out << "C_CONTINUE";                        break;
+        case C_BREAK:                           out << "C_BREAK";                           break;
+        case C_RETURN:                          out << "C_RETURN";                          break;
+        case C_FUNCTION_DEF:                    out << "C_FUNCTION_DEF";                    break;
+        case C_INLINE_ASSEMBLY:                 out << "C_INLINE_ASSEMBLY";                 break;
 
         case STATEMENTTYPE__MAX__:              out << "(STATEMENTTYPE__MAX__)";            break;
     }
