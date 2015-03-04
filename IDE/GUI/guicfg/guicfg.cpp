@@ -163,6 +163,15 @@ void GuiCfg::setDefaultIDEGeneral()
     this->sessionRestoration = true;
     this->language = "English";
     this->version = QString::fromStdString(MDS_VERSION);
+    QFileInfo cfgInfo(this->configPath);
+    if (cfgInfo.exists())
+    {
+        this->trial = cfgInfo.lastModified();
+    }
+    else
+    {
+        this->trial = QDateTime::currentDateTime();
+    }
 }
 
 
@@ -759,6 +768,12 @@ QList<QString> GuiCfg::getSessionFileParentProjects()
 }
 
 
+QDateTime GuiCfg::getTrial()
+{
+    return this->trial;
+}
+
+
 
 
 
@@ -772,7 +787,7 @@ QList<QString> GuiCfg::getSessionFileParentProjects()
 bool GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
-    bool version = false;
+    bool getVersion = false;
     //QFile cfgFile("./resources/xml/config.xml");
     QFile cfgFile(this->configPath);
     if (!cfgFile.open(QIODevice::ReadOnly))
@@ -806,17 +821,14 @@ bool GuiCfg::loadConfig()
                 {
                     if (xmlElement.tagName() == "Version")
                     {
-                        if (xmlElement.attribute("version", "") != QString::fromStdString(MDS_VERSION))
+                        if (xmlElement.attribute("version", "") == QString::fromStdString(MDS_VERSION))
                         {
-                            qDebug() << "GuiCfg: wrong app version";
-                            this->sessionClear();
-                            this->saveSession();
-                            this->setDefaultAll();
-                            this->saveConfig();
-                            cfgFile.close();
-                            return true;
+                            getVersion = true;
                         }
-                        version = true;
+                    }
+                    if (xmlElement.tagName() == "Trial")
+                    {
+                        trial = QDateTime::fromString(xmlElement.attribute("period", ""));
                     }
                     else if (xmlElement.tagName() == "IDEGeneral")
                     {
@@ -1197,7 +1209,7 @@ bool GuiCfg::loadConfig()
         }
     }
     cfgFile.close();
-    if (false == version)
+    if (false == getVersion)
     {
         qDebug() << "GuiCfg: no app version";
         this->sessionClear();
@@ -1217,10 +1229,14 @@ void GuiCfg::saveConfig()
     QDomElement xmlRoot = domDoc.createElement("config");
     domDoc.appendChild(xmlRoot);
 
-    //IDEGeneral
     QDomElement xmlVersion = domDoc.createElement("Version");
     xmlVersion.setAttribute("version", this->version);
     xmlRoot.appendChild(xmlVersion);
+    
+    QDomElement xmlTrial = domDoc.createElement("Trial");
+    xmlTrial.setAttribute("period", this->trial.toString());
+    xmlRoot.appendChild(xmlTrial);
+    //IDEGeneral
     QDomElement xmlIDEGeneral = domDoc.createElement("IDEGeneral");
     QDomElement xmlSplash = domDoc.createElement("Option");
     xmlSplash.setAttribute("name", "splash");

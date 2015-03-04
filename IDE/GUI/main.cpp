@@ -95,9 +95,9 @@ int main(int argc, char *argv[])
     }
     bool firstStart = GuiCfg::getInstance().loadConfig();
     #ifdef MDS_VARIANT_TRIAL
-        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
-        if (  MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) <= 0
-           || MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) > MDS_TRIAL_PERIOD
+//        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
+        if (  MDS_TRIAL_PERIOD - GuiCfg::getInstance().getTrial().daysTo(QDateTime::currentDateTime()) <= 0
+           || MDS_TRIAL_PERIOD - GuiCfg::getInstance().getTrial().daysTo(QDateTime::currentDateTime()) > MDS_TRIAL_PERIOD
            )
         {
             TrialExpired trial(0);

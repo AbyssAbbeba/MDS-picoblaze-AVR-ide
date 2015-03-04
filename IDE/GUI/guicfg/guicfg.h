@@ -192,6 +192,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         QList<QString> getSessionFileParentProjects();
 
+        QDateTime getTrial();
+
         //xml parser
         bool loadConfig();
         
