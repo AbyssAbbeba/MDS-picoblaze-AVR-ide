@@ -17,6 +17,7 @@
 
 
 #include <QTextBrowser>
+#include <QUrl>
 
 class QHelpEngine;
 

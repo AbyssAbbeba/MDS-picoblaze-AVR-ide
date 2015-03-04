@@ -17,6 +17,7 @@
 
 
 #include <QWidget>
+#include <QObject>
 
 class HelpBrowser;
 
@@ -24,8 +25,12 @@ class HelpBrowser;
 
 class HelpWidget : public QWidget
 {
+    Q_OBJECT
     public:
         HelpWidget(QWidget *parent, int width = 600, int height = 800);
+
+    private slots:
+        void querySearch();
 
     private:
         HelpBrowser *textBrowser;
