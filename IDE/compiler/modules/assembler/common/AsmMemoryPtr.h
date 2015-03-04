@@ -47,8 +47,6 @@ class AsmMemoryPtr
             MS__MAX__    ///<
         };
 
-    ////    Private Datatypes    ////
-    private:
         /**
          * @brief
          */
@@ -102,6 +100,13 @@ class AsmMemoryPtr
         bool isReserved ( MemorySpace where,
                           unsigned int address ) const;
 
+        /**
+         * @brief
+         * @param[in] where
+         * @return
+         */
+        unsigned int getUsage ( MemorySpace where ) const;
+
     ////    Public Attributes    ////
     public:
         /// @brief Processor registers (REG).
@@ -113,8 +118,6 @@ class AsmMemoryPtr
         /// @brief Program memory (CODE).
         int m_code;
 
-    ////    Public Attributes    ////
-    public:
         /// @brief
         HardLimits m_hardLimits;
 

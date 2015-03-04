@@ -121,3 +121,21 @@ bool AsmMemoryPtr::tryReserve ( const CompilerSourceLocation & location,
     reserve(where, address);
     return true;
 }
+
+unsigned int AsmMemoryPtr::getUsage ( MemorySpace where ) const
+{
+    unsigned int result = 0;
+
+    for ( auto bitField : m_reserved[where] )
+    {
+        for ( unsigned int i = 0; i < sizeof(unsigned int); i++ )
+        {
+            if ( bitField & ( 1 << i ) )
+            {
+                result++;
+            }
+        }
+    }
+
+    return result;
+}

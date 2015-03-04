@@ -28,9 +28,9 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar.
-/* %expect 39 */
+%expect 0
 // Expect exactly <n> reduce/reduce conflicts in this grammar.
-/* %expect-rr 0 */
+%expect-rr 0
 // Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser).
 %define lr.type lalr
 // Bison declaration to request verbose, specific error message strings when yyerror is called.
@@ -105,6 +105,19 @@
                                                                        location.last_line,      \
                                                                        location.first_column,   \
                                                                        location.last_column ) ) )
+
+    #define ALTER_SYMBOL_TYPE(symbol, type) \
+        dynamic_cast<CompilerCParserExtension*>(compiler->m_parserExtension)-> \
+            newIdentifier(symbol->lVal().m_data.m_symbol, CompilerCParserExtension::type);
+
+    #define ENTER_SCOPE() \
+        dynamic_cast<CompilerCParserExtension*>(compiler->m_parserExtension)->enterScopeBlock();
+
+    #define LEAVE_SCOPE() \
+        dynamic_cast<CompilerCParserExtension*>(compiler->m_parserExtension)->leaveScopeBlock();
+
+    #define TYPEDEF_FLAG \
+        dynamic_cast<CompilerCParserExtension*>(compiler->m_parserExtension)->m_typedef
 
     // Declaration of the error reporting function used by Bison.
     inline int CompilerCParser_error ( YYLTYPE * yylloc,
@@ -308,7 +321,7 @@
 } <string>
 
 // The start symbol.
-%start translation-unit
+%start start-symbol
 
 // -----------------------------------------------------------------------------
 // GRAMMAR RULES
@@ -1144,6 +1157,8 @@ declaration:
                                 CompilerExpr::OPER_DECLARATION,
                                 $[init-declarator-list-opt],
                                 LOC(@$) );
+
+        TYPEDEF_FLAG = false;
     }
 ;
 
@@ -1255,6 +1270,7 @@ storage-class-specifier:
     "typedef"
     {
         $$ = CompilerCDeclaration::A_TYPEDEF;
+        TYPEDEF_FLAG = true;
     }
 
     | "extern"
@@ -1388,7 +1404,7 @@ type-specifier:
 // -----------------------------------------------------------------------------
 
 struct-or-union-specifier:
-    struct-or-union identifier-opt "{" struct-declaration-list "}"
+    struct-or-union identifier-opt "{" { ENTER_SCOPE(); } struct-declaration-list { LEAVE_SCOPE(); } "}"
     {
         $$ = new CompilerExpr ( $[struct-or-union],
                                 CompilerExpr::OPER_DATATYPE,
@@ -1534,14 +1550,15 @@ enumerator-list:
 ;
 
 enumerator:
-    enumeration-constant
+    identifier
     {
-        $$ = $[enumeration-constant];
+        $$ = $[identifier];
+        ALTER_SYMBOL_TYPE($[identifier], TYPE_ENUM_CONST);
     }
 
-    | enumeration-constant "=" constant-expression
+    | identifier "=" { ALTER_SYMBOL_TYPE($[identifier], TYPE_ENUM_CONST); } constant-expression
     {
-        $$ = new CompilerExpr ( $[enumeration-constant],
+        $$ = new CompilerExpr ( $[identifier],
                                 CompilerExpr::OPER_ASSIGN,
                                 $[constant-expression],
                                 LOC(@$) );
@@ -1610,6 +1627,12 @@ direct-declarator:
     identifier
     {
         $$ = $[identifier];
+
+        if ( true == TYPEDEF_FLAG )
+        {
+std::cout<<"Setting '" << $[identifier]->lVal().m_data.m_symbol << "' as typedef.\n";
+            ALTER_SYMBOL_TYPE($[identifier], TYPE_TYPEDEF);
+        }
     }
 
     | "(" declarator ")"
@@ -1766,6 +1789,8 @@ parameter-declaration:
                                 CompilerExpr::OPER_DECLARATION,
                                 $[declarator],
                                 LOC(@$) );
+
+        TYPEDEF_FLAG = false;
     }
 
     | declaration-specifiers abstract-declarator-opt
@@ -1774,6 +1799,8 @@ parameter-declaration:
                                 CompilerExpr::OPER_DECLARATION,
                                 $[abstract-declarator-opt],
                                 LOC(@$) );
+
+        TYPEDEF_FLAG = false;
     }
 ;
 
@@ -2047,13 +2074,13 @@ labeled-statement:
 // -----------------------------------------------------------------------------
 
 compound-statement:
-    "{" block-item-list-opt "}"
+    "{" { ENTER_SCOPE(); } block-item-list-opt { LEAVE_SCOPE(); } "}"
     {
         $$ = new CompilerStatement ( LOC(@$), C_COMPOUND );
         $$->createBranch($[block-item-list-opt]);
     }
 
-    | critical-specifier "{" block-item-list-opt "}"
+    | critical-specifier "{" { ENTER_SCOPE(); } block-item-list-opt { LEAVE_SCOPE(); } "}"
     {
         $$ = new CompilerStatement ( LOC(@$), C_CRITICAL_COMPOUND );
         $$->createBranch($[block-item-list-opt]);
@@ -2210,6 +2237,20 @@ jump-statement:
 // PART 4: External definitions
 // =============================================================================
 
+start-symbol:
+    /* empty */
+    {
+        compiler->processCodeTree(nullptr);
+        YYACCEPT;
+    }
+
+    | translation-unit
+    {
+        compiler->processCodeTree($[translation-unit]);
+        YYACCEPT;
+    }
+;
+
 translation-unit:
     external-declaration
     {
@@ -2247,6 +2288,8 @@ function-definition:
 
         $$ = new CompilerStatement ( LOC(@$), C_FUNCTION_DEF, decl->appendLink($[declaration-list-opt]) );
         $$->createBranch($[compound-statement]);
+
+        TYPEDEF_FLAG = false;
     }
 ;
 

@@ -22,7 +22,8 @@ project ( CompilerModuleAsmPicoBlaze )
 flex_bison_pair ( AsmPicoBlazeLexer AsmPicoBlazeParser AsmPicoBlazeLexerParser )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
+include_directories ( "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_SOURCE_DIR}/compiler/core/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../common/"
                       "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/" )
 

@@ -118,6 +118,12 @@ class CompilerSemanticInterface
 
         /**
          * @brief
+         * @param[in] text
+         */
+        virtual void printSummary ( const std::string & text ) = 0;
+
+        /**
+         * @brief
          * @return
          */
         virtual CompilerLocationTracker & locationTrack() = 0;

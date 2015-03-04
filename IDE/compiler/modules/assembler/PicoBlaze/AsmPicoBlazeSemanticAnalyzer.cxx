@@ -15,6 +15,9 @@
 
 #include "AsmPicoBlazeSemanticAnalyzer.h"
 
+// Feature set configuration.
+#include "mds.h"
+
 // Common compiler header files.
 #include "AsmMacros.h"
 #include "AsmMemoryPtr.h"
@@ -191,6 +194,16 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
     m_treeDecoder->phase2(codeTree);
     m_treeDecoder->phase3();
 
+    #ifdef MDS_CODE_LIMITATION
+        if ( m_memoryPtr->getUsage(AsmMemoryPtr::MS_CODE) > MDS_CODE_LIMITATION )
+        {
+            m_compilerCore->semanticMessage ( CompilerSourceLocation(),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "Your program exceeds the code memory limitation for this MDS version. Please consider upgrading to a paid version of this software in order to remove this limitation: http://www.moravia-microsystems.com" ).toStdString() );
+            return;
+        }
+    #endif
+
     m_codeListing->output();
     m_macros->output();
     m_symbolTable->output();
@@ -198,9 +211,19 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
 
     if ( true == m_compilerCore->successful() )
     {
+        genSummary();
         genMachineCode();
         m_dgbFile->output(m_compilerCore, m_opts);
     }
+}
+
+inline void AsmPicoBlazeSemanticAnalyzer::genSummary()
+{
+    unsigned int used = m_memoryPtr->getUsage(AsmMemoryPtr::MS_CODE);
+    unsigned int total = m_memoryPtr->m_hardLimits.m_code;
+
+    m_compilerCore->printSummary(QObject::tr("Program memory usage: %1%, %2 locations of total %3 available.")
+                                 .arg(used * 100.0f / total ).arg(used).arg(total).toStdString());
 }
 
 inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()

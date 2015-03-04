@@ -71,8 +71,14 @@ class CompilerCParserExtension : public CompilerParserExtension
          */
         Type findIdentifier ( const std::string & id );
 
+    ////    Public Attributes    ////
+    public:
+        ///
+        bool m_typedef;
+
     ////    Private Attributes    ////
     private:
+        ///
         std::vector<std::map<std::string,Type>> m_scopes;
 };
 
