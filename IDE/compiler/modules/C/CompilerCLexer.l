@@ -434,13 +434,10 @@ L'.'            {
                     switch ( ((CompilerCParserExtension*) (yyextra->m_parserExtension))->findIdentifier(yytext) )
                     {
                         case CompilerCParserExtension::TYPE_UNSPECIFIED:
-std::cout << "symbol '"<<yytext<<"' is IDENTIFIER\n";
                             return IDENTIFIER;
                         case CompilerCParserExtension::TYPE_TYPEDEF:
-std::cout << "symbol '"<<yytext<<"' is TYPEDEF\n";
                             return TYPEDEF_NAME;
                         case CompilerCParserExtension::TYPE_ENUM_CONST:
-std::cout << "symbol '"<<yytext<<"' is ENUM_CONST\n";
                             return ENUM_CONST;
                     }
                 }
