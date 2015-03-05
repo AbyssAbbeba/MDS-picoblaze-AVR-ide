@@ -2,7 +2,7 @@
 #define DOCKUI_H
 
 #include <QObject>
-#include "../../mds.h"
+#include "../../../mds.h"
 
 
 #ifdef MDS_FEATURE_SIM_CALLWATCHER
@@ -62,6 +62,10 @@ class DockUi : public QObject
     private slots:
         void handleRightHide();
         void handleBottomHide();
+
+    signals:
+        void scrollToLine(QString file, int line);
+        void stopSimSig();
 
     private:
         bool m_bottomHidden;

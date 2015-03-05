@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include <QtXml>
+#include "../../mds.h"
 #include "project.h"
 //#include "McuSimCfgMgr.h"
 #include "MCUSimControl.h"
@@ -26,6 +27,11 @@
 #include "../compatibilitymode/compatibilitymode.h"
 #include "../widgets/DockUi/dockui.h"
 #include "../widgets/PicoBlazeGrid/picoblazegrid.h"
+#include "../widgets/BookmarkList/bookmarklist.h"
+#include "../widgets/BreakpointList/breakpointlist.h"
+#ifdef MDS_FEATURE_SIM_REGWATCHER
+    #include "../widgets/RegWatcher/regwatcher.h"
+#endif
 
 
 
@@ -897,15 +903,15 @@ Project::Project(QFile *file, ProjectMan *parent)
             m_dockUi = new DockUi(this);
             m_dockUi->createWidgets(m_simControlUnit);
             m_dockUi->m_simulationInfo->setClock(clock, clockMult);
+            m_dockUi->m_breakpointList->reload(&breakPoints);
+            m_dockUi->m_bookmarkList->reload(&bookmarks);
+            #ifdef MDS_FEATURE_SIM_REGWATCHER
+                m_dockUi->m_regWatcher->importWidgets(m_regWatchers);
+            #endif
             connect(m_dockUi->m_simulationInfo,
                     SIGNAL(clockChanged(double, int)),
                     this,
                     SLOT(clockChangedSlot(double, int))
-                   );
-            connect(m_dockUi->m_simulationInfo,
-                    SIGNAL(stopSimSig()),
-                    this,
-                    SIGNAL(stopSimSig())
                    );
         }
     }
@@ -1032,15 +1038,15 @@ Project::Project(ProjectMan *parent)
     m_dockUi = new DockUi(this);
     m_dockUi->createWidgets(m_simControlUnit);
     m_dockUi->m_simulationInfo->setClock(clock, clockMult);
+    m_dockUi->m_breakpointList->reload(&breakPoints);
+    m_dockUi->m_bookmarkList->reload(&bookmarks);
+    #ifdef MDS_FEATURE_SIM_REGWATCHER
+        m_dockUi->m_regWatcher->importWidgets(m_regWatchers);
+    #endif
     connect(m_dockUi->m_simulationInfo,
             SIGNAL(clockChanged(double, int)),
             this,
             SLOT(clockChangedSlot(double, int))
-            );
-    connect(m_dockUi->m_simulationInfo,
-            SIGNAL(stopSimSig()),
-            this,
-            SIGNAL(stopSimSig())
             );
     //qDebug() << "Project: return Project()";
 }
@@ -1312,15 +1318,15 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     m_dockUi = new DockUi(this);
     m_dockUi->createWidgets(m_simControlUnit);
     m_dockUi->m_simulationInfo->setClock(clock, clockMult);
+    m_dockUi->m_breakpointList->reload(&breakPoints);
+    m_dockUi->m_bookmarkList->reload(&bookmarks);
+    #ifdef MDS_FEATURE_SIM_REGWATCHER
+        m_dockUi->m_regWatcher->importWidgets(m_regWatchers);
+    #endif
     connect(m_dockUi->m_simulationInfo,
             SIGNAL(clockChanged(double, int)),
             this,
             SLOT(clockChangedSlot(double, int))
-           );
-    connect(m_dockUi->m_simulationInfo,
-            SIGNAL(stopSimSig()),
-            this,
-            SIGNAL(stopSimSig())
            );
     //qDebug() << "Project: return Project() blank";
 }

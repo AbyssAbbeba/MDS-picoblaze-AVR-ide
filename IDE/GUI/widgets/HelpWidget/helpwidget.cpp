@@ -17,6 +17,7 @@
 #include "../../guicfg/guicfg.h"
 #include <QHelpEngine>
 #include <QHelpSearchEngine>
+#include <QHelpSearchQueryWidget>
 #include "helpbrowser.h"
 
 
@@ -26,7 +27,7 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
 {
     this->setWindowTitle("Help");
     QVBoxLayout *layout = new QVBoxLayout(this);
-    QHelpEngine *helpEngine = new QHelpEngine(GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc", this);
+    helpEngine = new QHelpEngine(GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc", this);
     qDebug() << "HelpWidget: " << GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc";
     if (!helpEngine->setupData())
     {
@@ -93,10 +94,24 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
             this,
             SLOT(querySearch())
            );
+    connect((QWidget*)(helpEngine->searchEngine()->resultWidget()),
+            SIGNAL(requestShowLink(const QUrl&)),
+            this->textBrowser,
+            SLOT(setSource(const QUrl &))
+           );
+    
+
+    helpEngine->searchEngine()->reindexDocumentation();
 }
 
 
 void HelpWidget::querySearch()
 {
-    
+    qDebug() << "HelpWidget: querySearch()";
+    qDebug() << helpEngine->searchEngine()->queryWidget()->query().count();
+    for (int i = 0; i < helpEngine->searchEngine()->queryWidget()->query().count(); i++)
+    {
+        qDebug() << helpEngine->searchEngine()->queryWidget()->query().at(i).wordList;
+    }
+    helpEngine->searchEngine()->search(helpEngine->searchEngine()->queryWidget()->query());
 }
