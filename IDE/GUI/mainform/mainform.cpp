@@ -3920,7 +3920,9 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project, SIGNAL(changeFamily(QString)), this, SLOT(changeProjectFamily(QString)));
     connect(project, SIGNAL(closeProject()), this, SLOT(closeProject()));
     connect(project, SIGNAL(breakpointReached()), this, SLOT(pauseSimulation()));
-    connect(project, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    connect(project->m_dockUi, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    connect(project->m_dockUi, SIGNAL(scrollToLine(QString, int)), this, SLOT(scrollToFileLine(QString, int)));
+    
 }
 
 

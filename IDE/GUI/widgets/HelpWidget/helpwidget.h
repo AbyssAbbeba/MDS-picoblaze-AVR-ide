@@ -20,6 +20,7 @@
 #include <QObject>
 
 class HelpBrowser;
+class QHelpEngine;
 
 
 
@@ -34,6 +35,7 @@ class HelpWidget : public QWidget
 
     private:
         HelpBrowser *textBrowser;
+        QHelpEngine *helpEngine;
 };
 
 

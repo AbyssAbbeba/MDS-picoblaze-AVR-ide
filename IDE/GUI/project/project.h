@@ -235,7 +235,6 @@ class Project : public QObject
         void changeFamily(QString family);
         void closeProject();
         void breakpointReached();
-        void stopSimSig();
         
     private:
         //void xmlBreakpointAdd(QString file, unsigned int line);
