@@ -8,58 +8,44 @@
  * (C) copyright 2015 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
- * @file CompilerCScopes.h
+ * @file CompilerCSymbolTable.h
  */
 // =============================================================================
 
-#ifndef COMPILERCSCOPES_H
-#define COMPILERCSCOPES_H
+#ifndef COMPILERCSYMBOLTABLE_H
+#define COMPILERCSYMBOLTABLE_H
 
 // Standard headers.
 #include <map>
 #include <string>
 #include <vector>
 
-// Compiler header files.
-#include "CompilerStatement.h"
-
-// C compiler header files.
-#include "CompilerCDeclaration.h"
+// Forward declarations.
+class CompilerCScope;
+class CompilerStatement;
+class CompilerCDeclaration;
 
 /**
  * @brief
  * @ingroup CompilerC
- * @class CompilerCScopes
+ * @class CompilerCSymbolTable
  */
-class CompilerCScopes
+class CompilerCSymbolTable
 {
     ////    Public Datatypes    ////
     public:
-        /**
-         * @brief
-         */
-        struct Scope
-        {
-            Scope ( Scope * parent ) : m_parent(parent) {};
-
-            Scope * const m_parent;
-            std::vector<Scope*> m_chidren;
-
-            std::map<std::string, const CompilerCDeclaration *> m_symbols;
-            std::map<std::string, const CompilerCDeclaration *> m_datatypes;
-        };
 
     ////    Constructors and Destructors    ////
     public:
         /**
          * @brief
          */
-        CompilerCScopes();
+        CompilerCSymbolTable();
 
         /**
          * @brief
          */
-        virtual ~CompilerCScopes();
+        virtual ~CompilerCSymbolTable();
 
     ////    Public Operations    ////
     public:
@@ -80,13 +66,13 @@ class CompilerCScopes
              * @brief
              * @param[in] symbol
              */
-            void newSymbol ( const CompilerCDeclaration * symbol );
+            void newSymbol ( CompilerCDeclaration * symbol );
 
             /**
              * @brief
              * @param[in] dt
              */
-            void newDataType ( const CompilerCDeclaration * dt );
+            void newDataType ( CompilerCDeclaration * dt );
         //@}
 
         /// @name Translation phase.
@@ -118,10 +104,10 @@ class CompilerCScopes
     ////    Private Attributes    ////
     private:
         ///
-        Scope * m_rootScope;
+        CompilerCScope * m_rootScope;
 
         ///
-        std::map<const CompilerStatement *, Scope *> m_scopes;
+        std::map<CompilerStatement *, CompilerCScope *> m_scopes;
 };
 
-#endif // COMPILERCSCOPES_H
+#endif // COMPILERCSYMBOLTABLE_H

@@ -197,9 +197,10 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
     #ifdef MDS_CODE_LIMITATION
         if ( m_memoryPtr->getUsage(AsmMemoryPtr::MS_CODE) > MDS_CODE_LIMITATION )
         {
+            genSummary();
             m_compilerCore->semanticMessage ( CompilerSourceLocation(),
                                               CompilerBase::MT_ERROR,
-                                              QObject::tr ( "Your program exceeds the code memory limitation for this MDS version. Please consider upgrading to a paid version of this software in order to remove this limitation: http://www.moravia-microsystems.com" ).toStdString() );
+                                              QObject::tr ( "Your program exceeds the code memory limitation (%1 locations) for this MDS version. Please consider upgrading to a paid version of this software in order to remove this limitation: http://www.moravia-microsystems.com" ).arg(MDS_CODE_LIMITATION).toStdString() );
             return;
         }
     #endif

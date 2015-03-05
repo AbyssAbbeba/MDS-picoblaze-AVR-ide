@@ -78,7 +78,16 @@ class CompilerOptions
             V_GENERAL  = 0x1, ///<
             V_ERRORS   = 0x2, ///<
             V_WARNINGS = 0x4, ///<
-            V_REMARKS  = 0x8  ///<
+            V_REMARKS  = 0x8, ///<
+        };
+
+        /**
+         * @brief
+         */
+        enum Optimization
+        {
+            O_DISABLED = 0x0, ///<
+            O_BASIC    = 0x1, ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -177,6 +186,8 @@ class CompilerOptions
             bool m_enableDigraphs;
             bool m_enableTrigraphs;
             bool m_enableNamedOperators;
+
+            Optimization m_optimization;
         //@}
 
         /**
