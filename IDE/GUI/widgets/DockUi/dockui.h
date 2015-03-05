@@ -2,6 +2,7 @@
 #define DOCKUI_H
 
 #include <QObject>
+#include <QUrl>
 #include "../../../mds.h"
 
 
@@ -66,6 +67,7 @@ class DockUi : public QObject
     signals:
         void scrollToLine(QString file, int line);
         void stopSimSig();
+        void showHelpContent(const QUrl &url);
 
     private:
         bool m_bottomHidden;
