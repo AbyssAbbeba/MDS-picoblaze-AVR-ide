@@ -23,10 +23,12 @@
 
 CompilerCSymbolTable::CompilerCSymbolTable()
 {
+    m_rootScope = new CompilerCScope(nullptr, CompilerCScope::TYPE_FILE);
 }
 
 CompilerCSymbolTable::~CompilerCSymbolTable()
 {
+    delete m_rootScope;
 }
 
 void CompilerCSymbolTable::enterScopeDeclaration ( const CompilerStatement * scope )

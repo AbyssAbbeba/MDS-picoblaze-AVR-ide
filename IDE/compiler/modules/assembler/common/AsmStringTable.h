@@ -118,6 +118,13 @@ class AsmStringTable
 
         /**
          * @brief
+         * @param[in] name
+         * @return
+         */
+        const CompilerSourceLocation * getLocation ( const std::string & name ) const;
+
+        /**
+         * @brief
          */
         void output();
 

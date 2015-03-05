@@ -370,6 +370,10 @@ class CompilerCore : public CompilerBase,
             m_baseIncludeDir = directory;
         }
 
+        /**
+         * @brief
+         * @param[in,out]
+         */
         void setParserExtension ( CompilerParserExtension * parserExtension )
         {
             m_parserExtension = parserExtension;

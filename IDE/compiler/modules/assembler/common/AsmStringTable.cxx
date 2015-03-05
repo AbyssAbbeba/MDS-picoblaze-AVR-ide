@@ -134,6 +134,18 @@ bool AsmStringTable::get ( const std::string & name,
     return false;
 }
 
+const CompilerSourceLocation * AsmStringTable::getLocation ( const std::string & name ) const
+{
+    const auto it = m_table.find(name);
+
+    if ( m_table.cend() != it )
+    {
+        return &( it->second.m_location );
+    }
+
+    return nullptr;
+}
+
 void AsmStringTable::output()
 {
     if ( true == m_opts->m_stringTable.empty() )
