@@ -3922,6 +3922,7 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project, SIGNAL(breakpointReached()), this, SLOT(pauseSimulation()));
     connect(project->m_dockUi, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     connect(project->m_dockUi, SIGNAL(scrollToLine(QString, int)), this, SLOT(scrollToFileLine(QString, int)));
+    connect(project->m_dockUi, SIGNAL(showHelpContent(const QUrl &)), m_wDockManager, SLOT(setHelpBrowserPath(const QUrl &)));
     
 }
 

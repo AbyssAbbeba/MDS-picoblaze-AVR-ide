@@ -214,6 +214,11 @@ void DockUi::createWidgets(MCUSimControl *simControl)
             this,
             SIGNAL(scrollToLine(QString, int))
            );
+    connect(m_helpDockWidget,
+            SIGNAL(showHelpContent(const QUrl&)),
+            this,
+            SIGNAL(showHelpContent(const QUrl&))
+           );
     connect(m_compileInfo,
             SIGNAL(errorClicked(QString, int)),
             this,
