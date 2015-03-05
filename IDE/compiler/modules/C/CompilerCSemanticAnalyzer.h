@@ -20,6 +20,7 @@ class CompilerOptions;
 class CompilerStatement;
 class CompilerCSymbolTable;
 class CompilerCTreeDecoder;
+class CompilerCExprProcessor;
 class CompilerSemanticInterface;
 
 // Common compiler header files.
@@ -68,6 +69,9 @@ class CompilerCSemanticAnalyzer : public CompilerSemanticAnalyzer
 
         ///
         CompilerCTreeDecoder * m_treeDecoder;
+
+        ///
+        CompilerCExprProcessor * m_exprProcessor;
 };
 
 #endif // COMPILERCSEMANTICANALYZER_H

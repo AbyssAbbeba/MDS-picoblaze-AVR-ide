@@ -2,7 +2,7 @@
 #
 # MDS Compiler module for the C language.
 #
-# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -44,6 +44,7 @@ add_library ( ${PROJECT_NAME}
               CompilerCTreeDecoder.cxx
               CompilerCDeclaration.cxx
               CompilerCSymbolTable.cxx
+              CompilerCExprProcessor.cxx
               CompilerCSemanticAnalyzer.cxx )
 
 # Link a target to given libraries

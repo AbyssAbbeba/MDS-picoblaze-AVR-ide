@@ -99,8 +99,17 @@ void AsmMacros::define ( CompilerSourceLocation location,
         const char * paramName = param->m_lValue.m_data.m_symbol;
         if ( ( true == m_symbolTable->isDefined(paramName) ) || ( true == m_stringTable->find(paramName) ) )
         {
-            const CompilerSourceLocation & symLocation = m_symbolTable->getValue(paramName)->location();
-            if ( true == symLocation.isSet() )
+            const CompilerSourceLocation * symLocation = nullptr;
+            if ( true == m_symbolTable->isDefined(paramName) )
+            {
+                symLocation = &( m_symbolTable->getValue(paramName)->location() );
+            }
+            else
+            {
+                symLocation = m_stringTable->getLocation(paramName);
+            }
+
+            if ( ( nullptr != symLocation ) && ( true == symLocation->isSet() ) )
             {
                 m_compilerCore -> semanticMessage ( param->location(),
                                                     CompilerBase::MT_WARNING,
@@ -108,7 +117,7 @@ void AsmMacros::define ( CompilerSourceLocation location,
                                                                   "defined at: " )
                                                                 . arg ( paramName )
                                                                 . toStdString()
-                                                                + m_compilerCore->locationToStr(symLocation) );
+                                                                + m_compilerCore->locationToStr(*symLocation) );
             }
             else
             {
