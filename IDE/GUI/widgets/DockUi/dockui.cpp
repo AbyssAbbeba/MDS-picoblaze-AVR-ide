@@ -91,104 +91,102 @@ void DockUi::createWidgets(MCUSimControl *simControl)
     m_rightHide = new QWidget(m_rightTabs);
 
     m_bottomTabs->addTab(m_compileInfo, "Compiler Messages");
-    m_bottomTabs->addTab(m_simulationInfo, "Simulator");
-    #ifdef MDS_FEATURE_EXTERNAL_APPS
-        m_bottomTabs->addTab(m_extAppOutput, "External Applications");
-    #endif
-    m_bottomTabs->addTab(m_bottomHide, "Hide");
-
     {
         QPixmap pixmap(":resources/icons/messages.png");
-        m_bottomTabs->setTabIcon(0, QIcon(pixmap));
-        m_bottomTabs->setTabToolTip(0,"Compiler Messages");
+        m_bottomTabs->setTabIcon(m_bottomTabs->count()-1, QIcon(pixmap));
+        m_bottomTabs->setTabToolTip(m_bottomTabs->count()-1,"Compiler Messages");
     }
+    m_bottomTabs->addTab(m_simulationInfo, "Simulator");
     {
         QPixmap pixmap(":resources/icons/processor.png");
-        m_bottomTabs->setTabIcon(1, QIcon(pixmap));
-        m_bottomTabs->setTabToolTip(1,"Simulator");
+        m_bottomTabs->setTabIcon(m_bottomTabs->count()-1, QIcon(pixmap));
+        m_bottomTabs->setTabToolTip(m_bottomTabs->count()-1,"Simulator");
     }
     #ifdef MDS_FEATURE_EXTERNAL_APPS
+        m_bottomTabs->addTab(m_extAppOutput, "External Applications");
         {
             QPixmap pixmap(":resources/icons/application_xp_terminal.png");
-            m_bottomTabs->setTabIcon(2, QIcon(pixmap));
-            m_bottomTabs->setTabToolTip(2,"External Applications");
+            m_bottomTabs->setTabIcon(m_bottomTabs->count()-1, QIcon(pixmap));
+            m_bottomTabs->setTabToolTip(m_bottomTabs->count()-1,"External Applications");
         }
     #endif
+    m_bottomTabs->addTab(m_bottomHide, "Hide");
     {
         QPixmap pixmap(":resources/icons/bullet_arrow_down.png");
-        m_bottomTabs->setTabIcon(3, QIcon(pixmap));
-        m_bottomTabs->setTabToolTip(3,"Hide");
+        m_bottomTabs->setTabIcon(m_bottomTabs->count()-1, QIcon(pixmap));
+        m_bottomTabs->setTabToolTip(m_bottomTabs->count()-1,"Hide");
     }
+
+
     
     m_rightTabs->addTab(m_breakpointList, "");
-    m_rightTabs->addTab(m_bookmarkList, "");
-    m_rightTabs->addTab(m_asmMacroAnalyser, "");
-    #ifdef MDS_FEATURE_SIM_REGWATCHER
-        m_rightTabs->addTab(m_regWatcher, "");
-    #endif
-    #ifdef MDS_FEATURE_SIM_CALLWATCHER
-        m_rightTabs->addTab(m_callWatcher, "");
-    #endif
-    m_rightTabs->addTab(m_helpDockWidget, "");
-    m_rightTabs->addTab(m_rightHide, "");
-    m_rightTabs->setTabPosition(QTabWidget::East);
-
     {
         QPixmap pixmap(":resources/icons/breakpoint.png");
         QMatrix rm;
         rm.rotate(-90);
         pixmap = pixmap.transformed(rm);
-        m_rightTabs->setTabIcon(0, QIcon(pixmap));
-        m_rightTabs->setTabToolTip(0,"Breakpoints");
+        m_rightTabs->setTabIcon(m_rightTabs->count()-1, QIcon(pixmap));
+        m_rightTabs->setTabToolTip(m_rightTabs->count()-1,"Breakpoints");
     }
+    m_rightTabs->addTab(m_bookmarkList, "");
     {
         QPixmap pixmap(":resources/icons/bullet_star.png");
         QMatrix rm;
         rm.rotate(-90);
         pixmap = pixmap.transformed(rm);
-        m_rightTabs->setTabIcon(1, QIcon(pixmap));
-        m_rightTabs->setTabToolTip(1,"Bookmarks");
+        m_rightTabs->setTabIcon(m_rightTabs->count()-1, QIcon(pixmap));
+        m_rightTabs->setTabToolTip(m_rightTabs->count()-1,"Bookmarks");
     }
+    m_rightTabs->addTab(m_asmMacroAnalyser, "");
     {
         QPixmap pixmap(":resources/icons/brick.png");
         QMatrix rm;
         rm.rotate(-90);
         pixmap = pixmap.transformed(rm);
-        m_rightTabs->setTabIcon(2, QIcon(pixmap));
-        m_rightTabs->setTabToolTip(2,"Macros");
+        m_rightTabs->setTabIcon(m_rightTabs->count()-1, QIcon(pixmap));
+        m_rightTabs->setTabToolTip(m_rightTabs->count()-1,"Macros");
     }
-    {
-        QPixmap pixmap(":resources/icons/reg_watch.png");
-        QMatrix rm;
-        rm.rotate(-90);
-        pixmap = pixmap.transformed(rm);
-        m_rightTabs->setTabIcon(3, QIcon(pixmap));
-        m_rightTabs->setTabToolTip(3,"Reg Watcher");
-    }
-    {
-        QPixmap pixmap(":resources/icons/door_in.png");
-        QMatrix rm;
-        rm.rotate(-90);
-        pixmap = pixmap.transformed(rm);
-        m_rightTabs->setTabIcon(4, QIcon(pixmap));
-        m_rightTabs->setTabToolTip(4,"Call Watcher");
-    }
+    #ifdef MDS_FEATURE_SIM_REGWATCHER
+        m_rightTabs->addTab(m_regWatcher, "");
+        {
+            QPixmap pixmap(":resources/icons/reg_watch.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            m_rightTabs->setTabIcon(m_rightTabs->count()-1, QIcon(pixmap));
+            m_rightTabs->setTabToolTip(m_rightTabs->count()-1,"Reg Watcher");
+        }
+    #endif
+    #ifdef MDS_FEATURE_SIM_CALLWATCHER
+        m_rightTabs->addTab(m_callWatcher, "");
+        {
+            QPixmap pixmap(":resources/icons/door_in.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            m_rightTabs->setTabIcon(m_rightTabs->count()-1, QIcon(pixmap));
+            m_rightTabs->setTabToolTip(m_rightTabs->count()-1,"Call Watcher");
+        }
+    #endif
+    m_rightTabs->addTab(m_helpDockWidget, "");
     {
         QPixmap pixmap(":resources/icons/help.png");
         QMatrix rm;
         rm.rotate(-90);
         pixmap = pixmap.transformed(rm);
-        m_rightTabs->setTabIcon(5, QIcon(pixmap));
-        m_rightTabs->setTabToolTip(5,"Help");
+        m_rightTabs->setTabIcon(m_rightTabs->count()-1, QIcon(pixmap));
+        m_rightTabs->setTabToolTip(m_rightTabs->count()-1,"Help");
     }
+    m_rightTabs->addTab(m_rightHide, "");
     {
         QPixmap pixmap(":resources/icons/bullet_arrow_right.png");
         QMatrix rm;
         rm.rotate(-90);
         pixmap = pixmap.transformed(rm);
-        m_rightTabs->setTabIcon(6, QIcon(pixmap));
-        m_rightTabs->setTabToolTip(6,"Hide");
+        m_rightTabs->setTabIcon(m_rightTabs->count()-1, QIcon(pixmap));
+        m_rightTabs->setTabToolTip(m_rightTabs->count()-1,"Hide");
     }
+    m_rightTabs->setTabPosition(QTabWidget::East);
 
     connect(m_bottomTabs,
             SIGNAL(currentChanged(int)),
@@ -201,7 +199,31 @@ void DockUi::createWidgets(MCUSimControl *simControl)
             this,
             SLOT(handleRightHide())
            );
-
+    connect(m_asmMacroAnalyser,
+            SIGNAL(macroClicked(QString, int)),
+            this,
+            SIGNAL(scrollToLine(QString, int))
+           );
+    connect(m_breakpointList,
+            SIGNAL(breakpointClicked(QString, int)),
+            this,
+            SIGNAL(scrollToLine(QString, int))
+           );
+    connect(m_bookmarkList,
+            SIGNAL(bookmarkClicked(QString, int)),
+            this,
+            SIGNAL(scrollToLine(QString, int))
+           );
+    connect(m_compileInfo,
+            SIGNAL(errorClicked(QString, int)),
+            this,
+            SIGNAL(scrollToLine(QString, int))
+           );
+    connect(m_simulationInfo,
+            SIGNAL(stopSimSig()),
+            this,
+            SIGNAL(stopSimSig())
+           );
 }
 
 
