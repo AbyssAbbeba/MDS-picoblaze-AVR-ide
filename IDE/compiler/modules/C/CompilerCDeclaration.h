@@ -23,6 +23,7 @@
 
 // Compiler header files.
 #include "CompilerExpr.h"
+#include "CompilerStatement.h"
 #include "CompilerSourceLocation.h"
 
 /**
@@ -75,10 +76,10 @@ class CompilerCDeclaration
          */
         enum MemorySpace
         {
-            MS_NONE, ///<
-            MS_CODE, ///<
-            MS_REG,  ///<
-            MS_PORT, ///<
+            MS_UNSPECIFIED, ///<
+            MS_CODE,        ///<
+            MS_REG,         ///<
+            MS_PORT,        ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -93,9 +94,6 @@ class CompilerCDeclaration
          */
         ~CompilerCDeclaration();
 
-    ////    Public Operations    ////
-    public:
-
     ////    Private Attributes    ////
     private:
         ///
@@ -106,6 +104,9 @@ class CompilerCDeclaration
 
         ///
         unsigned int m_pointer;
+
+        ///
+        int m_bitFieldWidth;
 
         ///
         std::vector<CompilerCDeclaration *> * m_array;
@@ -124,6 +125,9 @@ class CompilerCDeclaration
 
         ///
         std::vector<CompilerCDeclaration *> * m_members;
+
+        ///
+        CompilerStatement * m_definition;
 
         ///
         std::pair<MemorySpace, int> m_allocator;

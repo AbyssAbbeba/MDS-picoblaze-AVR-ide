@@ -449,6 +449,7 @@ inline bool CompilerCPreProc::initialProcessing ( Buffer & buffer,
                             case '*':
                                 m_inmode = MODE_COMMENT;
                                 copy = false;
+                                in++;
                                 break;
                         }
                         break;

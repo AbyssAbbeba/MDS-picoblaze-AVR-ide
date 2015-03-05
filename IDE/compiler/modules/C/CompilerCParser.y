@@ -4,7 +4,7 @@
  *
  * ...
  *
- * (C) copyright 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
  */
 // =============================================================================
 
@@ -63,8 +63,7 @@
 
 
 /*
- * Interpreter's interface for the syntax analyzer; we need to have some things declared
- * before we can declare other things.
+ * We need to have some things declared before we can declare other things...
  */
 %code requires
 {
@@ -1630,7 +1629,6 @@ direct-declarator:
 
         if ( true == TYPEDEF_FLAG )
         {
-std::cout<<"Setting '" << $[identifier]->lVal().m_data.m_symbol << "' as typedef.\n";
             ALTER_SYMBOL_TYPE($[identifier], TYPE_TYPEDEF);
         }
     }
@@ -2272,6 +2270,15 @@ external-declaration:
     | declaration
     {
         $$ = new CompilerStatement ( LOC(@$), C_DECLARATION, $[declaration] );
+    }
+
+    | ";"
+    {
+        $$ = nullptr;
+        compiler->parserMessage ( LOC(@$),
+                                  CompilerBase::MT_WARNING,
+                                  QObject::tr("null statement is not allowed here (ISO 9899:1999)").toStdString(),
+                                  true );
     }
 ;
 
