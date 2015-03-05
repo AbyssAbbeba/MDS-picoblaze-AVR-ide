@@ -16,12 +16,19 @@
 
 CompilerCDeclaration::CompilerCDeclaration()
 {
-    m_array    = nullptr;
-    m_id       = nullptr;
-    m_typename = nullptr;
-    m_value    = nullptr;
-    m_owner    = nullptr;
-    m_members  = nullptr;
+    m_type          = Type(0);
+    m_pointer       = 0;
+    m_bitFieldWidth = -1;
+
+    m_array      = nullptr;
+    m_id         = nullptr;
+    m_typename   = nullptr;
+    m_value      = nullptr;
+    m_owner      = nullptr;
+    m_members    = nullptr;
+    m_definition = nullptr;
+
+    m_allocator.first = MS_UNSPECIFIED;
 }
 
 CompilerCDeclaration::~CompilerCDeclaration()

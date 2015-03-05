@@ -15,6 +15,13 @@
 #ifndef COMPILERCSEMANTICANALYZER_H
 #define COMPILERCSEMANTICANALYZER_H
 
+// Forward declarations.
+class CompilerOptions;
+class CompilerStatement;
+class CompilerCSymbolTable;
+class CompilerCTreeDecoder;
+class CompilerSemanticInterface;
+
 // Common compiler header files.
 #include "CompilerSemanticAnalyzer.h"
 
@@ -53,6 +60,14 @@ class CompilerCSemanticAnalyzer : public CompilerSemanticAnalyzer
          * @param[in] deviceName
          */
         virtual void setDevice ( const std::string & deviceName );
+
+        ////    Private Attributes    ////
+    private:
+        ///
+        CompilerCSymbolTable * m_symbolTable;
+
+        ///
+        CompilerCTreeDecoder * m_treeDecoder;
 };
 
 #endif // COMPILERCSEMANTICANALYZER_H

@@ -40,8 +40,10 @@ add_library ( ${PROJECT_NAME}
               CompilerCPreProcSupport.cxx
 
               # Semantic analyzer.
-              CompilerCScopes.cxx
+              CompilerCScope.cxx
+              CompilerCTreeDecoder.cxx
               CompilerCDeclaration.cxx
+              CompilerCSymbolTable.cxx
               CompilerCSemanticAnalyzer.cxx )
 
 # Link a target to given libraries
