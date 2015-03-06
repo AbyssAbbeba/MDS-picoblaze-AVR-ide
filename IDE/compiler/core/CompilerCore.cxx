@@ -56,6 +56,7 @@ CompilerCore::~CompilerCore()
     {
         delete m_semanticAnalyzer;
     }
+
     if ( nullptr != m_rootStatement )
     {
         m_rootStatement->completeDelete();

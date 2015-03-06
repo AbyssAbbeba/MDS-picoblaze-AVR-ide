@@ -27,16 +27,41 @@
 
 CompilerCTreeDecoder::CompilerCTreeDecoder ( CompilerSemanticInterface * compilerCore,
                                              CompilerOptions           * opts,
-                                             CompilerCSymbolTable      * symbolTable )
+                                             CompilerCSymbolTable      * symbolTable,
+                                             CompilerCExprProcessor    * exprProcessor )
                                            :
                                              m_compilerCore ( compilerCore ),
                                              m_opts ( opts ),
-                                             m_symbolTable ( symbolTable )
+                                             m_symbolTable ( symbolTable ),
+                                             m_exprProcessor (exprProcessor)
 {
 }
 
 CompilerCTreeDecoder::~CompilerCTreeDecoder()
 {
+}
+
+void CompilerCTreeDecoder::processCodeTree ( CompilerStatement * codeTree )
+{
+    using namespace CompilerStatementTypes;
+
+    for ( CompilerStatement * node = codeTree->next();
+          nullptr != node;
+          node = node->next() )
+    {
+        switch ( node->type() )
+        {
+            case C_DECLARATION:
+                processDeclaration(node);
+                break;
+            case C_FUNCTION_DEF:
+                processFuncDef(node);
+                break;
+            default:
+                unexpectedNode(node);
+                return;
+        }
+    }
 }
 
 /*
@@ -61,33 +86,26 @@ CompilerCTreeDecoder::~CompilerCTreeDecoder()
     ) declaration
 )
 */
-void CompilerCTreeDecoder::processDeclarations ( CompilerStatement * codeTree )
-{
-    using namespace CompilerStatementTypes;
 
-    for ( CompilerStatement * node = codeTree->next();
-          nullptr != node;
-          node = node->next() )
-    {
-        switch ( node->type() )
-        {
-            case C_DECLARATION:
-std::cout << "C_DECLARATION:" << node->args() << '\n';
-std::cout << "left="<<node->args()->lVal()<<'\n';
-std::cout << "op="<<node->args()->oper()<<'\n';
-std::cout << "right="<<node->args()->rVal()<<'\n'<<'\n';
-                break;
-            case C_FUNCTION_DEF:
-                std::cout << "C_FUNCTION_DEF\n";
-                break;
-            default:
-                unexpectedNode(node);
-                return;
-        }
-    }
+inline void CompilerCTreeDecoder::processDeclaration ( CompilerStatement * declaration )
+{
+    std::cout << "C_DECLARATION:" << declaration->args() << '\n';
+    std::cout << "left="<<declaration->args()->lVal()<<'\n';
+    std::cout << "op="<<declaration->args()->oper()<<'\n';
+    std::cout << "right="<<declaration->args()->rVal()<<'\n'<<'\n';
 }
 
-inline void CompilerCTreeDecoder::unexpectedNode ( CompilerStatement * node )
+inline void CompilerCTreeDecoder::processFuncDef ( CompilerStatement * definition )
+{
+    std::cout << "C_FUNCTION_DEF:"<<definition->args()<<'\n';
+}
+
+inline void CompilerCTreeDecoder::processExpressions ( CompilerExpr * expr )
+{
+    std::cout << "processExpressions\n";
+}
+
+inline void CompilerCTreeDecoder::unexpectedNode ( const CompilerStatement * node )
 {
     m_compilerCore->semanticMessage ( node->location(),
                                       CompilerBase::MT_ERROR,

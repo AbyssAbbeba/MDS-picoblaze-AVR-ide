@@ -16,11 +16,12 @@
 #define COMPILERCTREEDECODER_H
 
 // Forward declarations.
+class CompilerExpr;
 class CompilerOptions;
 class CompilerStatement;
 class CompilerCSymbolTable;
+class CompilerCExprProcessor;
 class CompilerSemanticInterface;
-
 /**
  * @brief
  * @ingroup CompilerC
@@ -38,7 +39,8 @@ class CompilerCTreeDecoder
          */
         CompilerCTreeDecoder ( CompilerSemanticInterface * compilerCore,
                                CompilerOptions           * opts,
-                               CompilerCSymbolTable      * symbolTable );
+                               CompilerCSymbolTable      * symbolTable,
+                               CompilerCExprProcessor    * exprProcessor );
 
         /**
          * @brief
@@ -51,11 +53,33 @@ class CompilerCTreeDecoder
          * @brief
          * @param[in,out] codeTree
          */
-        void processDeclarations ( CompilerStatement * codeTree );
+        void processCodeTree ( CompilerStatement * codeTree );
 
     ////    Inline Private Operations    ////
     private:
-        inline void unexpectedNode ( CompilerStatement * node );
+        /**
+         * @brief
+         * @param[in] node
+         */
+        inline void unexpectedNode ( const CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] declaration
+         */
+        inline void processDeclaration ( CompilerStatement * declaration );
+
+        /**
+         * @brief
+         * @param[in,out] definition
+         */
+        inline void processFuncDef ( CompilerStatement * definition );
+
+        /**
+         * @brief
+         * @param[in,out] expr
+         */
+        inline void processExpressions ( CompilerExpr * expr );
 
     ////    Private Attributes    ////
     private:
@@ -67,6 +91,9 @@ class CompilerCTreeDecoder
 
         ///
         CompilerCSymbolTable * const m_symbolTable;
+
+        ///
+        CompilerCExprProcessor * const m_exprProcessor;
 };
 
 #endif // COMPILERCTREEDECODER_H
