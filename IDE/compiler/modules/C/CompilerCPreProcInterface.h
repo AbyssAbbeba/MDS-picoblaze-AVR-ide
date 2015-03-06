@@ -53,6 +53,9 @@ class CompilerCPreProcInterface
         const CompilerOptions * const m_opts;
 
         ///
+        CompilerSourceLocation m_exprLocation;
+
+        ///
         bool m_exprResult;
 };
 

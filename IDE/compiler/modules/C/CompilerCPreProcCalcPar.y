@@ -78,6 +78,9 @@
     // Name of the lexer func required by Bison.
     #define CompilerCPreProcCalcPar_lex CompilerCPreProcCalcLex_lex
 
+    // preprocessorMessage(....) function
+    #define preprocMessage preprocessor->m_compilerCore->preprocessorMessage
+
     // Declaration of the error reporting function used by Bison.
     inline int CompilerCPreProcCalcPar_error ( YYLTYPE * yylloc,
                                                yyscan_t yyscanner,
@@ -184,8 +187,10 @@ input:
                                         YYACCEPT;
                                     }
     | /* empty */                   {
-                                        // TODO: error, empty expression
                                         preprocessor->m_exprResult = false;
+                                        preprocMessage ( preprocessor->m_exprLocation,
+                                                         CompilerBase::MT_ERROR,
+                                                         QObject::tr("empty expression").toStdString() );
                                         YYACCEPT;
                                     }
 ;
@@ -198,8 +203,10 @@ expr:
     // Parentheses and comma.
     | "(" expr ")"                  { $$ = $2; }
     | expr "," expr                 {
-                                        // TODO: warning, comma in expression
                                         $$ = $3;
+                                        preprocMessage ( preprocessor->m_exprLocation,
+                                                         CompilerBase::MT_WARNING,
+                                                         QObject::tr("comma in expression").toStdString() );
                                     }
 
     // Binary operators.
@@ -207,7 +214,9 @@ expr:
                                         if ( 0 == $3 )
                                         {
                                             $$ = 0;
-                                            // TODO: error, division by zero
+                                            preprocMessage ( preprocessor->m_exprLocation,
+                                                             CompilerBase::MT_ERROR,
+                                                             QObject::tr("division by zero").toStdString() );
                                         }
                                         else
                                         {
@@ -219,7 +228,9 @@ expr:
                                         if ( 0 == $3 )
                                         {
                                             $$ = 0;
-                                            // TODO: error, division by zero
+                                            preprocMessage ( preprocessor->m_exprLocation,
+                                                             CompilerBase::MT_ERROR,
+                                                             QObject::tr("division by zero").toStdString() );
                                         }
                                         else
                                         {

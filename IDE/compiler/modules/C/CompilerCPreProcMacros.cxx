@@ -45,7 +45,7 @@
     || ( '\n' == i ) || ( '\v' == i ) || ( '\r' == i )   \
 )
 
-const char * CompilerCPreProcMacros::STDC_VERSION = "199901L";
+const char * CompilerCPreProcMacros::STDC_VERSION = "201104L";
 
 const std::set<std::string> CompilerCPreProcMacros::KEYWORDS =
 {
@@ -78,11 +78,20 @@ CompilerCPreProcMacros::PREDEFINED_MACROS =
     { "__STDC_VERSION__",               { true, PRE_DEF__STDC_VERSION } },
 
     // Optional
-    { "__STDC__",                       { false, PRE_DEF__STDC } },
+    { "__STDC__",                       { true,  PRE_DEF__STDC } },
     { "__STDC_HOSTED__",                { false, PRE_DEF__STDC_HOSTED } },
     { "__STDC_IEC_559__",               { false, PRE_DEF__STDC_IEC_559 } },
     { "__STDC_IEC_559_COMPLEX__",       { false, PRE_DEF__STDC_IEC_559_COMPLEX } },
-    { "__STDC_ISO_10646__",             { false, PRE_DEF__STDC_ISO_10646 } }
+    { "__STDC_ISO_10646__",             { false, PRE_DEF__STDC_ISO_10646 } },
+    { "__STDC_MB_MIGHT_NEQ_WC__",       { false, PRE_DEF__STDC_MB_MIGHT_NEQ_WC } },
+    { "__STDC_UTF_16__",                { false, PRE_DEF__STDC_UTF_16 } },
+    { "__STDC_UTF_32__",                { false, PRE_DEF__STDC_UTF_32 } },
+    { "__STDC_ANALYZABLE__",            { false, PRE_DEF__STDC_ANALYZABLE } },
+    { "__STDC_LIB_EXT1__",              { false, PRE_DEF__STDC_LIB_EXT1 } },
+    { "__STDC_NO_ATOMICS__",            { true,  PRE_DEF__STDC_NO_ATOMICS } },
+    { "__STDC_NO_COMPLEX__",            { true,  PRE_DEF__STDC_NO_COMPLEX } },
+    { "__STDC_NO_THREADS__ ",           { true,  PRE_DEF__STDC_NO_THREADS } },
+    { "__STDC_NO_VLA__",                { false, PRE_DEF__STDC_NO_VLA } },
 };
 
 CompilerCPreProcMacros::CompilerCPreProcMacros ( CompilerParserInterface * compilerCore,

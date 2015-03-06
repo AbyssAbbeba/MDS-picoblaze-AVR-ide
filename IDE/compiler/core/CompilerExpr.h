@@ -105,6 +105,10 @@ class CompilerExpr : public CompilerSerializable
             OPER_POINTER         = 339,   ///<
             OPER_ARRAY           = 430,   ///<
             OPER_FUNCTION        = 431,   ///<
+            OPER_GENERIC         = 432,   ///<
+            OPER_ALIGNOF         = 433,   ///<
+            OPER_ALIGNAS         = 434,   ///<
+            OPER_ASSERT          = 435,   ///<
         };
 
     ////    Constructors and Destructors    ////

@@ -24,6 +24,7 @@
 
 // C compiler header files.
 #include "CompilerCSymbolTable.h"
+#include "CompilerCDeclaration.h"
 
 CompilerCTreeDecoder::CompilerCTreeDecoder ( CompilerSemanticInterface * compilerCore,
                                              CompilerOptions           * opts,
@@ -33,7 +34,7 @@ CompilerCTreeDecoder::CompilerCTreeDecoder ( CompilerSemanticInterface * compile
                                              m_compilerCore ( compilerCore ),
                                              m_opts ( opts ),
                                              m_symbolTable ( symbolTable ),
-                                             m_exprProcessor (exprProcessor)
+                                             m_exprProcessor ( exprProcessor )
 {
 }
 
@@ -52,13 +53,13 @@ void CompilerCTreeDecoder::processCodeTree ( CompilerStatement * codeTree )
         switch ( node->type() )
         {
             case C_DECLARATION:
-                processDeclaration(node);
+                processDeclaration(node->args());
                 break;
             case C_FUNCTION_DEF:
                 processFuncDef(node);
                 break;
             default:
-                unexpectedNode(node);
+                unexpectedNode(node->location());
                 return;
         }
     }
@@ -87,12 +88,36 @@ void CompilerCTreeDecoder::processCodeTree ( CompilerStatement * codeTree )
 )
 */
 
-inline void CompilerCTreeDecoder::processDeclaration ( CompilerStatement * declaration )
+inline void CompilerCTreeDecoder::processDeclaration ( CompilerExpr * declaration )
 {
-    std::cout << "C_DECLARATION:" << declaration->args() << '\n';
-    std::cout << "left="<<declaration->args()->lVal()<<'\n';
-    std::cout << "op="<<declaration->args()->oper()<<'\n';
-    std::cout << "right="<<declaration->args()->rVal()<<'\n'<<'\n';
+    std::cout << "C_DECLARATION:" << declaration << '\n';
+    std::cout << "left="<<declaration->lVal()<<'\n';
+    std::cout << "op="<<declaration->oper()<<'\n';
+    std::cout << "right="<<declaration->rVal()<<'\n'<<'\n';
+
+    bool isTypedef;
+    CompilerCDeclaration * absDeclar = resolveDeclaration(isTypedef, declaration);
+    if ( nullptr != absDeclar )
+    {
+        if ( true == isTypedef )
+        {
+            m_symbolTable->newDataType(absDeclar);
+        }
+        else
+        {
+            m_symbolTable->newSymbol(absDeclar);
+        }
+    }
+}
+
+CompilerCDeclaration * CompilerCTreeDecoder::resolveDeclaration ( bool & isTypedef,
+                                                                  const CompilerExpr * declaration )
+{
+    if ( CompilerExpr::OPER_DECLARATION != declaration->oper() )
+    {
+        unexpectedNode(declaration->location());
+        return nullptr;
+    }
 }
 
 inline void CompilerCTreeDecoder::processFuncDef ( CompilerStatement * definition )
@@ -103,11 +128,12 @@ inline void CompilerCTreeDecoder::processFuncDef ( CompilerStatement * definitio
 inline void CompilerCTreeDecoder::processExpressions ( CompilerExpr * expr )
 {
     std::cout << "processExpressions\n";
+//     m_exprProcessor->something(...);
 }
 
-inline void CompilerCTreeDecoder::unexpectedNode ( const CompilerStatement * node )
+inline void CompilerCTreeDecoder::unexpectedNode ( const CompilerSourceLocation & location )
 {
-    m_compilerCore->semanticMessage ( node->location(),
+    m_compilerCore->semanticMessage ( location,
                                       CompilerBase::MT_ERROR,
                                       QObject::tr ( "internal error, please report this as a bug in the compiler "
                                                     "implementation" ).toStdString() );

@@ -37,8 +37,8 @@ class CompilerParserInterface;
  * @ingroup CompilerC
  * @class CompilerCPreProc
  */
-class CompilerCPreProc : private CompilerCPreProcSupport,
-                         private CompilerCPreProcInterface
+class CompilerCPreProc : protected CompilerCPreProcSupport,
+                         protected CompilerCPreProcInterface
 {
     ////    Private Datatypes    ////
     private:
