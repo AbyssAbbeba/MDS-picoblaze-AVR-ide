@@ -104,6 +104,8 @@ void PicoBlazeStack::resize ( unsigned int newSize )
     {
         delete[] m_data;
     }
+
+    m_config.m_size = newSize;
     m_data = new unsigned int [ newSize ];
 }
 

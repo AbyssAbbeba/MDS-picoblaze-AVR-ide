@@ -396,6 +396,10 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_POINTER:         out << "*pointer";        break;
         case CompilerExpr::OPER_ARRAY:           out << "[array]";         break;
         case CompilerExpr::OPER_FUNCTION:        out << "function";        break;
+        case CompilerExpr::OPER_GENERIC:         out << "generic";         break;
+        case CompilerExpr::OPER_ALIGNOF:         out << "alignof";         break;
+        case CompilerExpr::OPER_ALIGNAS:         out << "alignas";         break;
+        case CompilerExpr::OPER_ASSERT:          out << "assert";          break;
     }
 
     return out;

@@ -772,6 +772,7 @@ bool CompilerCPreProc::evaluateExpr ( char * expr,
     YY_BUFFER_STATE bufferState = CompilerCPreProcCalcLex__scan_string ( out.m_data, yyscanner );
 
     // Initialize syntax analyzer for the arithmetic expression calculator.
+    m_exprLocation = locationCorrection(m_locationStack.back(), m_lineMerges);
     CompilerCPreProcCalcPar_parse ( yyscanner, this );
 
     // Clean up.

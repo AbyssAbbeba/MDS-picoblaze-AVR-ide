@@ -75,7 +75,16 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
             PRE_DEF__STDC_VERSION,              ///<
             PRE_DEF__STDC_IEC_559,              ///<
             PRE_DEF__STDC_IEC_559_COMPLEX,      ///<
-            PRE_DEF__STDC_ISO_10646             ///<
+            PRE_DEF__STDC_ISO_10646,            ///<
+            PRE_DEF__STDC_MB_MIGHT_NEQ_WC,      ///<
+            PRE_DEF__STDC_UTF_16,               ///<
+            PRE_DEF__STDC_UTF_32,               ///<
+            PRE_DEF__STDC_ANALYZABLE,           ///<
+            PRE_DEF__STDC_LIB_EXT1,             ///<
+            PRE_DEF__STDC_NO_ATOMICS,           ///<
+            PRE_DEF__STDC_NO_COMPLEX,           ///<
+            PRE_DEF__STDC_NO_THREADS,           ///<
+            PRE_DEF__STDC_NO_VLA,               ///<
         };
 
         /**

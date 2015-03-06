@@ -163,6 +163,12 @@
 %token KW_SIZEOF        "sizeof"
 %token KW_SWITCH        "switch"
 %token KW_WHILE         "while"
+%token KW_ALIGNAS       "_Alignas"
+%token KW_ALIGNOF       "_Alignof"
+%token KW_ATOMIC        "_Atomic"
+%token KW_GENERIC       "_Generic"
+%token KW_NORETURN      "_Noreturn"
+%token KW_STATIC_ASSERT "_Static_assert"
 
 %token DATA_AUTO        "auto"
 %token DATA_CHAR        "char"
@@ -186,6 +192,7 @@
 %token DATA_COMPLEX     "_Complex"
 %token DATA_BOOL        "_Bool"
 %token DATA_IMAGINARY   "_Imaginary"
+%token DATA_THR_LOCAL   "_Thread_local"
 
 %token B_RND_LEFT       "("
 %token B_RND_RIGHT      ")"
@@ -242,9 +249,14 @@
 %token<symbol>    TYPEDEF_NAME  "type name"
 %token<symbol>    ENUM_CONST    "enumeration constant"
 %token<string>    STRING        "string literal"
-%token<string>    L_STRING      "long string literal"
+%token<string>    W_STRING      "wide string literal"
+%token<string>    W16_STRING    "char16_t wide string literal"
+%token<string>    W32_STRING    "char32_t wide string literal"
+%token<string>    U8_STRING     "UTF-8 string literal"
 %token<integer>   CHARACTER     "character constant"
-%token<integer>   L_CHARACTER   "long character constant"
+%token<integer>   W_CHARACTER   "wide character constant"
+%token<integer>   W16_CHARACTER "char16_t wide character constant"
+%token<integer>   W32_CHARACTER "char32_t wide character constant"
 %token<integer>   INTEGER       "integer constant"
 %token<integer>   U_INTEGER     "unsigned integer constant"
 %token<integer>   L_INTEGER     "long integer constant"
@@ -260,8 +272,8 @@
  */
 // Expressions.
 %type<expr> constant                            integer-constant                floating-constant
-%type<expr> enumeration-constant                character-constant              string-literal string
-%type<expr> lstring                             identifier                      identifier-opt
+%type<expr> character-constant                  string                          string-literal
+%type<expr> init-declarator-std                 identifier                      identifier-opt
 %type<expr> primary-expression                  postfix-expression              argument-expression-list
 %type<expr> argument-expression-list-opt        unary-expression                cast-expression
 %type<expr> multiplicative-expression           additive-expression             shift-expression
@@ -284,7 +296,9 @@
 %type<expr> declaration-list-opt                declaration                     declaration-specifiers
 %type<expr> declaration-specifiers-opt          specifier-qualifier             specifier-qualifier-list
 %type<expr> type-specifier                      type-qualifier-list             type-qualifier-list-opt
-%type<expr> init-declarator-std
+%type<expr> generic-selection                   generic-assoc-list              generic-association
+%type<expr> enumeration-constant                alignment-specifier             static_assert-declaration
+%type<expr> atomic-type-specifier
 // Data types.
 %type<type> storage-class-specifier             struct-or-union                 function-specifier
 %type<type> type-qualifier
@@ -441,24 +455,28 @@ character-constant:
         $$ = new CompilerExpr ( $[CHARACTER], LOC(@$) );
     }
 
-    | L_CHARACTER
+    | W_CHARACTER
     {
-        $$ = new CompilerExpr ( $[L_CHARACTER],
+        $$ = new CompilerExpr ( $[W_CHARACTER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_SHORT,
+                                LOC(@$) );
+    }
+
+    | W16_CHARACTER
+    {
+        $$ = new CompilerExpr ( $[W16_CHARACTER],
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_INT,
+                                LOC(@$) );
+    }
+
+    | W32_CHARACTER
+    {
+        $$ = new CompilerExpr ( $[W32_CHARACTER],
                                 CompilerExpr::OPER_FIXED_DATATYPE,
                                 CompilerCDeclaration::DT_LONG,
                                 LOC(@$) );
-    }
-;
-
-string-literal:
-    string
-    {
-        $$ = $[string];
-    }
-
-    | lstring
-    {
-        $$ = $[lstring];
     }
 ;
 
@@ -468,38 +486,74 @@ string:
         $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[STRING].data, $[STRING].size, false), LOC(@$) );
     }
 
-    | string STRING
+    | W_STRING
     {
-        $$ = $1;
-        $$->m_location = LOC(@$);
-        CompilerValue::Data::CharArray & lStr = $$->m_lValue.m_data.m_array;
-        lStr.m_data = (unsigned char*) realloc(lStr.m_data, lStr.m_size + $[STRING].size + 1);
-        memcpy(lStr.m_data + lStr.m_size, $[STRING].data, $[STRING].size);
-        lStr.m_size += $[STRING].size;
-        lStr.m_data[lStr.m_size] = '\0';
-        free($[STRING].data);
+        $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[W_STRING].data, $[W_STRING].size, false),
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_SHORT,
+                                LOC(@$) );
     }
-;
 
-lstring:
-    L_STRING
+    | W16_STRING
     {
-        $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[L_STRING].data, $[L_STRING].size, false),
+        $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[W16_STRING].data, $[W16_STRING].size, false),
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_INT,
+                                LOC(@$) );
+    }
+
+    | W32_STRING
+    {
+        $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[W32_STRING].data, $[W32_STRING].size, false),
                                 CompilerExpr::OPER_FIXED_DATATYPE,
                                 CompilerCDeclaration::DT_LONG,
                                 LOC(@$) );
     }
 
-    | lstring STRING
+    | U8_STRING
+    {
+        $$ = new CompilerExpr ( CompilerValue((unsigned char*) $[U8_STRING].data, $[U8_STRING].size, false),
+                                CompilerExpr::OPER_FIXED_DATATYPE,
+                                CompilerCDeclaration::DT_LONG_LONG,
+                                LOC(@$) );
+    }
+
+string-literal:
+    string
+    {
+        $$ = $[string];
+    }
+
+    | string-literal string
     {
         $$ = $1;
         $$->m_location = LOC(@$);
-        CompilerValue::Data::CharArray & lStr = $$->m_lValue.m_data.m_array;
-        lStr.m_data = (unsigned char*) realloc(lStr.m_data, lStr.m_size + $[STRING].size + 1);
-        memcpy(lStr.m_data + lStr.m_size, $[STRING].data, $[STRING].size);
-        lStr.m_size += $[STRING].size;
-        lStr.m_data[lStr.m_size] = '\0';
-        free($[STRING].data);
+
+        CompilerValue::Data::CharArray * lStr;
+        if ( CompilerValue::TYPE_EXPR == $$->m_lValue.m_type )
+        {
+            lStr = &( $$->m_lValue.m_data.m_expr->m_lValue.m_data.m_array );
+        }
+        else
+        {
+            lStr = &( $$->m_lValue.m_data.m_array );
+        }
+
+        CompilerValue::Data::CharArray * rStr;
+        if ( CompilerValue::TYPE_EXPR == $[string]->m_lValue.m_type )
+        {
+            lStr = &( $[string]->m_lValue.m_data.m_expr->m_lValue.m_data.m_array );
+        }
+        else
+        {
+            lStr = &( $[string]->m_lValue.m_data.m_array );
+        }
+
+        lStr->m_data = (unsigned char*) realloc(lStr->m_data, lStr->m_size + rStr->m_size + 1);
+        memcpy(lStr->m_data + lStr->m_size, rStr->m_data, rStr->m_size);
+        lStr->m_size += rStr->m_size;
+        lStr->m_data[lStr->m_size] = '\0';
+        free(rStr->m_data);
     }
 ;
 
@@ -550,6 +604,51 @@ primary-expression:
     | "(" expression ")"
     {
         $$ = $[expression];
+    }
+
+    | generic-selection
+    {
+        $$ = $[generic-selection];
+    }
+;
+
+generic-selection:
+    "_Generic" "(" assignment-expression "," generic-assoc-list ")"
+    {
+        $$ = new CompilerExpr ( $[assignment-expression],
+                                CompilerExpr::OPER_GENERIC,
+                                $[generic-assoc-list],
+                                LOC(@$) );
+    }
+;
+
+generic-assoc-list:
+    generic-association
+    {
+        $$ = $[generic-association];
+    }
+
+    | generic-assoc-list "," generic-association
+    {
+        $$ = $1->appendLink($[generic-association]);
+    }
+;
+
+generic-association:
+    type-name ":" assignment-expression
+    {
+        $$ = new CompilerExpr ( $[type-name],
+                                CompilerExpr::OPER_COLON,
+                                $[assignment-expression],
+                                LOC(@$) );
+    }
+
+    | "default" ":" assignment-expression
+    {
+        $$ = new CompilerExpr ( (CompilerExpr*) nullptr,
+                                CompilerExpr::OPER_COLON,
+                                $[assignment-expression],
+                                LOC(@$) );
     }
 ;
 
@@ -684,6 +783,13 @@ unary-expression:
     {
         $$ = new CompilerExpr ( $[type-name],
                                 CompilerExpr::OPER_SIZEOF,
+                                LOC(@$) );
+    }
+
+    | "_Alignof" "(" type-name ")"
+    {
+        $$ = new CompilerExpr ( $[type-name],
+                                CompilerExpr::OPER_ALIGNOF,
                                 LOC(@$) );
     }
 ;
@@ -1193,6 +1299,14 @@ declaration-specifiers:
                                 $[function-specifier],
                                 LOC(@$) );
     }
+
+    | alignment-specifier declaration-specifiers-opt
+    {
+        $$ = new CompilerExpr ( $[declaration-specifiers-opt],
+                                CompilerExpr::OPER_DATATYPE,
+                                $[alignment-specifier],
+                                LOC(@$) );
+    }
 ;
 
 declaration-specifiers-opt:
@@ -1280,6 +1394,11 @@ storage-class-specifier:
     | "static"
     {
         $$ = CompilerCDeclaration::A_STATIC;
+    }
+
+    | "_Thread_local"
+    {
+        $$ = CompilerCDeclaration::A_THREAD_LOCAL;
     }
 
     | "auto"
@@ -1381,6 +1500,11 @@ type-specifier:
                                 CompilerExpr::OPER_DATATYPE,
                                 LOC(@$) );
     }
+/* // TODO:
+    | atomic-type-specifier
+    {
+        $$ = $[atomic-type-specifier];
+    }*/
 
     | struct-or-union-specifier
     {
@@ -1454,6 +1578,11 @@ struct-declaration:
                                 $[struct-declarator-list],
                                 LOC(@$) );
     }
+
+    | static_assert-declaration
+    {
+        $$ = $[static_assert-declaration];
+    }
 ;
 
 specifier-qualifier-list:
@@ -1513,7 +1642,7 @@ struct-declarator:
 ;
 
 // -----------------------------------------------------------------------------
-// PART 2.2.2:  Enumeration specifiers
+// PART 2.2.2: Enumeration specifiers
 // -----------------------------------------------------------------------------
 
 enum-specifier:
@@ -1565,8 +1694,18 @@ enumerator:
 ;
 
 // -----------------------------------------------------------------------------
-// PART 2.3:  Type qualifier
+// PART 2.3: Atomic type specifier and type qualifier
 // -----------------------------------------------------------------------------
+
+atomic-type-specifier:
+    "_Atomic" "(" type-name ")"
+    {
+        $$ = new CompilerExpr ( CompilerValue(CompilerCDeclaration::A_ATOMIC),
+                                CompilerExpr::OPER_DATATYPE,
+                                $[type-name],
+                                LOC(@$) );
+    }
+;
 
 type-qualifier:
     "const"
@@ -1583,16 +1722,42 @@ type-qualifier:
     {
         $$ = CompilerCDeclaration::A_VOLATILE;
     }
+
+    | "_Atomic"
+    {
+        $$ = CompilerCDeclaration::A_ATOMIC;
+    }
 ;
 
 // -----------------------------------------------------------------------------
-// PART 2.4:  Function specifier
+// PART 2.4: Function specifier and alignment specifier
 // -----------------------------------------------------------------------------
 
 function-specifier:
     "inline"
     {
         $$ = CompilerCDeclaration::A_INLINE;
+    }
+
+    | "_Noreturn"
+    {
+        $$ = CompilerCDeclaration::A_NORETURN;
+    }
+;
+
+alignment-specifier:
+    "_Alignas" "(" type-name ")"
+    {
+        $$ = new CompilerExpr ( $[type-name],
+                                CompilerExpr::OPER_ALIGNAS,
+                                LOC(@$) );
+    }
+
+    | "_Alignas" "(" constant-expression ")"
+    {
+        $$ = new CompilerExpr ( $[constant-expression],
+                                CompilerExpr::OPER_ALIGNAS,
+                                LOC(@$) );
     }
 ;
 
@@ -1875,11 +2040,37 @@ direct-abstract-declarator:
 
     | direct-abstract-declarator-opt "[" assignment-expression-opt "]"
     {
-        $$ = new CompilerExpr ( $[direct-abstract-declarator-opt],
+        $$ = new CompilerExpr ( $1,
                                 CompilerExpr::OPER_ARRAY,
-                                $[assignment-expression-opt],
+/*                                 new CompilerExpr ( $[type-qualifier-list-opt], */
+/*                                                    CompilerExpr::OPER_DECLARATION, */
+                                                   $[assignment-expression-opt] /*)*/,
                                 LOC(@$) );
     }
+// TODO:
+/*    | direct-abstract-declarator-opt "[" "static" type-qualifier-list-opt assignment-expression "]"
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_ARRAY,
+                                new CompilerExpr ( new CompilerExpr ( $[type-qualifier-list-opt],
+                                                                      CompilerExpr::OPER_DATATYPE,
+                                                                      CompilerCDeclaration::A_STATIC ),
+                                                   CompilerExpr::OPER_DECLARATION,
+                                                   $[assignment-expression] ),
+                                LOC(@$) );
+    }
+
+    | direct-abstract-declarator-opt "[" type-qualifier-list "static" assignment-expression "]"
+    {
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_ARRAY,
+                                new CompilerExpr ( new CompilerExpr ( $[type-qualifier-list],
+                                                                      CompilerExpr::OPER_DATATYPE,
+                                                                      CompilerCDeclaration::A_STATIC ),
+                                                   CompilerExpr::OPER_DECLARATION,
+                                                   $[assignment-expression] ),
+                                LOC(@$) );
+    }*/
 
     | direct-abstract-declarator-opt "[" "*" "]"
     {
@@ -1999,6 +2190,16 @@ designator:
                                 CompilerExpr::OPER_DOT,
                                 LOC(@$) );
 
+    }
+;
+
+static_assert-declaration:
+    "_Static_assert" "(" constant-expression "," string-literal ")"
+    {
+        $$ = new CompilerExpr ( $[constant-expression],
+                                CompilerExpr::OPER_ASSERT,
+                                $[string-literal],
+                                LOC(@$) );
     }
 ;
 
@@ -2277,7 +2478,7 @@ external-declaration:
         $$ = nullptr;
         compiler->parserMessage ( LOC(@$),
                                   CompilerBase::MT_WARNING,
-                                  QObject::tr("null statement is not allowed here (ISO 9899:1999)").toStdString(),
+                                  QObject::tr("null statement is not allowed here (ISO/IEC 9899:2011)").toStdString(),
                                   true );
     }
 ;

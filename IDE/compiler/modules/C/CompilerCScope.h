@@ -37,16 +37,18 @@ class CompilerCScope
          */
         enum Type
         {
-            TYPE_FILE,
-            TYPE_FUNC_PROTOTYPE,
-            TYPE_FUNCTION,
-            TYPE_BLOCK,
+            TYPE_FILE,           ///<
+            TYPE_FUNC_PROTOTYPE, ///<
+            TYPE_FUNCTION,       ///<
+            TYPE_BLOCK,          ///<
         };
 
     ////    Constructors and Destructors    ////
     public:
         /**
          * @brief
+         * @param[in] parent
+         * @param[in] type
          */
         CompilerCScope ( CompilerCScope * parent,
                          Type type = TYPE_BLOCK );
@@ -61,12 +63,20 @@ class CompilerCScope
 
     ////    Public Attributes    ////
     private:
+        ///
         Type m_type;
-        CompilerCScope * const m_parent;
-        std::vector<CompilerCScope*> m_chidren;
 
-        std::map<std::string, CompilerCDeclaration *> m_symbols;
-        std::map<std::string, CompilerCDeclaration *> m_datatypes;
+        ///
+        CompilerCScope * const m_parent;
+
+        ///
+        std::vector<CompilerCScope *> m_chidren;
+
+        ///
+        std::multimap<std::string, CompilerCDeclaration *> m_symbols;
+
+        ///
+        std::multimap<std::string, CompilerCDeclaration *> m_datatypes;
 };
 
 #endif // COMPILERCSCOPE_H

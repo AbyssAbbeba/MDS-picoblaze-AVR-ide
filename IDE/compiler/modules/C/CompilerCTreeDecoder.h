@@ -20,8 +20,13 @@ class CompilerExpr;
 class CompilerOptions;
 class CompilerStatement;
 class CompilerCSymbolTable;
+class CompilerCDeclaration;
 class CompilerCExprProcessor;
 class CompilerSemanticInterface;
+
+// Compiler header files.
+#include "CompilerSourceLocation.h"
+
 /**
  * @brief
  * @ingroup CompilerC
@@ -55,19 +60,23 @@ class CompilerCTreeDecoder
          */
         void processCodeTree ( CompilerStatement * codeTree );
 
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[out] isTypedef
+         * @param[in] specifiers
+         */
+        CompilerCDeclaration * resolveDeclaration ( bool & isTypedef,
+                                                    const CompilerExpr * specifiers );
+
     ////    Inline Private Operations    ////
     private:
         /**
          * @brief
-         * @param[in] node
-         */
-        inline void unexpectedNode ( const CompilerStatement * node );
-
-        /**
-         * @brief
          * @param[in,out] declaration
          */
-        inline void processDeclaration ( CompilerStatement * declaration );
+        inline void processDeclaration ( CompilerExpr * declaration );
 
         /**
          * @brief
@@ -80,6 +89,12 @@ class CompilerCTreeDecoder
          * @param[in,out] expr
          */
         inline void processExpressions ( CompilerExpr * expr );
+
+        /**
+         * @brief
+         * @param[in] location
+         */
+        inline void unexpectedNode ( const CompilerSourceLocation & location );
 
     ////    Private Attributes    ////
     private:

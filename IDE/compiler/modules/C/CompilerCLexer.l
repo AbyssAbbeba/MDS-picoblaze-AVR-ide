@@ -109,6 +109,8 @@ ULL     ({U}{L}{L})|({L}{L}{U})
 F_SFX   [Ff]?[Ll]?
 /* Hexadecimal integer. */
 HEX     0x[0-9a-fA-F]+
+/* String prefix. */
+STRPR   ([uUL]|(u8))
 
 
 /*
@@ -116,8 +118,10 @@ HEX     0x[0-9a-fA-F]+
  */
 /* Inside a string, e.g. "my string" */
 %x STR
-%x LSTR
-
+%x W_STR
+%x W16_STR
+%x W32_STR
+%x U8_STR
 
 /* -------------------------------------------------------------------------- */
 /* LEXICAL RULES                                                              */
@@ -145,21 +149,27 @@ HEX     0x[0-9a-fA-F]+
 "..."           { return ELIPSIS;           }
 
  /* Keywords */
-"break"         { return KW_BREAK;          }
-"case"          { return KW_CASE;           }
-"continue"      { return KW_CONTINUE;       }
-"default"       { return KW_DEFAULT;        }
-"do"            { return KW_DO;             }
-"else"          { return KW_ELSE;           }
-"for"           { return KW_FOR;            }
-"goto"          { return KW_GOTO;           }
-"if"            { return KW_IF;             }
-"inline"        { return KW_INLINE;         }
-"return"        { return KW_RETURN;         }
-"restrict"      { return KW_RESTRICT;       }
-"sizeof"        { return KW_SIZEOF;         }
-"switch"        { return KW_SWITCH;         }
-"while"         { return KW_WHILE;          }
+"break"          { return KW_BREAK;          }
+"case"           { return KW_CASE;           }
+"continue"       { return KW_CONTINUE;       }
+"default"        { return KW_DEFAULT;        }
+"do"             { return KW_DO;             }
+"else"           { return KW_ELSE;           }
+"for"            { return KW_FOR;            }
+"goto"           { return KW_GOTO;           }
+"if"             { return KW_IF;             }
+"inline"         { return KW_INLINE;         }
+"return"         { return KW_RETURN;         }
+"restrict"       { return KW_RESTRICT;       }
+"sizeof"         { return KW_SIZEOF;         }
+"switch"         { return KW_SWITCH;         }
+"while"          { return KW_WHILE;          }
+"_Alignas"       { return KW_ALIGNAS;        }
+"_Alignof"       { return KW_ALIGNOF;        }
+"_Atomic"        { return KW_ATOMIC;         }
+"_Generic"       { return KW_GENERIC;        }
+"_Noreturn"      { return KW_NORETURN;       }
+"_Static_assert" { return KW_STATIC_ASSERT;  }
 
  /* Data types, etc. */
 "auto"          { return DATA_AUTO;         }
@@ -184,6 +194,7 @@ HEX     0x[0-9a-fA-F]+
 "_Complex"      { return DATA_COMPLEX;      }
 "_Bool"         { return DATA_BOOL;         }
 "_Imaginary"    { return DATA_IMAGINARY;    }
+"_Thread_local" { return DATA_THR_LOCAL;    }
 
  /* Brackets */
 "("             { return B_RND_LEFT;        }
@@ -387,15 +398,34 @@ HEX     0x[0-9a-fA-F]+
                 }
 
  /* Character constants. */
-L?'{XESC}'       {
+[LuU]?'{XESC}'  {
                     // Handle C escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
 
-                    int isL = ( 'L' == yytext[0] ) ? 1 : 0;
+                    int sh = 0;
+                    int type;
+                    switch ( yytext[0] )
+                    {
+                        case 'L':
+                            type = W_CHARACTER;
+                            sh = 1;
+                            break;
+                        case 'u':
+                            type = W16_CHARACTER;
+                            sh = 1;
+                            break;
+                        case 'U':
+                            type = W32_CHARACTER;
+                            sh = 1;
+                            break;
+                        default:
+                            type = CHARACTER;
+                            break;
+                    }
 
                     yytext[yyleng - 1] = '\0';
 
                     int size; // Size of the binary value in bytes
-                    yylval->integer = (long long) escapeSequence(yyextra, yylloc, ( yytext + 1 + isL ), &size);
+                    yylval->integer = (long long) escapeSequence(yyextra, yylloc, ( yytext + 1 + sh ), &size);
 
 
                     // Check whether the conversion was successful
@@ -408,22 +438,33 @@ L?'{XESC}'       {
                         yyterminate();
                     }
 
-                    if ( 0 == isL )
-                    {
-                        return CHARACTER;
-                    }
-                    else
-                    {
-                        return L_CHARACTER;
-                    }
+                    return type;
                 }
-'.'             {
+[LuU]?'.'       {
+                    int sh = 0;
+                    int type;
+                    switch ( yytext[0] )
+                    {
+                        case 'L':
+                            type = W_CHARACTER;
+                            sh = 1;
+                            break;
+                        case 'u':
+                            type = W16_CHARACTER;
+                            sh = 1;
+                            break;
+                        case 'U':
+                            type = W32_CHARACTER;
+                            sh = 1;
+                            break;
+                        default:
+                            type = CHARACTER;
+                            break;
+                    }
+
                     yylval->integer = (int64_t) (yytext[1]);
-                    return CHARACTER;
-                }
-L'.'            {
-                    yylval->integer = (int64_t) (yytext[2]);
-                    return L_CHARACTER;
+
+                    return type;
                 }
 
  /* Identifiers. */
@@ -443,29 +484,54 @@ L'.'            {
                 }
 
  /* String literals. */
-<INITIAL>L?\"   {
+<INITIAL>{STRPR}?\" {
                     // Beginning of a string, i.e. --> "some string"
-                    if ( 'L' == yytext[0] )
+                    int newState;
+                    switch ( yytext[0] )
                     {
-                        yy_push_state(LSTR, yyscanner);
+                        case 'u':
+                            if ( '8' == yytext[1] )
+                            {
+                                newState = U8_STR;
+                            }
+                            else
+                            {
+                                newState = W16_STR;
+                            }
+                            break;
+                        case 'U':
+                            newState = W32_STR;
+                            break;
+                        case 'L':
+                            newState = W_STR;
+                            break;
+                        default:
+                            newState = STR;
+                            break;
                     }
-                    else
-                    {
-                        yy_push_state(STR, yyscanner);
-                    }
+                    yy_push_state(newState, yyscanner);
+
                     yyextra->m_strMaxSize = 32;
                     yylval->string.size = 0;
                     yylval->string.data = (char*) malloc(yyextra->m_strMaxSize);
                 }
-<STR,LSTR>
+<STR,W_STR>
 {
     \"                  {
                             // End of the string, i.e. "my string" <--
-                            bool isL = ( LSTR == YY_START );
+                            int type;
+                            switch ( YY_START )
+                            {
+                                case W_STR:   type = W_STRING;   break;
+                                case W16_STR: type = W16_STRING; break;
+                                case W32_STR: type = W32_STRING; break;
+                                case U8_STR:  type = U8_STRING;  break;
+                                default:      type = STRING;     break;
+                            }
                             yy_pop_state(yyscanner);
                             if ( INITIAL == YY_START )
                             {
-                                return ( isL ? L_STRING : STRING );
+                                return type;
                             }
                             else
                             {
@@ -486,11 +552,21 @@ L'.'            {
                             memcpy(yylval->string.data + yylval->string.size - yyleng, yytext, yyleng);
                         }
     {NLINE}             {
+                            // A string has to be terminated at the same line which it was started on
+
                             yylloc->last_line++;
                             yylloc->last_column = 1;
 
-                            // A string has to be terminated at the same line which it was started on
-                            bool isL = ( LSTR == YY_START );
+                            int type;
+                            switch ( YY_START )
+                            {
+                                case W_STR:   type = W_STRING;   break;
+                                case W16_STR: type = W16_STRING; break;
+                                case W32_STR: type = W32_STRING; break;
+                                case U8_STR:  type = U8_STRING;  break;
+                                default:      type = STRING;     break;
+                            }
+
                             yy_pop_state(yyscanner);
                             yyextra->lexerMessage ( yylloc,
                                                     CompilerBase::MT_ERROR,
@@ -508,7 +584,7 @@ L'.'            {
 
                             if ( INITIAL == YY_START )
                             {
-                                return ( isL ? L_STRING : STRING );
+                                return type;
                             }
                         }
     {XESC}              {

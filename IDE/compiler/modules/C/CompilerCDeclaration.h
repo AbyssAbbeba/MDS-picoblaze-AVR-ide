@@ -69,6 +69,9 @@ class CompilerCDeclaration
             A_FUNCTION          = 4 << 24, ///<
             A_INLINE            = 8 << 24, ///<
             A_TYPEDEF           = 1 << 28, ///<
+            A_THREAD_LOCAL      = 2 << 28, ///<
+            A_ATOMIC            = 4 << 28, ///<
+            A_NORETURN          = 8 << 28, ///<
         };
 
         /**

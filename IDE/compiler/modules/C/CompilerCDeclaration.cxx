@@ -35,6 +35,10 @@ CompilerCDeclaration::~CompilerCDeclaration()
 {
     if ( nullptr != m_array )
     {
+        for ( auto i : *m_array )
+        {
+            delete i;
+        }
         delete m_array;
     }
 
@@ -53,13 +57,12 @@ CompilerCDeclaration::~CompilerCDeclaration()
         m_value->completeDelete();
     }
 
-    if ( nullptr != m_owner )
-    {
-        delete m_owner;
-    }
-
     if ( nullptr != m_members )
     {
+        for ( auto i : *m_members )
+        {
+            delete i;
+        }
         delete m_members;
     }
 }
