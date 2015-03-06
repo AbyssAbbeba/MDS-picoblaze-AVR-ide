@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "projectcfg_memory.h"
+#include <cmath>
 
 
 /**
@@ -107,15 +108,23 @@ void ProjectCfg_Memory::setHWBuildEnabled(bool enabled)
 }
 
 
-void ProjectCfg_Memory::setScratchpadMaximum(int maximum)
+void ProjectCfg_Memory::setScratchpadMaximum(int maximum, bool update)
 {
+    qDebug() << "ProjectCfg_Memory: setScratchpadMaximum" << update;
     if (maximum > 0)
     {
         ui.sldScratchpad->setEnabled(true);
         ui.lblScratchpad->setEnabled(true);
         ui.sldScratchpad->setMaximum(maximum);
-        ui.sldScratchpad->setValue(maximum);
-        //qDebug() << "ProjectCfg_Memory: maximum" << maximum;
+        if (true == update)
+        {
+            ui.sldScratchpad->setValue(maximum);
+        }
+        else
+        {
+            ui.sldScratchpad->setValue(std::log2(project->scratchpadSize));
+        }
+        qDebug() << "ProjectCfg_Memory: value" << ui.sldScratchpad->value() << qPow(2,ui.sldScratchpad->value());
     }
     else
     {
@@ -125,10 +134,17 @@ void ProjectCfg_Memory::setScratchpadMaximum(int maximum)
 }
 
 
-void ProjectCfg_Memory::setProgMemMaximum(int maximum)
+void ProjectCfg_Memory::setProgMemMaximum(int maximum, bool update)
 {
     ui.sldProgMem->setMaximum(maximum);
-    ui.sldProgMem->setValue(maximum);
+    if (true == update)
+    {
+        ui.sldProgMem->setValue(maximum);
+    }
+    else
+    {
+        ui.sldProgMem->setValue(std::log2(project->progMemSize));
+    }
 }
 
 
@@ -160,6 +176,7 @@ void ProjectCfg_Memory::sliderProgMemUpdate(int value)
 
 void ProjectCfg_Memory::load()
 {
+    qDebug() << "ProjectCfg_Memory: load()";
     ui.leIntVector->setText(QString::number(project->intVector, 16));
     if (project->hwBuild > -1)
     {
@@ -174,6 +191,8 @@ void ProjectCfg_Memory::load()
     }
     ui.sldProgMem->setValue(project->progMemSize);
     ui.sldScratchpad->setValue(project->scratchpadSize);
+    qDebug() << project->progMemSize;
+    qDebug() << project->scratchpadSize;
 }
 
 

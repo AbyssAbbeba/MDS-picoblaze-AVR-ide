@@ -913,6 +913,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                     this,
                     SLOT(clockChangedSlot(double, int))
                    );
+            this->setScratchpad(this->scratchpadSize);
         }
     }
     /*for (int i = 0; i < fileCount; i++)
@@ -1866,7 +1867,12 @@ void Project::setHWBuild(int value)
  */
 void Project::setScratchpad(int value)
 {
+    qDebug() << "set scratchpad";
     scratchpadSize = value;
+    if (NULL != m_dockUi->m_simulationInfo)
+    {
+        m_dockUi->m_simulationInfo->forceScratchpadDeviceChanged(scratchpadSize);
+    }
 }
 
 
@@ -1969,12 +1975,12 @@ void Project::setupSim()
  */
 void Project::setupSim(QString family)
 {
-    //qDebug() << "Project: setupSim()";
+    qDebug() << "Project: setupSim()";
     //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
     this->m_simControlUnit->changeDevice(family.toUtf8().constData());
     //qDebug() << architecture;
-    //qDebug() << "Project: return setupSim()";
+    qDebug() << "Project: return setupSim()";
 }
 
 
@@ -2084,6 +2090,12 @@ int Project::start(QString file, QString dumpFiles, DbgFile *dbgFile, DataFile *
                 }
                 //qDebug() << "Project: start return 1";
                 return 1;
+            }
+            dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA))->resize((unsigned int)scratchpadSize);
+            dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_CODE))->resize((unsigned int)progMemSize);
+            if (NULL != m_dockUi->m_simulationInfo)
+            {
+                m_dockUi->m_simulationInfo->forceScratchpadDeviceChanged();
             }
         }
         //else

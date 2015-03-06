@@ -39,8 +39,8 @@ class ProjectCfg_Memory : public QWidget
 
     public slots:
         void setHWBuildEnabled(bool enabled);
-        void setScratchpadMaximum(int maximum);
-        void setProgMemMaximum(int maximum);
+        void setScratchpadMaximum(int maximum, bool update = true);
+        void setProgMemMaximum(int maximum, bool update = true);
 
     private slots:
         void sliderScratchpadUpdate(int value);

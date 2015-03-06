@@ -62,6 +62,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void updateWidget();
         void setClock(double clock, int clockMult);
         void setWarningOpt(GuiCfg::WarningsOpt options);
+        void forceScratchpadDeviceChanged(int size = -1);
         
     private:
         //MCUSimControl *controlUnit;
