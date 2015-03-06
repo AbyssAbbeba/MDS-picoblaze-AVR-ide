@@ -306,11 +306,11 @@ void DockUi::handleBottomHide()
         QTabBar *tabBar = m_bottomTabs->findChild<QTabBar *>(QLatin1String("qt_tabwidget_tabbar"));
         for (int i = 0; i < m_bottomTabs->count(); i++)
         {
-            m_bottomTabs->widget(i)->setMinimumHeight(280 - tabBar->height());
+            m_bottomTabs->widget(i)->setMinimumHeight(320 - tabBar->height());
             m_bottomTabs->widget(i)->setMaximumHeight(600 - tabBar->height());
         }
         m_bottomTabs->setMaximumHeight(600);
-        m_bottomTabs->setMinimumHeight(280);
+        m_bottomTabs->setMinimumHeight(320);
         m_bottomHidden = false;
     }
     emit dockTabChanged(0, m_bottomTabs->tabToolTip(m_bottomTabs->currentIndex()));
