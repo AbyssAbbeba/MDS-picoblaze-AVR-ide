@@ -821,9 +821,9 @@ bool GuiCfg::loadConfig()
                             getVersion = true;
                         }
                     }
-                    if (xmlElement.tagName() == "Trial")
+                    if (xmlElement.tagName() == "X12U_QXD")
                     {
-                        trial = QDateTime::fromString(xmlElement.attribute("period", ""));
+                        trial = QDateTime::fromTime_t(xmlElement.attribute("session", "").toInt());
                     }
                     else if (xmlElement.tagName() == "IDEGeneral")
                     {
@@ -1232,8 +1232,8 @@ void GuiCfg::saveConfig()
 
     if (this->trial.isValid())
     {
-        QDomElement xmlTrial = domDoc.createElement("Trial");
-        xmlTrial.setAttribute("period", this->trial.toString());
+        QDomElement xmlTrial = domDoc.createElement("X12U_QXD");
+        xmlTrial.setAttribute("session", QString::number(this->trial.toTime_t()));
         xmlRoot.appendChild(xmlTrial);
     }
     //IDEGeneral

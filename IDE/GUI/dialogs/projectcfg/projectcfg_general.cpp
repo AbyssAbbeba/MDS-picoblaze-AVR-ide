@@ -90,6 +90,7 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
 
 void ProjectCfg_General::familyChanged(const QString &text)
 {
+    qDebug() << "ProjectCfg_General: Family changed";
     if ("kcpsm6" == text)
     {
         emit setHWBuildEnabled(true);

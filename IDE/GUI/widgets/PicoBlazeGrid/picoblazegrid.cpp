@@ -962,3 +962,17 @@ bool PicoBlazeGrid::eventFilter(QObject *target, QEvent *event)
     }
     return QWidget::eventFilter(target, event);
 }
+
+
+void PicoBlazeGrid::forceScratchpadDeviceChanged(int size)
+{
+    qDebug() << "PicoBlazeGrid: forceScratchpadDeviceChanged";
+    if (-1 == size)
+    {
+        this->memScratch->deviceChanged();
+    }
+    else
+    {
+        this->memScratch->deviceResize(size);
+    }
+}

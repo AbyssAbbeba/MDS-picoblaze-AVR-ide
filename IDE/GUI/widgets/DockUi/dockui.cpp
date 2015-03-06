@@ -69,7 +69,7 @@ void DockUi::createWidgets(MCUSimControl *simControl)
     m_rightTabs->setMinimumWidth(320);
 
     m_bottomTabs->setMaximumHeight(600);
-    m_bottomTabs->setMinimumHeight(300);
+    m_bottomTabs->setMinimumHeight(320);
 
     #ifdef MDS_FEATURE_SIM_REGWATCHER
         m_regWatcher = new RegWatcher(m_rightTabs, simControl);
@@ -229,6 +229,13 @@ void DockUi::createWidgets(MCUSimControl *simControl)
             this,
             SIGNAL(stopSimSig())
            );
+    connect(m_asmMacroAnalyser,
+            SIGNAL(requestCodeEdits()),
+            this,
+            SIGNAL(requestCodeEdits())
+           );
+
+    QTimer::singleShot(4000, m_simulationInfo, SLOT(fixHeight()));
 }
 
 
@@ -268,15 +275,17 @@ void DockUi::handleRightHide()
     }
     else if (true == m_rightHidden)
     {
+        QTabBar *tabBar = m_rightTabs->findChild<QTabBar *>(QLatin1String("qt_tabwidget_tabbar"));
         for (int i = 0; i < m_rightTabs->count(); i++)
         {
-            m_rightTabs->widget(i)->setMinimumWidth(320);
-            m_rightTabs->widget(i)->setMaximumWidth(600);
+            m_rightTabs->widget(i)->setMinimumWidth(300 - tabBar->width());
+            m_rightTabs->widget(i)->setMaximumWidth(600 - tabBar->width());
         }
         m_rightTabs->setMaximumWidth(600);
-        m_rightTabs->setMinimumWidth(320);
+        m_rightTabs->setMinimumWidth(300);
         m_rightHidden = false;
     }
+    emit dockTabChanged(1, m_rightTabs->tabToolTip(m_rightTabs->currentIndex()));
 }
 
 
@@ -294,13 +303,15 @@ void DockUi::handleBottomHide()
     }
     else if (true == m_bottomHidden)
     {
+        QTabBar *tabBar = m_bottomTabs->findChild<QTabBar *>(QLatin1String("qt_tabwidget_tabbar"));
         for (int i = 0; i < m_bottomTabs->count(); i++)
         {
-            m_bottomTabs->widget(i)->setMinimumHeight(300);
-            m_bottomTabs->widget(i)->setMaximumHeight(600);
+            m_bottomTabs->widget(i)->setMinimumHeight(320 - tabBar->height());
+            m_bottomTabs->widget(i)->setMaximumHeight(600 - tabBar->height());
         }
         m_bottomTabs->setMaximumHeight(600);
-        m_bottomTabs->setMinimumHeight(300);
+        m_bottomTabs->setMinimumHeight(320);
         m_bottomHidden = false;
     }
+    emit dockTabChanged(0, m_bottomTabs->tabToolTip(m_bottomTabs->currentIndex()));
 }
