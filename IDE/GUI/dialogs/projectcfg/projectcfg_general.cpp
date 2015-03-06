@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include <math.h>
+#include "../../../mds.h"
 #include "projectcfg_general.h"
 #include "../project/project.h"
 
@@ -82,6 +83,10 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
     //ui.sldScratchpad->setValue(ui.sldScratchpad->maximum());
     //ui.sldProgMem->setValue(ui.sldProgMem->maximum());
 
+    #ifndef MDS_FEATURE_COMPATIBILITY_MODE
+        ui.rbXilinx->hide();
+    #endif
+        
     this->load();
     this->show();
 }

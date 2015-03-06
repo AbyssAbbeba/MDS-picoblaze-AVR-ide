@@ -466,6 +466,9 @@ Project::Project(QFile *file, ProjectMan *parent)
                             else if (xmlGeneralElement.tagName() == "AsmType")
                             {
                                 m_asmType = xmlGeneralElement.attribute("value", "").toInt(NULL);
+                                #ifndef MDS_FEATURE_COMPATIBILITY_MODE
+                                    m_asmType = 0;
+                                #endif
                             }
                             xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
@@ -2943,6 +2946,9 @@ void Project::renameFile(QString oldPath, QString newPath)
 void Project::setAsmType(int type)
 {
     m_asmType = type;
+    #ifndef MDS_FEATURE_COMPATIBILITY_MODE
+        m_asmType = 0;
+    #endif
 }
 
 
