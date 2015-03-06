@@ -28,9 +28,9 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar.
-%expect 0
+/* %expect 0 */
 // Expect exactly <n> reduce/reduce conflicts in this grammar.
-%expect-rr 0
+/* %expect-rr 0 */
 // Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser).
 %define lr.type lalr
 // Bison declaration to request verbose, specific error message strings when yyerror is called.
@@ -288,7 +288,7 @@
 %type<expr> enumerator                          declarator                      declarator-opt
 %type<expr> direct-declarator                   pointer                         pointer-opt
 %type<expr> parameter-type-list                 parameter-list                  parameter-declaration
-%type<expr> identifier-list                     identifier-list-opt             type-name
+%type<expr> identifier-list                     parameter-type-list-opt         type-name
 %type<expr> abstract-declarator                 abstract-declarator-opt         direct-abstract-declarator
 %type<expr> direct-abstract-declarator-opt      typedef-name                    initializer
 %type<expr> initializer-list                    designation                     designation-opt
@@ -1500,11 +1500,11 @@ type-specifier:
                                 CompilerExpr::OPER_DATATYPE,
                                 LOC(@$) );
     }
-/* // TODO:
+
     | atomic-type-specifier
     {
         $$ = $[atomic-type-specifier];
-    }*/
+    }
 
     | struct-or-union-specifier
     {
@@ -1847,19 +1847,19 @@ direct-declarator:
                                 LOC(@$) );
     }
 
-    | direct-declarator "(" parameter-type-list ")"
+    | direct-declarator "(" parameter-type-list-opt ")"
     {
         $$ = new CompilerExpr ( $1,
                                 CompilerExpr::OPER_FUNCTION,
-                                $[parameter-type-list],
+                                $[parameter-type-list-opt],
                                 LOC(@$) );
     }
 
-    | direct-declarator "(" identifier-list-opt ")"
+    | direct-declarator "(" identifier-list ")"
     {
         $$ = new CompilerExpr ( $1,
                                 CompilerExpr::OPER_FUNCTION,
-                                $[identifier-list-opt],
+                                $[identifier-list],
                                 LOC(@$) );
     }
 ;
@@ -1933,6 +1933,18 @@ parameter-type-list:
     }
 ;
 
+parameter-type-list-opt:
+    /* empty */
+    {
+        $$ = nullptr;
+    }
+
+    | parameter-type-list
+    {
+        $$ = $[parameter-type-list];
+    }
+;
+
 parameter-list:
     parameter-declaration
     {
@@ -1976,18 +1988,6 @@ identifier-list:
     | identifier-list "," identifier
     {
         $$ = $1->appendLink($[identifier]);
-    }
-;
-
-identifier-list-opt:
-    /* empty */
-    {
-        $$ = nullptr;
-    }
-
-    | identifier-list
-    {
-        $$ = $[identifier-list];
     }
 ;
 
@@ -2038,17 +2038,17 @@ direct-abstract-declarator:
         $$ = $[abstract-declarator];
     }
 
-    | direct-abstract-declarator-opt "[" assignment-expression-opt "]"
+    | direct-abstract-declarator-opt "[" type-qualifier-list-opt assignment-expression-opt "]"
     {
         $$ = new CompilerExpr ( $1,
                                 CompilerExpr::OPER_ARRAY,
-/*                                 new CompilerExpr ( $[type-qualifier-list-opt], */
-/*                                                    CompilerExpr::OPER_DECLARATION, */
-                                                   $[assignment-expression-opt] /*)*/,
+                                new CompilerExpr ( $[type-qualifier-list-opt],
+                                                   CompilerExpr::OPER_DECLARATION,
+                                                   $[assignment-expression-opt] ),
                                 LOC(@$) );
     }
-// TODO:
-/*    | direct-abstract-declarator-opt "[" "static" type-qualifier-list-opt assignment-expression "]"
+
+    | direct-abstract-declarator-opt "[" "static" type-qualifier-list-opt assignment-expression "]"
     {
         $$ = new CompilerExpr ( $1,
                                 CompilerExpr::OPER_ARRAY,
@@ -2070,7 +2070,7 @@ direct-abstract-declarator:
                                                    CompilerExpr::OPER_DECLARATION,
                                                    $[assignment-expression] ),
                                 LOC(@$) );
-    }*/
+    }
 
     | direct-abstract-declarator-opt "[" "*" "]"
     {
@@ -2080,11 +2080,11 @@ direct-abstract-declarator:
                                 LOC(@$) );
     }
 
-    | direct-abstract-declarator-opt "[" parameter-type-list "]"
+    | direct-abstract-declarator-opt "(" parameter-type-list-opt ")"
     {
         $$ = new CompilerExpr ( $[direct-abstract-declarator-opt],
                                 CompilerExpr::OPER_ARRAY,
-                                $[parameter-type-list],
+                                $[parameter-type-list-opt],
                                 LOC(@$) );
     }
 ;
