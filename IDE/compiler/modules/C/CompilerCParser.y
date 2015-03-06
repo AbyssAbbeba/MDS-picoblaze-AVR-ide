@@ -2072,14 +2072,6 @@ direct-abstract-declarator:
                                 LOC(@$) );
     }
 
-    | direct-abstract-declarator-opt "[" "*" "]"
-    {
-        $$ = new CompilerExpr ( $[direct-abstract-declarator-opt],
-                                CompilerExpr::OPER_ARRAY,
-                                new CompilerExpr(CompilerExpr::OPER_POINTER, LOC(@3)),
-                                LOC(@$) );
-    }
-
     | direct-abstract-declarator-opt "(" parameter-type-list-opt ")"
     {
         $$ = new CompilerExpr ( $[direct-abstract-declarator-opt],
