@@ -249,6 +249,7 @@ class Project : public QObject
         std::vector<std::pair<const std::string *, unsigned int>> m_prevSim2;
         QList<QColor*> simColors;
 
+        //MDS - 0, Xilinx - 1
         int m_asmType;
         QList<RegWatcherExportStruct> m_regWatchers;
         
