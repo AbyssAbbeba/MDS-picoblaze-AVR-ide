@@ -68,6 +68,8 @@ class DockUi : public QObject
         void scrollToLine(QString file, int line);
         void stopSimSig();
         void showHelpContent(const QUrl &url);
+        void requestCodeEdits();
+        void dockTabChanged(int, QString);
 
     private:
         bool m_bottomHidden;

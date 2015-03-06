@@ -388,7 +388,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     m_untitledCounter = 0;
     for (int i = 0; i < 13; i++)
     {
-        compileOpt.append(false);
+        compileOpt.append(true);
     }
 
     for (int i = 0; i < 3; i++)
@@ -1186,20 +1186,20 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
 
     QDomElement xmlCompilerOpt = domDoc.createElement("Options");
     QDomElement xmlSymbolTbl = domDoc.createElement("SymbolTable");
-    xmlSymbolTbl.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlSymbolTbl.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlSymbolTbl);
     QDomElement xmlMacroTbl = domDoc.createElement("MacroTable");
-    xmlMacroTbl.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlMacroTbl.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlMacroTbl);
     QDomElement xmlDbgFile = domDoc.createElement("DebugFile");
     xmlDbgFile.setAttribute("enable", "true");
     compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlDbgFile);
     QDomElement xmlCodeTree = domDoc.createElement("CodeTree");
-    xmlCodeTree.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlCodeTree.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlCodeTree);
     QDomElement xmlLstFile = domDoc.createElement("ListFile");
     xmlLstFile.setAttribute("enable", "true");
@@ -1210,12 +1210,12 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlHexFile);
     QDomElement xmlBinFile = domDoc.createElement("BinFile");
-    xmlBinFile.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlBinFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlBinFile);
     QDomElement xmlSRecFile = domDoc.createElement("SRecFile");
-    xmlSRecFile.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlSRecFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlSRecFile);
     QDomElement xmlMemFile = domDoc.createElement("MemFile");
     xmlMemFile.setAttribute("enable", "true");
