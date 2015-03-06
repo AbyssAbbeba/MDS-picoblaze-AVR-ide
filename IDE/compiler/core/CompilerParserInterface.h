@@ -73,6 +73,17 @@ class CompilerParserInterface
             m_parserExtension = nullptr;
         }
 
+        /**
+         * @brief
+         */
+        ~CompilerParserInterface()
+        {
+            if ( nullptr != m_parserExtension )
+            {
+                delete m_parserExtension;
+            }
+        }
+
     ////    Public Operations    ////
     public:
         /**
