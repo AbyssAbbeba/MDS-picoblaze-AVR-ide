@@ -513,8 +513,6 @@ void HexEdit::changeAscii(int position)
 
 void HexEdit::setData(QList<unsigned char> *byteArray)
 {
-    bool back = false;
-    //int line is for counting rows (bad naming, heh...)
     int line = 0;
     if (hexTextEdit->isReadOnly())
     {
@@ -533,8 +531,9 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
     //QString tmp(*byteArray);
     for (int i=0; i<byteArray->size(); i++)
     {
-        if (line == 0)
+        /*if (line == 0)
         {
+            qDebug() << back;
             if (back == true)
             {
                 //hexTextEdit->setTextBackgroundColor(Qt::lightGray);
@@ -565,7 +564,8 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
                 }
                 back = true;
             }
-        }
+        }*/
+        
         if (byteArray->at(i) > 15)
         {
             hexTextEdit->insertPlainText((QString::number(byteArray->at(i), 16)).toUpper());
@@ -574,6 +574,7 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
         {
             hexTextEdit->insertPlainText("0" + (QString::number(byteArray->at(i), 16)).toUpper());
         }
+        
         if (ascii == true)
         {
             if (byteArray->at(i) < 127 && byteArray->at(i) >= 32)
@@ -585,7 +586,9 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
                 hexAsciiEdit->insertPlainText(".");
             }
         }
+        
         line++;
+        
         if (line == this->columns)
         {
             if (i != byteArray->size()-1)
@@ -604,7 +607,44 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
         }
     }
     this->hexByteArray = byteArray;
+
+    QTextBlockFormat blockFormat;
+    QTextBlock block;
+    for (int i = 0; i < hexTextEdit->document()->blockCount(); i++)
+    {
+        block = hexTextEdit->document()->findBlockByNumber(i);
+        QTextCursor cur(block);
+        blockFormat = cur.blockFormat();
+        if (i%2 == 0)
+        {
+            blockFormat.setBackground(Qt::white);
+        }
+        else
+        {
+            blockFormat.setBackground(Qt::lightGray);
+        }
+        cur.setBlockFormat(blockFormat);
+        if (ascii == true)
+        {
+            block = hexAsciiEdit->document()->findBlockByNumber(i);
+            QTextCursor cur(block);
+            blockFormat = cur.blockFormat();
+            if (i%2 == 0)
+            {
+                blockFormat.setBackground(Qt::white);
+            }
+            else
+            {
+                blockFormat.setBackground(Qt::lightGray);
+            }
+            cur.setBlockFormat(blockFormat);
+        }
+    }
     //this->hexTextEdit->verticalScrollBar()->setValue(0);
+    QTextCursor cur(hexTextEdit->textCursor());
+    cur.setPosition(0);
+    hexTextEdit->setTextCursor(cur);
+    hexTextEdit->ensureCursorVisible();
 }
 
 

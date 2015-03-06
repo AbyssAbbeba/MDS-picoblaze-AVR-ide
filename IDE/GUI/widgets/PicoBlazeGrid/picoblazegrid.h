@@ -53,7 +53,6 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         //~PicoBlazeGrid();
         QWidget* getParent();
         //void setProjectPath(QString prjPath);
-        void fixHeight();
 
         void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
         void deviceChanged();
@@ -62,6 +61,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void updateWidget();
         void setClock(double clock, int clockMult);
         void setWarningOpt(GuiCfg::WarningsOpt options);
+        void forceScratchpadDeviceChanged(int size = -1);
         
     private:
         //MCUSimControl *controlUnit;
@@ -121,14 +121,13 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void setIntE();
         void interrupt();
         void handleUpdateRequest(int mask);
-
-    public slots:
-        void unhighlight();
-
-    private slots:
         void stopSimSlot();
         void changeClock(const QString &text);
         void changeClockMult(int index);
+
+    public slots:
+        void unhighlight();
+        void fixHeight();
 
     signals:
         void stopSimSig();

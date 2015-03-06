@@ -93,10 +93,11 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
             this->fileMgr,
             SLOT(setMainFileByName(QString))
            );
-    this->memoryCfg->setScratchpadMaximum(this->generalCfg->getScratchpadMaximum());
-    this->memoryCfg->setProgMemMaximum(this->generalCfg->getProgMemMaximum());
+    qDebug() << "set maximum";
+    this->memoryCfg->setScratchpadMaximum(this->generalCfg->getScratchpadMaximum(), false);
+    this->memoryCfg->setProgMemMaximum(this->generalCfg->getProgMemMaximum(), false);
     this->fileMgr->requestFiles();
-    //qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
+    qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
 }
 
 
@@ -147,6 +148,7 @@ void ProjectConfigDialog_Core::ok()
     this->generalCfg->save();
     this->compilerCfg->save();
     this->pathsCfg->save();
+    this->memoryCfg->save();
     if (reloadFiles == true)
     {
         emit reloadTree();

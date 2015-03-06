@@ -47,6 +47,7 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
         void updateWidget();
         int getSize();
         void setWarningOpt(GuiCfg::WarningsOpt options);
+        void deviceResize(int size);
 
     signals:
         void stopSimSig();
@@ -62,6 +63,7 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
         MCUSimMemory *m_memory;
         MCUSimSubsys::SubsysId subsys;
         QLabel *m_lblScratch;
+        bool m_changingHexEdits;
 
         QGridLayout *m_layout;
 

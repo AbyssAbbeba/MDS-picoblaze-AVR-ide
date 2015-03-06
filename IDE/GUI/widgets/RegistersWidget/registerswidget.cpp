@@ -138,88 +138,93 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
         }
         case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
-            this->update = true;
-            uint value;
-            m_memory->directRead(locationOrReason, value);
-            //qDebug() << "RegistersWidget: location" << locationOrReason;
-            int size = m_size/2;
-            if ( size-1 < locationOrReason )
+            if (false == this->update)
             {
-                if (value > 99)
+                this->update = true;
+                uint value;
+                m_memory->directRead(locationOrReason, value);
+                qDebug() << "RegistersWidget: location" << locationOrReason;
+                int size = m_size/2;
+                if ( size-1 < locationOrReason )
                 {
-                    m_tblReg->item(locationOrReason-size, 5)->setText(QString::number(value, 10));
-                }
-                else if (value > 9)
-                {
-                    m_tblReg->item(locationOrReason-size, 5)->setText("0" + QString::number(value, 10));
+                    if (value > 99)
+                    {
+                        m_tblReg->item(locationOrReason-size, 5)->setText(QString::number(value, 10));
+                    }
+                    else if (value > 9)
+                    {
+                        m_tblReg->item(locationOrReason-size, 5)->setText("0" + QString::number(value, 10));
+                    }
+                    else
+                    {
+                        m_tblReg->item(locationOrReason-size, 5)->setText("00" + QString::number(value, 10));
+                    }
+
+                    if (value > 15)
+                    {
+                        m_tblReg->item(locationOrReason-size, 6)->setText(QString::number(value, 16).toUpper());
+                    }
+                    else
+                    {
+                        m_tblReg->item(locationOrReason-size, 6)->setText("0" + QString::number(value, 16).toUpper());
+                    }
+                    QString bin = QString::number(value, 2);
+                    for (int i = bin.size(); i < 8 ; i++)
+                    {
+                        bin.prepend("0");
+                    }
+                    m_tblReg->item(locationOrReason-size, 7)->setText(bin);
+
+
+                    m_tblReg->item(locationOrReason-size, 5)->setBackground(Qt::yellow);
+                    m_tblReg->item(locationOrReason-size, 6)->setBackground(Qt::yellow);
+                    m_tblReg->item(locationOrReason-size, 7)->setBackground(Qt::yellow);
                 }
                 else
                 {
-                    m_tblReg->item(locationOrReason-size, 5)->setText("00" + QString::number(value, 10));
-                }
+                    if (value > 99)
+                    {
+                        m_tblReg->item(locationOrReason, 1)->setText(QString::number(value, 10));
+                    }
+                    else if (value > 9)
+                    {
+                        m_tblReg->item(locationOrReason, 1)->setText("0" + QString::number(value, 10));
+                    }
+                    else
+                    {
+                        m_tblReg->item(locationOrReason, 1)->setText("00" + QString::number(value, 10));
+                    }
 
-                if (value > 15)
-                {
-                    m_tblReg->item(locationOrReason-size, 6)->setText(QString::number(value, 16).toUpper());
-                }
-                else
-                {
-                    m_tblReg->item(locationOrReason-size, 6)->setText("0" + QString::number(value, 16).toUpper());
-                }
-                QString bin = QString::number(value, 2);
-                for (int i = bin.size(); i < 8 ; i++)
-                {
-                    bin.prepend("0");
-                }
-                m_tblReg->item(locationOrReason-size, 7)->setText(bin);
+                    if (value > 15)
+                    {
+                        m_tblReg->item(locationOrReason, 2)->setText(QString::number(value, 16).toUpper());
+                    }
+                    else
+                    {
+                        m_tblReg->item(locationOrReason, 2)->setText("0" + QString::number(value, 16).toUpper());
+                    }
+                    QString bin = QString::number(value, 2);
+                    for (int i = bin.size(); i < 8 ; i++)
+                    {
+                        bin.prepend("0");
+                    }
+                    m_tblReg->item(locationOrReason, 3)->setText(bin);
 
-
-                m_tblReg->item(locationOrReason-size, 5)->setBackground(Qt::yellow);
-                m_tblReg->item(locationOrReason-size, 6)->setBackground(Qt::yellow);
-                m_tblReg->item(locationOrReason-size, 7)->setBackground(Qt::yellow);
+                    m_tblReg->item(locationOrReason, 1)->setBackground(Qt::yellow);
+                    m_tblReg->item(locationOrReason, 2)->setBackground(Qt::yellow);
+                    m_tblReg->item(locationOrReason, 3)->setBackground(Qt::yellow);
+                }
+                //qDebug() << "RegistersWidget: event: mem cell changed to" << value;
+                this->update = false;
             }
-            else
-            {
-                if (value > 99)
-                {
-                    m_tblReg->item(locationOrReason, 1)->setText(QString::number(value, 10));
-                }
-                else if (value > 9)
-                {
-                    m_tblReg->item(locationOrReason, 1)->setText("0" + QString::number(value, 10));
-                }
-                else
-                {
-                    m_tblReg->item(locationOrReason, 1)->setText("00" + QString::number(value, 10));
-                }
-
-                if (value > 15)
-                {
-                    m_tblReg->item(locationOrReason, 2)->setText(QString::number(value, 16).toUpper());
-                }
-                else
-                {
-                    m_tblReg->item(locationOrReason, 2)->setText("0" + QString::number(value, 16).toUpper());
-                }
-                QString bin = QString::number(value, 2);
-                for (int i = bin.size(); i < 8 ; i++)
-                {
-                    bin.prepend("0");
-                }
-                m_tblReg->item(locationOrReason, 3)->setText(bin);
-
-                m_tblReg->item(locationOrReason, 1)->setBackground(Qt::yellow);
-                m_tblReg->item(locationOrReason, 2)->setBackground(Qt::yellow);
-                m_tblReg->item(locationOrReason, 3)->setBackground(Qt::yellow);
-            }
-            //qDebug() << "RegistersWidget: event: mem cell changed to" << value;
-            this->update = false;
 
             break;
         }
         default:
+        {
             qDebug() << "RegistersWidget: Invalid event received, event ignored. Event id:" << eventId;
             break;
+        }
     }
     //qDebug() << "RegistersWidget: return handleEvent()";
 }
@@ -509,6 +514,7 @@ void RegistersWidget::unhighlight()
 
 void RegistersWidget::updateWidget()
 {
+    qDebug() << "RegistersWidget: update widget";
     this->update = true;
     uint value;
     QString bin;

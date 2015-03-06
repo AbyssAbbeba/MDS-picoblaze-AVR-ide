@@ -388,7 +388,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     m_untitledCounter = 0;
     for (int i = 0; i < 13; i++)
     {
-        compileOpt.append(false);
+        compileOpt.append(true);
     }
 
     for (int i = 0; i < 3; i++)
@@ -913,6 +913,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                     this,
                     SLOT(clockChangedSlot(double, int))
                    );
+            this->setScratchpad(this->scratchpadSize);
         }
     }
     /*for (int i = 0; i < fileCount; i++)
@@ -1186,20 +1187,20 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
 
     QDomElement xmlCompilerOpt = domDoc.createElement("Options");
     QDomElement xmlSymbolTbl = domDoc.createElement("SymbolTable");
-    xmlSymbolTbl.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlSymbolTbl.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlSymbolTbl);
     QDomElement xmlMacroTbl = domDoc.createElement("MacroTable");
-    xmlMacroTbl.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlMacroTbl.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlMacroTbl);
     QDomElement xmlDbgFile = domDoc.createElement("DebugFile");
     xmlDbgFile.setAttribute("enable", "true");
     compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlDbgFile);
     QDomElement xmlCodeTree = domDoc.createElement("CodeTree");
-    xmlCodeTree.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlCodeTree.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlCodeTree);
     QDomElement xmlLstFile = domDoc.createElement("ListFile");
     xmlLstFile.setAttribute("enable", "true");
@@ -1210,12 +1211,12 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlHexFile);
     QDomElement xmlBinFile = domDoc.createElement("BinFile");
-    xmlBinFile.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlBinFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlBinFile);
     QDomElement xmlSRecFile = domDoc.createElement("SRecFile");
-    xmlSRecFile.setAttribute("enable", "false");
-    compileOpt.append(false);
+    xmlSRecFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlSRecFile);
     QDomElement xmlMemFile = domDoc.createElement("MemFile");
     xmlMemFile.setAttribute("enable", "true");
@@ -1866,7 +1867,12 @@ void Project::setHWBuild(int value)
  */
 void Project::setScratchpad(int value)
 {
+    qDebug() << "set scratchpad";
     scratchpadSize = value;
+    if (NULL != m_dockUi->m_simulationInfo)
+    {
+        m_dockUi->m_simulationInfo->forceScratchpadDeviceChanged(scratchpadSize);
+    }
 }
 
 
@@ -1969,12 +1975,12 @@ void Project::setupSim()
  */
 void Project::setupSim(QString family)
 {
-    //qDebug() << "Project: setupSim()";
+    qDebug() << "Project: setupSim()";
     //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
     this->m_simControlUnit->changeDevice(family.toUtf8().constData());
     //qDebug() << architecture;
-    //qDebug() << "Project: return setupSim()";
+    qDebug() << "Project: return setupSim()";
 }
 
 
@@ -2084,6 +2090,12 @@ int Project::start(QString file, QString dumpFiles, DbgFile *dbgFile, DataFile *
                 }
                 //qDebug() << "Project: start return 1";
                 return 1;
+            }
+            dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA))->resize((unsigned int)scratchpadSize);
+            dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_CODE))->resize((unsigned int)progMemSize);
+            if (NULL != m_dockUi->m_simulationInfo)
+            {
+                m_dockUi->m_simulationInfo->forceScratchpadDeviceChanged();
             }
         }
         //else
