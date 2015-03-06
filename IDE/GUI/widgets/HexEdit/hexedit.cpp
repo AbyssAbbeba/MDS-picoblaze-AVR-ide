@@ -513,7 +513,6 @@ void HexEdit::changeAscii(int position)
 
 void HexEdit::setData(QList<unsigned char> *byteArray)
 {
-    bool back = false;
     int line = 0;
     if (hexTextEdit->isReadOnly())
     {
@@ -625,9 +624,27 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
             blockFormat.setBackground(Qt::lightGray);
         }
         cur.setBlockFormat(blockFormat);
-        
+        if (ascii == true)
+        {
+            block = hexAsciiEdit->document()->findBlockByNumber(i);
+            QTextCursor cur(block);
+            blockFormat = cur.blockFormat();
+            if (i%2 == 0)
+            {
+                blockFormat.setBackground(Qt::white);
+            }
+            else
+            {
+                blockFormat.setBackground(Qt::lightGray);
+            }
+            cur.setBlockFormat(blockFormat);
+        }
     }
     //this->hexTextEdit->verticalScrollBar()->setValue(0);
+    QTextCursor cur(hexTextEdit->textCursor());
+    cur.setPosition(0);
+    hexTextEdit->setTextCursor(cur);
+    hexTextEdit->ensureCursorVisible();
 }
 
 
