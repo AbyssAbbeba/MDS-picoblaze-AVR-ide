@@ -8,12 +8,13 @@
  *
  * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
  * @ingroup GUI
- * @file projectdlg_generalr.cpp
+ * @file projectdlg_general.cpp
  */
 
 
 #include <QtGui>
 #include <math.h>
+#include "../../../mds.h"
 #include "projectdlg_general.h"
 
 
@@ -87,6 +88,10 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
            );
 
     ui.cmbFamily->setCurrentIndex(4);
+
+    #ifndef MDS_FEATURE_COMPATIBILITY_MODE
+        ui.rbXilinx->hide();
+    #endif
 
     this->show();
 }
