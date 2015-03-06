@@ -224,6 +224,7 @@ class MainForm : public QMainWindow
         void stdoutExtApp(int processNumber);
         void disableHelpActions(bool disable);
         void clearFileTimestamps();
+        void setTitleBar(int bottom, QString label);
 
     signals:
         void unhighlightSim();

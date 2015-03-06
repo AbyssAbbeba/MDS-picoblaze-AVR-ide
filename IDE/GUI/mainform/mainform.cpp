@@ -145,8 +145,7 @@ MainForm::MainForm()
         this->setWindowTitle("MDS NON-COMMERCIAL");
     #endif
     #ifdef MDS_VARIANT_TRIAL
-        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
-        QString trial = QString("MDS TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
+        QString trial = QString("MDS TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - GuiCfg::getInstance().getTrial().daysTo(QDateTime::currentDateTime())) + QString(" days left");
         this->setWindowTitle(trial);
     #endif
     this->projectTabConnected = false;
@@ -177,6 +176,11 @@ MainForm::MainForm()
     m_rightDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
     m_bottomDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     m_rightDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
+    QLabel *bottom_lbl = new QLabel();
+    QLabel *right_lbl = new QLabel();
+    m_bottomDockWidget->setTitleBarWidget(bottom_lbl);
+    m_rightDockWidget->setTitleBarWidget(right_lbl);
     
     setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
@@ -1042,8 +1046,7 @@ void MainForm::createToolbar()
         connect(toolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(showWebSite(QAction*)));
     #endif
     #ifdef MDS_VARIANT_TRIAL
-        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
-        QString trial = QString("TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
+        QString trial = QString("TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - GuiCfg::getInstance().getTrial().daysTo(QDateTime::currentDateTime())) + QString(" days left");
         QToolBar *toolBar = addToolBar(trial);
         toolBar->setFloatable(false);
         QWidget* spacer = new QWidget();
@@ -2327,6 +2330,8 @@ void MainForm::projectOpened()
     m_wDockManager->appendTabBar(m_projectMan->getActive()->prjPath);
     m_bottomDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_bottomTabs);
     m_rightDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_rightTabs);
+    ((QLabel*)(m_bottomDockWidget->titleBarWidget()))->setText(m_projectMan->getActive()->m_dockUi->m_bottomTabs->tabToolTip(m_projectMan->getActive()->m_dockUi->m_bottomTabs->currentIndex()));
+    ((QLabel*)(m_rightDockWidget->titleBarWidget()))->setText(m_projectMan->getActive()->m_dockUi->m_rightTabs->tabToolTip(m_projectMan->getActive()->m_dockUi->m_rightTabs->currentIndex()));
     m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
     //QDir dir(m_projectMan->getActive()->);
     QString absoluteFilePath;
@@ -3923,6 +3928,8 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project->m_dockUi, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     connect(project->m_dockUi, SIGNAL(scrollToLine(QString, int)), this, SLOT(scrollToFileLine(QString, int)));
     connect(project->m_dockUi, SIGNAL(showHelpContent(const QUrl &)), m_wDockManager, SLOT(setHelpBrowserPath(const QUrl &)));
+    connect(project->m_dockUi, SIGNAL(requestCodeEdits()), this, SLOT(requestMacrosCodeEdits()));
+    connect(project->m_dockUi, SIGNAL(dockTabChanged(int, QString)), this, SLOT(setTitleBar(int, QString)));
     
 }
 
@@ -4270,6 +4277,8 @@ void MainForm::activeProjectChanged(int index)
 //        m_wDockManager->changeSimWidget(index);
         m_bottomDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_bottomTabs);
         m_rightDockWidget->setWidget(m_projectMan->getActive()->m_dockUi->m_rightTabs);
+        ((QLabel*)(m_bottomDockWidget->titleBarWidget()))->setText(m_projectMan->getActive()->m_dockUi->m_bottomTabs->tabToolTip(m_projectMan->getActive()->m_dockUi->m_bottomTabs->currentIndex()));
+        ((QLabel*)(m_rightDockWidget->titleBarWidget()))->setText(m_projectMan->getActive()->m_dockUi->m_rightTabs->tabToolTip(m_projectMan->getActive()->m_dockUi->m_rightTabs->currentIndex()));
         m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
 //        if (m_wDockManager->getBreakpointList() != NULL)
 //        {
@@ -4722,7 +4731,7 @@ void MainForm::requestMacrosCodeEdits()
             list.append(m_wDockManager->getTabWidget(i));
         }
     }
-    emit provideMacroCodeEdits(list);
+    m_projectMan->getActive()->m_dockUi->m_asmMacroAnalyser->reload(list);
 }
 
 
@@ -5863,5 +5872,18 @@ void MainForm::clearFileTimestamps()
             m_fileTimeStamps.removeAt(indexes.at(0));
             indexes.removeAt(0);
         }
+    }
+}
+
+
+void MainForm::setTitleBar(int bottom, QString label)
+{
+    if (0 == bottom)
+    {
+        ((QLabel*)(m_bottomDockWidget->titleBarWidget()))->setText(label);
+    }
+    else if (1 == bottom)
+    {
+        ((QLabel*)(m_rightDockWidget->titleBarWidget()))->setText(label);
     }
 }
