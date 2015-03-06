@@ -65,6 +65,8 @@ McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUS
 
     m_layout->addWidget(m_lblScratch, 0, 1);
 
+    m_changingHexEdits = false;
+
 	deviceChanged();
 }
 
@@ -78,8 +80,10 @@ inline void McuMemoryView::deleteHexEdit()
 {
 	if ( NULL != m_hexEdit )
     {
+        m_changingHexEdits = true;
 		delete m_hexEdit;
         m_hexEdit = NULL;
+        m_changingHexEdits = false;
 	}
 }
 
@@ -390,5 +394,25 @@ void McuMemoryView::setWarningOpt(GuiCfg::WarningsOpt options)
 
 void McuMemoryView::resizeEvent(QResizeEvent */*event*/)
 {
+    if (true == m_changingHexEdits)
+    {
+        return;
+    }
+    if (NULL != m_hexEdit)
+    {
+        m_hexEdit->fixHeight();
+    }
+}
+
+
+void McuMemoryView::deviceResize(int size)
+{
+    qDebug() << "McuMemoryView: device resize" << size;
+    m_size = size;
+    deleteHexEdit();
+    m_hexEdit = new HexEdit(this, false, m_size, 8);
+    connect(m_hexEdit, SIGNAL(textChanged(int)), this, SLOT(changeValue(int)));
+    m_layout->addWidget(m_hexEdit, 1, 0, 1, 5);
+    QTimer::singleShot(300, this, SLOT(fixHeight()));
     m_hexEdit->fixHeight();
 }
