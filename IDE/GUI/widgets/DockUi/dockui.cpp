@@ -69,7 +69,7 @@ void DockUi::createWidgets(MCUSimControl *simControl)
     m_rightTabs->setMinimumWidth(320);
 
     m_bottomTabs->setMaximumHeight(600);
-    m_bottomTabs->setMinimumHeight(300);
+    m_bottomTabs->setMinimumHeight(320);
 
     #ifdef MDS_FEATURE_SIM_REGWATCHER
         m_regWatcher = new RegWatcher(m_rightTabs, simControl);
@@ -234,6 +234,8 @@ void DockUi::createWidgets(MCUSimControl *simControl)
             this,
             SIGNAL(requestCodeEdits())
            );
+
+    QTimer::singleShot(4000, m_simulationInfo, SLOT(fixHeight()));
 }
 
 
