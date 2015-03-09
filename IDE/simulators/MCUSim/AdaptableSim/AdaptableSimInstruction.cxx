@@ -59,7 +59,7 @@ std::ostream & operator << ( std::ostream & out,
 
     out << "Operation parameters:" << std::endl;
 //     TODO: uncomment this when debugging is done.
-//     out << instruction.m_parameters << std::endl;
+    out << instruction.m_parameters << std::endl;
 
     return out;
 }
