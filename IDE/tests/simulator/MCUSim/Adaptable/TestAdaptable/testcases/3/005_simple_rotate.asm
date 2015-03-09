@@ -36,16 +36,16 @@ start:
 ;;STEP
 ;;PC == 3
 ;; REG[1]== 30
-        LOAD    s3, #1
+        LOAD    s3, #128
 ;;STEP
 ;;PC == 4
-;; REG[3] == 1
+;; REG[3] == 128
         JUMP    main                    ; Execute main program loop
 ; Main loop
 ; --------------------
 ;;STEP
 ;; PC == 5
-;; REG[3]==1
+;; REG[3]==128
 main:
 ;-----------------------------------------------------------------
 ; FIRST OPERAND = SOURCE
@@ -54,84 +54,106 @@ main:
 ; ----------------------------------------------------------------
 
         ; Shifting to the right
-        RR     s3,#1
-        ;;STEP
-        ;;PC == 6
-        ;;REG[3] == 0b10000000
-        RR     s3,#1
-        ;;STEP
+        ; 4 bit register address, 8bit data address
+        ; rotate instructions with rotate positions defined with value of register
+        LOAD    s5,#1
+        RR     s3,s5
+        ;;STEP 2
+        ;;PC == 7
         ;;REG[3] == 0b01000000
-        RR     s3,#1
+        RR     s3,s5
         ;;STEP
         ;;REG[3] == 0b00100000
-        RR     s3,#1
+        RR     s3,s5
         ;;STEP
         ;;REG[3] == 0b00010000
-        RR     s3,#1
+        RR     s3,s5
         ;;STEP
         ;;REG[3] == 0b00001000
-        RR     s3,#1
+        RR     s3,s5
         ;;STEP
         ;;REG[3] == 0b00000100
-        RR     s3,#1
+        RR     s3,s5
         ;;STEP
         ;;REG[3] == 0b00000010
-        RR     s3,#1
+        RR     s3,s5
         ;;STEP
         ;;REG[3] == 0b00000001
         ;; PC == 13
 
         ; Shifting to the left
-        RL     s3,#1
+        RL     s3,s5
         ;;STEP
         ;;REG[3] == 0b00000010
         
-        RL     s3,#1
+        RL     s3,s5
         ;;STEP
         ;;REG[3] == 0b00000100
         
-        RL     s3,#1
+        RL     s3,s5
         ;;STEP
         ;;REG[3] == 0b00001000
         
-        RL     s3,#1
+        RL     s3,s5
         ;;STEP
         ;;REG[3] == 0b00010000
         
-        RL     s3,#1
-        RL     s3,#1
-        RL     s3,#1
+        RL     s3,s5
+        RL     s3,s5
+        RL     s3,s5
         ;;STEP  3
         ;;REG[3] == 0b10000000
-        RL     s3,#1
-
+        
         ; Shifting to the right
-        RR     s3,#5
+        LOAD    s5,#5
+        ;;STEP
+        ;;REG[5] == 5
+        RR     s3,s5
         ;;STEP
         ;;REG[3] == 0b00000100
-        RR     s3,#2
-        ;;STEP
+        LOAD    s5,#2
+        RR     s3,s5
+        ;;STEP 2
         ;;REG[3] == 0b00000001
-        RL     s3,#2
+        RL     s3,s5
         ;;STEP
         ;;REG[3] == 0b00000100
-        RL      s3,#3
-        ;;STEP
+        LOAD    s5,#5
+        RL      s3,s5
+        ;;STEP 2
         ;;REG[3] == 0b10000000
 
+        
         ; Shifting to the right and left with another target register
-        RRT     s3,#5,s4
+        LOAD    s5,#1
+        ;; STEP
+        ;; REG[4] == 0
+        ;; REG[5] == 1
+        ;; REG[3] == 128
+
+        RRT     s3,s5,s4
         ;;STEP
-        ;;REG[4] == 0b00000100
-        RRT     s3,#2,s4
+        ;;REG[4] == 0b01000000
+        RRT     s3,s5,s4
         ;;STEP
-        ;;REG[4] == 0b00000001
-        RLT     s3,#2,s4
+        ;;REG[4] == 0b00100000
+
+        RLT     s3,s5,s4
         ;;STEP
-        ;;REG[4] == 0b00000100
-        RLT     s3,#3,s4
+        ;;REG[4] == 0b00010000
+        RLT     s3,s5,s4
         ;;STEP
-        ;;REG[4] == 0b10000000
+        ;;REG[4] == 0b00001000
+        
+        LOAD    s4,#16
+        ;; STEP
+        ;; REG[4] == 16
+
+        RRI      s4,#1
+        ;; STEP
+        ;; REG[4] == 8
+                        end
+                nnbn..gg
 
         ; Shifting to the right and left with another target register
         RRT     s3,#5,s4
