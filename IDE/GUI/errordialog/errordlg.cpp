@@ -13,8 +13,9 @@
 
 
 #include "errordlg.h"
-#include <QMessageBox>
+#include <QStyle>
 #include <QDebug>
+#include "ui_errordlg.h"
 
 /**
  * @brief Shows error according to given code
@@ -22,33 +23,45 @@
  */
 void error(int errCode, QString detail)
 {
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("Error");
+    QDialog msgBox;
+    Ui_ErrorDialog ui;
+    ui.setupUi(&msgBox);
+    ui.teDetail->clear();
     switch (errCode)
     {
         case ERR_OPENFILE:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("File not found or cannot be opened\n" + detail);
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            //ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("File not found or cannot be opened");
+            ui.teDetail->appendPlainText(detail);
             qDebug() << "Error: file not found - " << detail;
             break;
         }
         case ERR_XML_ASSIGN:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("XML file cannot be assigned");
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("XML file cannot be assigned");
             break;
         }
         case ERR_XML_CONTENT:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("XML file has wrong content");
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("XML file has wrong content");
             break;
         }
         case ERR_NO_PROJECT:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Active project is not set");
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Active project is not set");
             break;
         }
 
@@ -57,192 +70,257 @@ void error(int errCode, QString detail)
         //stack
         case ERR_STACK_OVERFLOW:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Stack overflow, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Stack overflow, simulation halted");
             break;
         }
         case ERR_STACK_UNDERFLOW:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Stack underflow, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Stack underflow, simulation halted");
             break;
         }
         //mem
         case ERR_MEM_WR_NONEXISTENT:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Write to nonexistent memory location, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Write to nonexistent memory location, simulation halted");
             break;
         }
         case ERR_MEM_RD_NONEXISTENT:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Read from nonexistent memory location, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Read from nonexistent memory location, simulation halted");
             break;
         }
         case ERR_MEM_WR_NOT_IMPLEMENTED:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Write to unimplemented memory location, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Write to unimplemented memory location, simulation halted");
             break;
         }
         case ERR_MEM_RD_NOT_IMPLEMENTED:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Read from unimplemented memory location, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Read from unimplemented memory location, simulation halted");
             break;
         }
         case ERR_MEM_RD_UNDEFINED:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Uninitialized value read from memory at address 0x" + detail + ", simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Uninitialized value read from memory, simulation halted");
+            ui.teDetail->appendPlainText("Address: 0x" + detail);
             break;
         }
         //cpu
         case ERR_CPU_PC_OVERFLOW:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Program counter overflow, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Program counter overflow, simulation halted");
             break;
         }
         case ERR_CPU_PC_UNDERFLOW:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Program counter underflow, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Program counter underflow, simulation halted");
             break;
         }
         case ERR_CPU_SYS_FATAL:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("System fatal error, simulation halted");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("System fatal error, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_OPCODE:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid opcode, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Invalid opcode, simulation halted");
             break;
         }
         case ERR_CPU_UNDEFINED_OPCODE:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Undefined opcode at address 0x" + detail +", simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Undefined opcode, simulation halted");
+            ui.teDetail->appendPlainText("Address: 0x" + detail);
             break;
         }
         case ERR_CPU_INVALID_JUMP:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid jump, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Invalid jump, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_CALL:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid call, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Invalid call, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_IRQ:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid IRQ, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Invalid IRQ, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_RET:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid return, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Invalid return, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_RETI:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid return from interrupt, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Invalid return from interrupt, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_OPSET:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid opset, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Invalid opset, simulation halted");
             break;
         }
         case ERR_CPU_UNSUPPORTED_INST:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Unsupported instruction, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Unsupported instruction, simulation halted");
             break;
         }
         case ERR_CPU_INST_IGNORED:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Instruction ignored, simulation halted");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Instruction ignored, simulation halted");
             break;
         }
 
 
         case ERR_UNTRACKED_PROJECT:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Action not available for untracked project");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Action not available for untracked project");
             break;
         }
         case ERR_SIM_NOSTART:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Simulation could not start, try to recompile or check dbg file integrity\n" + detail);
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Simulation could not start");
+            ui.teDetail->appendPlainText("Try to recompile or check dbg file integrity.");
+            ui.teDetail->appendPlainText("Dbg file: " + detail);
             break;
         }
         case ERR_SIM_NOT_COMPILED:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Simulation could not start, project not compiled.");
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Simulation could not start, project not compiled.");
             break;
         }
         case ERR_SIM_NOT_COMPILED_MODIFIED:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Simulation could not start, source files were modified.");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Simulation could not start, source files were modified.");
             break;
         }
         case ERR_SIM_RECOMPILE_FAILED:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Simulation could not start, recompilation failed. See compiler output for possible errors.");
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Simulation could not start, recompilation failed. See compiler output for possible errors.");
             break;
         }
         case ERR_NO_MAINFILE:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Project main file is not set");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Project main file is not set");
             break;
         }
         case ERR_NO_LICENSE:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("License file not loaded.");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("License file not loaded.");
             break;
         }
         case ERR_COMPILE_DURING_SIMULATION:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Can not compile during active simulation.");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Can not compile during active simulation.");
             break;
         }
         case ERR_END_OF_DOCUMENT:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("End of document reached.");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("End of document reached.");
             break;
         }
         case ERR_START_OF_DOCUMENT:
         {
-            msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Beginning of document reached.");
+            msgBox.setWindowTitle("Warning");
+            QIcon icon = QIcon::fromTheme("dialog-warning", QApplication::style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Beginning of document reached.");
             break;
         }
         default:
         {
-            msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Error not specified");
+            msgBox.setWindowTitle("Error");
+            QIcon icon = QIcon::fromTheme("dialog-error", QApplication::style()->standardIcon(QStyle::SP_MessageBoxCritical));
+            ui.lblIcon->setPixmap(icon.pixmap(QSize(32,32)));
+            ui.lblError->setText("Error not specified");
             break;
         }
     }
