@@ -14,9 +14,10 @@
 
 #include "CompilerCDeclaration.h"
 
-CompilerCDeclaration::CompilerCDeclaration()
+CompilerCDeclaration ( const CompilerSourceLocation & location );
 {
     m_type          = Type(0);
+    m_location      = location;
     m_pointer       = 0;
     m_bitFieldWidth = -1;
 

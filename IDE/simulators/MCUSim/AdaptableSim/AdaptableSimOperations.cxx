@@ -808,7 +808,6 @@ inline void AdaptableSimOperations::instShiftRotateOper ( const AdaptableSimInst
 
     bool carry = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_CARRY);
 
-
     switch ( operation )
     {
         case SRO_SHL0:
