@@ -148,12 +148,12 @@ main:
         LOAD    s4,#16
         ;; STEP
         ;; REG[4] == 16
+                        end
 
         RRI      s4,#1
         ;; STEP
         ;; REG[4] == 8
-                        end
-                nnbn..gg
+                nnbn..gg----rrrr
 
         ; Shifting to the right and left with another target register
         RRT     s3,#5,s4
