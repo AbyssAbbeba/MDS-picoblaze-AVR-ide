@@ -73,7 +73,7 @@ class CompilerCScope
         std::vector<CompilerCScope *> m_chidren;
 
         ///
-        std::multimap<std::string, CompilerCDeclaration *> m_symbols;
+        std::map<std::string, CompilerCDeclaration *> m_symbols;
 
         ///
         std::multimap<std::string, CompilerCDeclaration *> m_datatypes;

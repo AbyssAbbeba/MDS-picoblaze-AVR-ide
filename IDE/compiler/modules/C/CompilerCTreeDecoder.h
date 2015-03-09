@@ -25,6 +25,7 @@ class CompilerCExprProcessor;
 class CompilerSemanticInterface;
 
 // Compiler header files.
+#include "CompilerValue.h"
 #include "CompilerSourceLocation.h"
 
 /**
@@ -64,11 +65,30 @@ class CompilerCTreeDecoder
     private:
         /**
          * @brief
-         * @param[out] isTypedef
-         * @param[in] specifiers
+         * @param[in] exprTree
+         * @return
          */
-        CompilerCDeclaration * resolveDeclaration ( bool & isTypedef,
-                                                    const CompilerExpr * specifiers );
+        CompilerCDeclaration * resolveDeclaration ( const CompilerExpr * exprTree );
+
+        /**
+         * @brief
+         * @param[in] exprValue
+         * @param[in] location
+         * @return
+         */
+        CompilerCDeclaration * resolveType ( const CompilerValue & exprValue,
+                                             const CompilerSourceLocation & location );
+
+        /**
+         * @brief
+         * @param[in] leftValue
+         * @param[in] rightValue
+         * @param[in] location
+         * @return
+         */
+        CompilerCDeclaration * resolveCompound ( const CompilerValue & leftValue,
+                                                 const CompilerValue & rightValue,
+                                                 const CompilerSourceLocation & location );
 
     ////    Inline Private Operations    ////
     private:

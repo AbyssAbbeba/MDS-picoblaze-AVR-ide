@@ -97,8 +97,30 @@ class CompilerCDeclaration
          */
         ~CompilerCDeclaration();
 
-    ////    Private Attributes    ////
-    private:
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] with
+         * @return
+         */
+        CompilerCDeclaration * combine ( CompilerCDeclaration * with );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @return
+         */
+        CompilerCDeclaration * copy ( const CompilerSourceLocation & location ) const;
+
+        /**
+         * @brief
+         * @param[in,out] member
+         */
+        void addMember ( CompilerCDeclaration * member );
+
+    ////    Public Attributes    ////
+    public:
         ///
         Type m_type;
 
