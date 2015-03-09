@@ -90,7 +90,7 @@ class CompilerCDeclaration
         /**
          * @brief
          */
-        CompilerCDeclaration();
+        CompilerCDeclaration ( const CompilerSourceLocation & location );
 
         /**
          * @brief
