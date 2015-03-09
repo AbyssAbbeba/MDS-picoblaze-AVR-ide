@@ -28,9 +28,9 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar.
-/* %expect 0 */
+%expect 0
 // Expect exactly <n> reduce/reduce conflicts in this grammar.
-/* %expect-rr 0 */
+%expect-rr 0
 // Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser).
 %define lr.type lalr
 // Bison declaration to request verbose, specific error message strings when yyerror is called.
@@ -60,7 +60,6 @@
         unsigned int size;       //
     } string;                    //
 };
-
 
 /*
  * We need to have some things declared before we can declare other things...
@@ -243,6 +242,9 @@
 /* Precedence for non operators, placed here to solve certain shift/reduce conflicts. */
 %nonassoc IFX
 %nonassoc "else"
+
+%nonassoc ATOMIC
+%nonassoc "("
 
 /* Terminal symbols with semantic value. */
 %token<symbol>    IDENTIFIER    "identifier"
@@ -1530,7 +1532,7 @@ struct-or-union-specifier:
     struct-or-union identifier-opt "{" { ENTER_SCOPE(); } struct-declaration-list { LEAVE_SCOPE(); } "}"
     {
         $$ = new CompilerExpr ( $[struct-or-union],
-                                CompilerExpr::OPER_DATATYPE,
+                                CompilerExpr::OPER_COMPOUND,
                                 new CompilerExpr ( $[identifier-opt],
                                                    CompilerExpr::OPER_PAIR,
                                                    $[struct-declaration-list] ),
@@ -1540,7 +1542,7 @@ struct-or-union-specifier:
     | struct-or-union identifier
     {
         $$ = new CompilerExpr ( $[struct-or-union],
-                                CompilerExpr::OPER_DATATYPE,
+                                CompilerExpr::OPER_COMPOUND,
                                 $[identifier],
                                 LOC(@$) );
     }
@@ -1649,7 +1651,7 @@ enum-specifier:
     "enum" identifier-opt "{" enumerator-list comma-opt "}"
     {
         $$ = new CompilerExpr ( CompilerCDeclaration::DT_ENUM,
-                                CompilerExpr::OPER_DATATYPE,
+                                CompilerExpr::OPER_COMPOUND,
                                 new CompilerExpr ( $[identifier-opt],
                                                    CompilerExpr::OPER_PAIR,
                                                    $[enumerator-list] ),
@@ -1659,7 +1661,7 @@ enum-specifier:
     | "enum" identifier
     {
         $$ = new CompilerExpr ( CompilerCDeclaration::DT_ENUM,
-                                CompilerExpr::OPER_DATATYPE,
+                                CompilerExpr::OPER_COMPOUND,
                                 $[identifier],
                                 LOC(@$) );
     }
@@ -1723,7 +1725,7 @@ type-qualifier:
         $$ = CompilerCDeclaration::A_VOLATILE;
     }
 
-    | "_Atomic"
+    | "_Atomic" %prec ATOMIC
     {
         $$ = CompilerCDeclaration::A_ATOMIC;
     }
@@ -2072,10 +2074,10 @@ direct-abstract-declarator:
                                 LOC(@$) );
     }
 
-    | direct-abstract-declarator-opt "(" parameter-type-list-opt ")"
+    | direct-abstract-declarator "(" parameter-type-list-opt ")"
     {
-        $$ = new CompilerExpr ( $[direct-abstract-declarator-opt],
-                                CompilerExpr::OPER_ARRAY,
+        $$ = new CompilerExpr ( $1,
+                                CompilerExpr::OPER_FUNCTION,
                                 $[parameter-type-list-opt],
                                 LOC(@$) );
     }

@@ -24,6 +24,11 @@ SET( SAMPLE_SRCS
 SET( SAMPLE_MOC_HDRS
 )
 
+# some .ui files
+SET( SAMPLE_UIS
+        ./errordlg.ui
+)
+
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -32,10 +37,13 @@ SET( SAMPLE_MOC_HDRS
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
+# this will run uic on .ui files:
+QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
+
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME}
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS} ${SAMPLE_UI_HDRS})
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})# Simulator)
 
