@@ -95,8 +95,7 @@ inline void CompilerCTreeDecoder::processDeclaration ( CompilerExpr * declaratio
     std::cout << "op="<<declaration->oper()<<'\n';
     std::cout << "right="<<declaration->rVal()<<'\n'<<'\n';
 
-    bool isTypedef;
-    CompilerCDeclaration * absDeclar = resolveDeclaration(isTypedef, declaration);
+    CompilerCDeclaration * absDeclar = resolveDeclaration(declaration);
 //     if ( nullptr != absDeclar )
 //     {
 //         if ( true == isTypedef )
@@ -113,53 +112,116 @@ inline void CompilerCTreeDecoder::processDeclaration ( CompilerExpr * declaratio
 CompilerCDeclaration * CompilerCTreeDecoder::resolveDeclaration ( const CompilerExpr * exprTree )
 {
     const CompilerSourceLocation & location = exprTree->location();
-    const CompilerValue & lVal = exprTree->lVal();
-    const CompilerValue & rVal = exprTree->rVal();
+    const CompilerValue & leftValue = exprTree->lVal();
+    const CompilerValue & rightValue = exprTree->rVal();
 
     switch ( exprTree->oper() )
     {
         case CompilerExpr::OPER_DATATYPE:
         {
-            CompilerCDeclaration * a = resolveType(lVal, location);
-            CompilerCDeclaration * b = resolveType(rVal, location);
+            CompilerCDeclaration * a = resolveType(leftValue, location);
+            CompilerCDeclaration * b = resolveType(rightValue, location);
             return a->combine(b);
         }
 
         case CompilerExpr::OPER_COMPOUND:
-        {
-            CompilerCDeclaration::Type type = (CompilerCDeclaration::Type) lVal.m_data.m_integer;
-
-            if (
-                   ( type != CompilerCDeclaration::DT_ENUM )
-                       &&
-                   ( type != CompilerCDeclaration::DT_UNION )
-                       &&
-                   ( type != CompilerCDeclaration::DT_STRUCT )
-               )
-            {
-                unexpectedNode(location);
-                return nullptr;
-            }
-
-            if ( CompilerValue::TYPE_EXPR != rVal.m_type )
-            {
-                unexpectedNode(location);
-                return nullptr;
-            }
-
-            CompilerExpr * spec = rVal.m_data.m_expr;
-            switch ( spec->oper() )
-            {
-                case CompilerExpr::OPER_NONE:
-                case CompilerExpr::OPER_PAIR:
-            }
-        }
+            return resolveCompound(leftValue, rightValue, location);
 
         case CompilerExpr::OPER_DECLARATION:
 
         default:
             unexpectedNode(location);
             return nullptr;
+    }
+}
+
+CompilerCDeclaration * CompilerCTreeDecoder::resolveCompound ( const CompilerValue & leftValue,
+                                                               const CompilerValue & rightValue,
+                                                               const CompilerSourceLocation & location )
+{
+    if ( ( CompilerValue::TYPE_INT != leftValue.m_type ) || ( CompilerValue::TYPE_EXPR != rightValue.m_type ) )
+    {
+        unexpectedNode(location);
+        return nullptr;
+    }
+
+    CompilerCDeclaration * result;
+    CompilerExpr * spec = rightValue.m_data.m_expr;
+    CompilerCDeclaration::Type type = (CompilerCDeclaration::Type) leftValue.m_data.m_integer;
+
+    if (
+            ( type != CompilerCDeclaration::DT_ENUM )
+                &&
+            ( type != CompilerCDeclaration::DT_UNION )
+                &&
+            ( type != CompilerCDeclaration::DT_STRUCT )
+        )
+    {
+        unexpectedNode(location);
+        return nullptr;
+    }
+
+    if ( CompilerValue::TYPE_SYMBOL != spec->lVal().m_type )
+    {
+        unexpectedNode(spec->location());
+        return nullptr;
+    }
+
+    if ( CompilerExpr::OPER_PAIR == spec->oper() )
+    {
+        result = new CompilerCDeclaration(location);
+        result->m_type = type;
+        result->m_id = new std::string(spec->lVal().m_data.m_symbol);
+
+        if ( CompilerValue::TYPE_EXPR != spec->rVal().m_type )
+        {
+            unexpectedNode(spec->location());
+            return nullptr;
+        }
+
+        for ( CompilerExpr * expr = spec->rVal().m_data.m_expr;
+              nullptr != expr;
+              expr = expr->next() )
+        {
+            result->addMember(resolveDeclaration(expr));
+        }
+
+        return result;
+    }
+    else if ( CompilerExpr::OPER_NONE == spec->oper() )
+    {
+        result = m_symbolTable->findDataType(spec->lVal().m_data.m_symbol, type)->copy(location);
+
+        if ( nullptr == result )
+        {
+            const char * keyword;
+            if ( CompilerCDeclaration::DT_UNION == type )
+            {
+                keyword = "union";
+            }
+            else if ( CompilerCDeclaration::DT_STRUCT == type )
+            {
+                keyword = "struct";
+            }
+            else
+            {
+                keyword = "enum";
+            }
+
+            m_compilerCore->semanticMessage ( location,
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "%1 %2 has not been declared in this scope" )
+                                                          .arg(keyword)
+                                                          .arg(spec->lVal().m_data.m_symbol)
+                                                          .toStdString() );
+        }
+
+        return result;
+    }
+    else
+    {
+        unexpectedNode(location);
+        return nullptr;
     }
 }
 
@@ -180,37 +242,15 @@ CompilerCDeclaration * CompilerCTreeDecoder::resolveType ( const CompilerValue &
             break;
 
         case CompilerValue::TYPE_SYMBOL:
-            result = m_symbolTable->findDataType(exprValue.m_data.m_symbol)->copy(location);
+            result = m_symbolTable->findDataType ( exprValue.m_data.m_symbol,
+                                                   CompilerCDeclaration::A_TYPEDEF )->copy(location);
+
             if ( nullptr == result )
             {
                 m_compilerCore->semanticMessage ( location,
                                                   CompilerBase::MT_ERROR,
-                                                  QObject::tr ( "type %1 has not been declared in this scope" )
+                                                  QObject::tr ( "typedef name %1 has not been declared in this scope" )
                                                               .arg(exprValue.m_data.m_symbol).toStdString() );
-            }
-            else if ( CompilerCDeclaration::A_TYPEDEF != result->m_type )
-            {
-                const char * keyword = "<!SYMBOL-TABLE-ERROR-INVALID-ENTRY!>";
-                if ( CompilerCDeclaration::DT_ENUM & result->m_type )
-                {
-                    keyword = "enum";
-                }
-                else if ( CompilerCDeclaration::DT_UNION & result->m_type )
-                {
-                    keyword = "union";
-                }
-                else if ( CompilerCDeclaration::DT_STRUCT & result->m_type )
-                {
-                    keyword = "struct";
-                }
-
-                m_compilerCore->semanticMessage ( location,
-                                                  CompilerBase::MT_ERROR,
-                                                  QObject::tr ( "%1 is not a typedef name, maybe you forgot the %2 "
-                                                                "keyword" )
-                                                              .arg(exprValue.m_data.m_symbol)
-                                                              .arg(keyword)
-                                                              .toStdString() );
             }
             break;
 

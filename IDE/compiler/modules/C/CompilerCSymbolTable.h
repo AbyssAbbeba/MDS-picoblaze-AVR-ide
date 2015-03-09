@@ -23,7 +23,9 @@
 // Forward declarations.
 class CompilerCScope;
 class CompilerStatement;
-class CompilerCDeclaration;
+
+// C compiler header files.
+#include "CompilerCDeclaration.h"
 
 /**
  * @brief
@@ -97,8 +99,10 @@ class CompilerCSymbolTable
             /**
              * @brief
              * @param[in] typeName
+             * @param[in] type
              */
-            const CompilerCDeclaration * findDataType ( const std::string & typeName );
+            const CompilerCDeclaration * findDataType ( const std::string & typeName,
+                                                        CompilerCDeclaration::Type type );
         //@}
 
     ////    Private Attributes    ////

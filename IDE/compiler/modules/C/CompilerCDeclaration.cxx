@@ -14,7 +14,7 @@
 
 #include "CompilerCDeclaration.h"
 
-CompilerCDeclaration ( const CompilerSourceLocation & location );
+CompilerCDeclaration::CompilerCDeclaration ( const CompilerSourceLocation & location )
 {
     m_type          = Type(0);
     m_location      = location;
@@ -66,4 +66,16 @@ CompilerCDeclaration::~CompilerCDeclaration()
         }
         delete m_members;
     }
+}
+
+CompilerCDeclaration * CompilerCDeclaration::combine ( CompilerCDeclaration * with )
+{
+}
+
+CompilerCDeclaration * CompilerCDeclaration::copy ( const CompilerSourceLocation & location ) const
+{
+}
+
+void CompilerCDeclaration::addMember ( CompilerCDeclaration * member )
+{
 }

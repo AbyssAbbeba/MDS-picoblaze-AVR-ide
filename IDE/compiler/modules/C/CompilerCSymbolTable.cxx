@@ -19,7 +19,6 @@
 
 // C compiler header files.
 #include "CompilerCScope.h"
-#include "CompilerCDeclaration.h"
 
 CompilerCSymbolTable::CompilerCSymbolTable()
 {
@@ -59,6 +58,7 @@ const CompilerCDeclaration * CompilerCSymbolTable::findSymbol ( const std::strin
 {
 }
 
-const CompilerCDeclaration * CompilerCSymbolTable::findDataType ( const std::string & typeName )
+const CompilerCDeclaration * CompilerCSymbolTable::findDataType ( const std::string & typeName,
+                                                                  CompilerCDeclaration::Type type )
 {
 }
