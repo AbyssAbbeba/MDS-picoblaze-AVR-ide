@@ -106,7 +106,7 @@ SymbolTable::SymbolTable(QWidget *parent) :
     //clipboard().setText("fantomas",QClipboard::Clipboard);
 }
 
-QString setPath()
+void SymbolTable::setPath(QString)
 {
 }
 
