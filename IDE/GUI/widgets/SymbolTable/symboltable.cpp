@@ -30,6 +30,11 @@ SymbolTable::SymbolTable(QWidget *parent) :
     tabWidget->addTab(symTabWidget2, "Macro Table");
     tabWidget->addTab(symTabWidget3, "String Table");
 
+    //QPixmap *tabIcon = new QPixmap(":/resources/icons/projOpen.png");
+   // QPixmap tabIcon(":/resources/icons/projOpen.png");
+   // tabWidget->setTabIcon(QPixmap(0,&tabIcon));
+   // tabWidget->setTabIcon(QPixmap(1,&tabIcon));
+   // tabWidget->setTabIcon(QPixmap(2,&tabIcon));
 
     QHBoxLayout *Hbox = new QHBoxLayout(this);
     Hbox->addWidget(tabWidget);
@@ -108,6 +113,7 @@ SymbolTable::SymbolTable(QWidget *parent) :
 
 void SymbolTable::setPath(QString)
 {
+
 }
 
 int  SymbolTable::updateValidStructString()
@@ -593,6 +599,9 @@ void SymbolTable::loadFile(int purpose)
     switch (purpose)
     {
         case 1:
+            loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.sym");
+            if ( loadPath.isEmpty() )
+                return;
             while ( symbolDataStruct[p].symbolName.isEmpty() == false )
             {
                 symbolDataStruct[p].symbolName.clear();
@@ -602,7 +611,7 @@ void SymbolTable::loadFile(int purpose)
                 symbolDataStruct[p].symbolUsed.clear();
                 p++;
             }
-            loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.sym");
+
             file.setFileName(loadPath);
             file.open(QIODevice::ReadOnly | QIODevice::Text);
             readFileTable(&file);
@@ -610,6 +619,9 @@ void SymbolTable::loadFile(int purpose)
             editTable();
         break;
         case 2:
+            loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.mtbl");
+            if ( loadPath.isEmpty() )
+                return;
             while ( macroDataStruct[p].macroName.isEmpty() == false )
             {
                 macroDataStruct[p].macroName.clear();
@@ -618,7 +630,6 @@ void SymbolTable::loadFile(int purpose)
                 macroDataStruct[p].macroUsed.clear();
                 p++;
             }
-            loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.mtbl");
             file.setFileName(loadPath);
             file.open(QIODevice::ReadOnly | QIODevice::Text);
             readFileMacro(&file);
@@ -626,6 +637,9 @@ void SymbolTable::loadFile(int purpose)
             editMacro();
         break;
         case 3:
+            loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.strtbl");
+            if ( loadPath.isEmpty() )
+                return;
             while ( stringDataStruct[p].stringName.isEmpty() == false )
             {
                 stringDataStruct[p].stringName.clear();
@@ -633,7 +647,6 @@ void SymbolTable::loadFile(int purpose)
                 stringDataStruct[p].stringCharacters.clear();
                 p++;
             }
-            loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.strtbl");
             file.setFileName(loadPath);
             file.open(QIODevice::ReadOnly | QIODevice::Text);
             readFileString(&file);
@@ -1129,11 +1142,19 @@ void SymbolTable::connectSignals()
     //      void sortPrefChanged();
 
     // push buttons
+    ui1.pushOpen->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+    ui3.pushString->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+    ui2.pushMacro->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+    ui1.pushReload->setIcon(QPixmap(":/resources/icons/arrow_refresh.png"));
+    ui2.pushReload->setIcon(QPixmap(":/resources/icons/arrow_refresh.png"));
+    ui3.pushReload->setIcon(QPixmap(":/resources/icons/arrow_refresh.png"));
+
     connect(ui1.pushOpen,
             SIGNAL(clicked()),
             this,
             SLOT(pushOpen())
            );
+
     connect(ui1.pushReload,
             SIGNAL(clicked()),
             this,
