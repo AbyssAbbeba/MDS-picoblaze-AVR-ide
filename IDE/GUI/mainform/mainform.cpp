@@ -5903,7 +5903,6 @@ void MainForm::setTitleBar(int bottom, QString label)
 void MainForm::toolSymbolTable()
 {
     #ifdef MDS_FEATURE_SYMBOLTABLE
-    qDebug() << "symbol table";
         SymbolTable *table = new SymbolTable(0);
         
         if (false == m_wDockManager->getCentralPath().isEmpty()
