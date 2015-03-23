@@ -64,6 +64,9 @@ endif()
 if ( MDS_FEATURE_VHDL_WIZARD )
     list ( APPEND MDS_ADDITONAL_LIBS "VHDLGen" )
 endif()
+if ( MDS_FEATURE_SYMBOLTABLE )
+    list ( APPEND MDS_ADDITONAL_LIBS "SymbolTable" )
+endif()
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

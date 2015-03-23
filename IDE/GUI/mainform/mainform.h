@@ -125,6 +125,7 @@ class MainForm : public QMainWindow
         void toolConvertor();
         void toolDisplay();
         void toolVHDLWizard();
+        void toolSymbolTable();
         void exampleOpen();
         void undoSlot();
         void redoSlot();
@@ -225,7 +226,6 @@ class MainForm : public QMainWindow
         void disableHelpActions(bool disable);
         void clearFileTimestamps();
         void setTitleBar(int bottom, QString label);
-
     signals:
         void unhighlightSim();
         void mtblCompiled(QString path);
@@ -330,6 +330,7 @@ class MainForm : public QMainWindow
         QAction *toolDisplayAct;
         QAction *toolLoopGenAct;
         QAction *toolVHDLWizardAct;
+        QAction *toolSymTable;
 
         QAction *toolSimLedsAct;
         QAction *toolSim7SegAct;

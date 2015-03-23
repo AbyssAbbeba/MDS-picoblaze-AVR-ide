@@ -39,6 +39,10 @@ add_subdirectory(Tools)
 add_subdirectory(TabBar)
 add_subdirectory(DockUi)
 
+if ( MDS_FEATURE_SYMBOLTABLE )
+    add_subdirectory(SymbolTable)
+endif()
+
 if ( MDS_FEATURE_VHDL_WIZARD )
     add_subdirectory(VHDLGen)
 endif()

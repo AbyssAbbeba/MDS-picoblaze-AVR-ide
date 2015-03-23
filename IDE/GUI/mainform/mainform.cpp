@@ -120,6 +120,10 @@
     //#include "../widgets/Tools/SimPortLogger/simportlogger.h"
 #endif
 
+#ifdef MDS_FEATURE_SYMBOLTABLE
+    #include "../widgets/SymbolTable/symboltable.h"
+#endif
+
 #include "../guicfg/guicfg.h"
 
 #include "../widgets/WelcomeWidget/WelcomeWidget.h"
@@ -575,6 +579,9 @@ void MainForm::createMenu()
     #ifdef MDS_FEATURE_VHDL_WIZARD
         toolsMenu->addAction(toolVHDLWizardAct);
     #endif
+    #ifdef MDS_FEATURE_SYMBOLTABLE
+        toolsMenu->addAction(toolSymTable);
+    #endif
 
     #if defined(MDS_SIM_FEATURES)
         simToolsMenu = menuBar()->addMenu(tr("Simulation tools"));
@@ -869,6 +876,10 @@ void MainForm::createActions()
     #ifdef MDS_FEATURE_VHDL_WIZARD
         toolVHDLWizardAct = new QAction(QIcon(":resources/icons/bricks_vhdl.png"), tr("VHDL Wizard"), this);
         connect(toolVHDLWizardAct, SIGNAL(triggered()), this, SLOT(toolVHDLWizard()));
+    #endif
+    #ifdef MDS_FEATURE_SYMBOLTABLE
+        toolSymTable = new QAction(QIcon(":resources/icons/symboltbl.png"), tr("Symbol Table"), this);
+        connect(toolSymTable, SIGNAL(triggered()), this, SLOT(toolSymbolTable()));
     #endif
 
     #ifdef MDS_FEATURE_SIM_LED_PANEL
@@ -5886,4 +5897,14 @@ void MainForm::setTitleBar(int bottom, QString label)
     {
         ((QLabel*)(m_rightDockWidget->titleBarWidget()))->setText(label);
     }
+}
+
+
+void MainForm::toolSymbolTable()
+{
+    #ifdef MDS_FEATURE_SYMBOLTABLE
+    qDebug() << "symbol table";
+        SymbolTable *table = new SymbolTable(0);
+        table->show();
+    #endif
 }
