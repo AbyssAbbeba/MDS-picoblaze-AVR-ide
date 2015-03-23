@@ -80,12 +80,12 @@ public:
         bool    display;
     } symbolDataStruct[4096];
     
+    void setPath(QString);
 private:
     Ui_SymbolTable1 ui1;
     Ui_SymbolTable2 ui2;
     Ui_SymbolTable3 ui3;
     // functions
-    void setPath(QString);
     void connectSignals();
     void loadFile(int purpose);
     void readFileTable( QIODevice *device);
