@@ -5905,6 +5905,23 @@ void MainForm::toolSymbolTable()
     #ifdef MDS_FEATURE_SYMBOLTABLE
     qDebug() << "symbol table";
         SymbolTable *table = new SymbolTable(0);
+        
+        if (false == m_wDockManager->getCentralPath().isEmpty()
+            && "untracked" != m_wDockManager->getCentralPath()
+            && "Help Browser" != m_wDockManager->getCentralPath()
+           )
+        {
+            table->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            table->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            table->setPath(m_lastDir);
+        }
+        
         table->show();
     #endif
 }
