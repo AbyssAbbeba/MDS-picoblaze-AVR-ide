@@ -85,6 +85,7 @@ private:
     Ui_SymbolTable2 ui2;
     Ui_SymbolTable3 ui3;
     // functions
+    QString setPath();
     void connectSignals();
     void loadFile(int purpose);
     void readFileTable( QIODevice *device);

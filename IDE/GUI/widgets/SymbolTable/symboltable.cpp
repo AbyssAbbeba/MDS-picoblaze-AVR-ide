@@ -105,6 +105,11 @@ SymbolTable::SymbolTable(QWidget *parent) :
     //QClipboard::setText("fantomas",QClipboard::Clipboard);
     //clipboard().setText("fantomas",QClipboard::Clipboard);
 }
+
+QString setPath()
+{
+}
+
 int  SymbolTable::updateValidStructString()
 {
     m_stringNameBuffer.clear();
