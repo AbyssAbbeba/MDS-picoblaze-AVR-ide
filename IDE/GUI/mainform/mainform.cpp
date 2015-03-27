@@ -124,6 +124,11 @@
     #include "../widgets/SymbolTable/symboltable.h"
 #endif
 
+#ifdef MDS_FEATURE_SIM_STOPWATCH
+    #define MDS_SIM_FEATURES
+    #include "../widgets/Tools/StopWatch/stopwatch.h"
+#endif
+
 #include "../guicfg/guicfg.h"
 
 #include "../widgets/WelcomeWidget/WelcomeWidget.h"
@@ -597,6 +602,9 @@ void MainForm::createMenu()
         #ifdef MDS_FEATURE_SIM_PORT_LOGGER
         //    simToolsMenu->addAction(toolSimLoggerAct);
         #endif
+        #ifdef MDS_FEATURE_SIM_STOPWATCH
+           simToolsMenu->addAction(toolSimStopWatchAct);
+        #endif
     #endif
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -897,11 +905,17 @@ void MainForm::createActions()
         toolSimSwitchAct->setDisabled(true);
         connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
     #endif
+    #ifdef MDS_FEATURE_SIM_STOPWATCH
+        toolSimStopWatchAct = new QAction(QIcon(":resources/icons/stopwatch.png"), tr("Stopwatch"), this);
+        toolSimStopWatchAct->setDisabled(true);
+        connect(toolSimStopWatchAct, SIGNAL(triggered()), this, SLOT(simStopWatch()));
+    #endif
     #ifdef MDS_FEATURE_SIM_PORT_LOGGER
         //toolSimLoggerAct = new QAction(tr("Port Logger"), this);
         //toolSimLoggerAct->setDisabled(true);
         //connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
     #endif
+        
 
 
     #ifdef MDS_FEATURE_EXTERNAL_APPS
@@ -3666,6 +3680,9 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
             #ifdef MDS_FEATURE_SIM_SWITCH
                 toolSimSwitchAct->setEnabled(true);
             #endif
+            #ifdef MDS_FEATURE_SIM_STOPWATCH
+                toolSimStopWatchAct->setEnabled(true);
+            #endif
             projectConfigAct->setDisabled(true);
             projectCompileAct->setDisabled(true);
             if (true == simulationBreakpointsEnabled)
@@ -3795,6 +3812,9 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
         #endif
         #ifdef MDS_FEATURE_SIM_SWITCH
             toolSimSwitchAct->setDisabled(true);
+        #endif
+        #ifdef MDS_FEATURE_SIM_STOPWATCH
+            toolSimStopWatchAct->setDisabled(true);
         #endif
         projectConfigAct->setEnabled(true);
         projectCompileAct->setEnabled(true);
@@ -5922,5 +5942,15 @@ void MainForm::toolSymbolTable()
         }
         
         table->show();
+    #endif
+}
+
+
+void MainForm::simStopWatch()
+{
+    #ifdef MDS_FEATURE_SIM_STOPWATCH
+        StopWatch *watch = new StopWatch(0, m_projectMan->getSimulated()->getSimControl());
+
+        watch->show();
     #endif
 }

@@ -43,4 +43,7 @@ endif()
 if ( MDS_FEATURE_SIM_PORT_LOGGER )
     add_subdirectory(SimPortLogger)
 endif()
+if ( MDS_FEATURE_SIM_STOPWATCH )
+    add_subdirectory(StopWatch)
+endif()
 
