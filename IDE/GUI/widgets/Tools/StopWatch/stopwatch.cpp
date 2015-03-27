@@ -343,6 +343,8 @@ void StopWatch::connectSignals()
     ui->lineReturns->setValidator(valueValidator);
     ui->lineReturns2->setValidator(valueValidator);
     ui->lineReturns3->setValidator(valueValidator);
+
+    ui->push// cancel.png, breakpoint_disable.png
 }
 
 
