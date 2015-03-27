@@ -344,7 +344,13 @@ void StopWatch::connectSignals()
     ui->lineReturns2->setValidator(valueValidator);
     ui->lineReturns3->setValidator(valueValidator);
 
-    ui->push// cancel.png, breakpoint_disable.png
+
+    //ui->push// cancel.png, breakpoint_disable.png
+    ui->pushBreak->setIcon(QPixmap(":/resources/icons/cancel.png"));
+    ui->pushBreak2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushCalls->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushCalls2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+
 }
 
 
@@ -390,7 +396,7 @@ void StopWatch::on_lineIntRet2_textChanged(const QString &arg1)
 
 void StopWatch::on_lineBreak2_textChanged(const QString &arg1)
 {
-
+    core.structPtrStop->breakpoints = arg1.toULongLong(0,10);
 }
 
 
