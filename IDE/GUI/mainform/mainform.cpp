@@ -120,6 +120,15 @@
     //#include "../widgets/Tools/SimPortLogger/simportlogger.h"
 #endif
 
+#ifdef MDS_FEATURE_SYMBOLTABLE
+    #include "../widgets/SymbolTable/symboltable.h"
+#endif
+
+#ifdef MDS_FEATURE_SIM_STOPWATCH
+    #define MDS_SIM_FEATURES
+    #include "../widgets/Tools/StopWatch/stopwatch.h"
+#endif
+
 #include "../guicfg/guicfg.h"
 
 #include "../widgets/WelcomeWidget/WelcomeWidget.h"
@@ -575,6 +584,9 @@ void MainForm::createMenu()
     #ifdef MDS_FEATURE_VHDL_WIZARD
         toolsMenu->addAction(toolVHDLWizardAct);
     #endif
+    #ifdef MDS_FEATURE_SYMBOLTABLE
+        toolsMenu->addAction(toolSymTable);
+    #endif
 
     #if defined(MDS_SIM_FEATURES)
         simToolsMenu = menuBar()->addMenu(tr("Simulation tools"));
@@ -589,6 +601,9 @@ void MainForm::createMenu()
         #endif
         #ifdef MDS_FEATURE_SIM_PORT_LOGGER
         //    simToolsMenu->addAction(toolSimLoggerAct);
+        #endif
+        #ifdef MDS_FEATURE_SIM_STOPWATCH
+           simToolsMenu->addAction(toolSimStopWatchAct);
         #endif
     #endif
 
@@ -870,6 +885,10 @@ void MainForm::createActions()
         toolVHDLWizardAct = new QAction(QIcon(":resources/icons/bricks_vhdl.png"), tr("VHDL Wizard"), this);
         connect(toolVHDLWizardAct, SIGNAL(triggered()), this, SLOT(toolVHDLWizard()));
     #endif
+    #ifdef MDS_FEATURE_SYMBOLTABLE
+        toolSymTable = new QAction(QIcon(":resources/icons/symboltbl.png"), tr("Symbol Table"), this);
+        connect(toolSymTable, SIGNAL(triggered()), this, SLOT(toolSymbolTable()));
+    #endif
 
     #ifdef MDS_FEATURE_SIM_LED_PANEL
         toolSimLedsAct = new QAction(QIcon(":resources/icons/ledpanel.png"), tr("LED Panel"), this);
@@ -886,11 +905,17 @@ void MainForm::createActions()
         toolSimSwitchAct->setDisabled(true);
         connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
     #endif
+    #ifdef MDS_FEATURE_SIM_STOPWATCH
+        toolSimStopWatchAct = new QAction(QIcon(":resources/icons/stopwatch.png"), tr("Stopwatch"), this);
+        toolSimStopWatchAct->setDisabled(true);
+        connect(toolSimStopWatchAct, SIGNAL(triggered()), this, SLOT(simStopWatch()));
+    #endif
     #ifdef MDS_FEATURE_SIM_PORT_LOGGER
         //toolSimLoggerAct = new QAction(tr("Port Logger"), this);
         //toolSimLoggerAct->setDisabled(true);
         //connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
     #endif
+        
 
 
     #ifdef MDS_FEATURE_EXTERNAL_APPS
@@ -3655,6 +3680,9 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
             #ifdef MDS_FEATURE_SIM_SWITCH
                 toolSimSwitchAct->setEnabled(true);
             #endif
+            #ifdef MDS_FEATURE_SIM_STOPWATCH
+                toolSimStopWatchAct->setEnabled(true);
+            #endif
             projectConfigAct->setDisabled(true);
             projectCompileAct->setDisabled(true);
             if (true == simulationBreakpointsEnabled)
@@ -3784,6 +3812,9 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
         #endif
         #ifdef MDS_FEATURE_SIM_SWITCH
             toolSimSwitchAct->setDisabled(true);
+        #endif
+        #ifdef MDS_FEATURE_SIM_STOPWATCH
+            toolSimStopWatchAct->setDisabled(true);
         #endif
         projectConfigAct->setEnabled(true);
         projectCompileAct->setEnabled(true);
@@ -5886,4 +5917,40 @@ void MainForm::setTitleBar(int bottom, QString label)
     {
         ((QLabel*)(m_rightDockWidget->titleBarWidget()))->setText(label);
     }
+}
+
+
+void MainForm::toolSymbolTable()
+{
+    #ifdef MDS_FEATURE_SYMBOLTABLE
+        SymbolTable *table = new SymbolTable(0);
+        
+        if (false == m_wDockManager->getCentralPath().isEmpty()
+            && "untracked" != m_wDockManager->getCentralPath()
+            && "Help Browser" != m_wDockManager->getCentralPath()
+           )
+        {
+            table->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            table->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            table->setPath(m_lastDir);
+        }
+        
+        table->show();
+    #endif
+}
+
+
+void MainForm::simStopWatch()
+{
+    #ifdef MDS_FEATURE_SIM_STOPWATCH
+        StopWatch *watch = new StopWatch(0, m_projectMan->getSimulated()->getSimControl());
+
+        watch->show();
+    #endif
 }
