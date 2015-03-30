@@ -19,6 +19,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <ostream>
 
 // Forward declarations.
 class CompilerCDeclaration;
@@ -30,6 +31,10 @@ class CompilerCDeclaration;
  */
 class CompilerCScope
 {
+    ////    Friends    ////
+    friend std::ostream & operator << ( std::ostream & out,
+                                        const CompilerCScope * scope );
+
     ////    Public Datatypes    ////
     public:
         /**
@@ -70,13 +75,31 @@ class CompilerCScope
         CompilerCScope * const m_parent;
 
         ///
-        std::vector<CompilerCScope *> m_chidren;
+        std::vector<CompilerCScope *> m_members;
 
         ///
-        std::map<std::string, CompilerCDeclaration *> m_symbols;
+        std::vector<CompilerCDeclaration *> m_symbols;
 
         ///
-        std::multimap<std::string, CompilerCDeclaration *> m_datatypes;
+        std::vector<CompilerCDeclaration *> m_datatypes;
+
+        ///
+        std::map<std::string, int> m_symbolMap;
+
+        ///
+        std::multimap<std::string, int> m_typeMap;
 };
+
+/// @name Tracing operators
+//@{
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] scope
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerCScope * scope );
+//@}
 
 #endif // COMPILERCSCOPE_H

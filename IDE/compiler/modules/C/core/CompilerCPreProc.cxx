@@ -16,7 +16,9 @@
 
 /*
  * MISSING FEATURES:
- * - location map involvement for trigraphs and macros
+ * - location map involvement for digraphs, trigraphs, and macros
+ * - _Pragma operator
+ * - macro expansion exactly as specified in the standard
  */
 
 // Common compiler header files.
@@ -50,6 +52,15 @@ const std::map<std::string, CompilerCPreProc::Directive> CompilerCPreProc::s_dir
     { "endif",   DIR_ENDIF   },    { "warning", DIR_WARNING },
     { "error",   DIR_ERROR   },    { "",        DIR_NULL    }
 };
+
+CompilerCPreProc::CompilerCPreProc ( CompilerParserInterface * compilerCore,
+                                     const CompilerOptions * opts,
+                                     CompilerCBackend * backend )
+                                   :
+                                     CompilerCPreProcInterface ( compilerCore, opts, backend ),
+                                     m_macroTable ( compilerCore, opts, backend, m_locationStack )
+{
+}
 
 char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
 {
@@ -631,10 +642,24 @@ inline bool CompilerCPreProc::handleDirective ( char * arguments,
             m_conditional.dirIf(m_locationStack.back(), evaluateExpr(arguments, argLength));
             break;
         case DIR_IFDEF:
-            m_conditional.dirIf(m_locationStack.back(), m_macroTable.isDefined(arguments));
+            if ( true == expectSigleId(arguments, argLength) )
+            {
+                m_conditional.dirIf(m_locationStack.back(), m_macroTable.isDefined(arguments));
+            }
+            else
+            {
+                m_conditional.dirIf(m_locationStack.back(), false);
+            }
             break;
         case DIR_IFNDEF:
-            m_conditional.dirIf(m_locationStack.back(), !m_macroTable.isDefined(arguments));
+            if ( true == expectSigleId(arguments, argLength) )
+            {
+                m_conditional.dirIf(m_locationStack.back(), !m_macroTable.isDefined(arguments));
+            }
+            else
+            {
+                m_conditional.dirIf(m_locationStack.back(), false);
+            }
             break;
         case DIR_ELIF:
             if ( false == m_conditional.dirElif(m_locationStack.back(), evaluateExpr(arguments, argLength)) )
@@ -754,6 +779,31 @@ inline void CompilerCPreProc::tokenize ( std::vector<char*> & tokens,
             }
         }
     }
+}
+
+bool CompilerCPreProc::expectSigleId ( char * expr,
+                                       unsigned int length )
+{
+    bool valid = ( ( 0 != length ) && ( ( '_' == expr[0] ) || isalpha(expr[0]) ) );
+
+    for ( unsigned int i = 1; i < length; i++ )
+    {
+        if ( ( '_' != expr[i] ) && !isalnum(expr[i]) )
+        {
+            valid = false;
+            break;
+        }
+    }
+
+    if ( false == valid )
+    {
+        m_compilerCore->preprocessorMessage ( locationCorrection(m_locationStack.back(), m_lineMerges),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "expecting single identifier but got: " )
+                                                          .toStdString() + expr );
+    }
+
+    return valid;
 }
 
 bool CompilerCPreProc::evaluateExpr ( char * expr,

@@ -28,6 +28,12 @@ class CompilerSemanticInterface;
 #include "CompilerValue.h"
 #include "CompilerSourceLocation.h"
 
+// Standard header files.
+#include <map>
+#include <string>
+#include <vector>
+#include <cstdint>
+
 /**
  * @brief
  * @ingroup CompilerC
@@ -35,8 +41,16 @@ class CompilerSemanticInterface;
  */
 class CompilerCTreeDecoder
 {
-    ////    Public Datatypes    ////
-    public:
+    ////    Private Datatypes    ////
+    private:
+        struct TemporaryDeclarations
+        {
+            void enterScope();
+            void leaveScope();
+
+            std::vector<std::map<std::string,std::pair<CompilerSourceLocation,int>>> m_intConstants;
+            std::vector<std::map<std::string,std::pair<CompilerSourceLocation,const CompilerCDeclaration*>>> m_typedefs;
+        };
 
     ////    Constructors and Destructors    ////
     public:
@@ -66,9 +80,11 @@ class CompilerCTreeDecoder
         /**
          * @brief
          * @param[in] exprTree
+         * @param[in] inParamList
          * @return
          */
-        CompilerCDeclaration * resolveDeclaration ( const CompilerExpr * exprTree );
+        CompilerCDeclaration * resolveDeclaration ( const CompilerExpr * exprTree,
+                                                    bool inParamList = false );
 
         /**
          * @brief
@@ -90,19 +106,60 @@ class CompilerCTreeDecoder
                                                  const CompilerValue & rightValue,
                                                  const CompilerSourceLocation & location );
 
+        /**
+         * @brief
+         * @param[in] exprTree
+         * @return
+         */
+        CompilerCDeclaration * resolveDeclSpecifiers ( const CompilerExpr * exprTree );
+
+        /**
+         * @brief
+         * @param[in] exprTree
+         * @return
+         */
+        CompilerCDeclaration * resolveDeclarator ( const CompilerExpr * exprTree );
+
+        /**
+         * @brief
+         * @param[in] exprTree
+         * @param[in] inArray
+         * @param[in] inFunction
+         * @return
+         */
+        CompilerCDeclaration * resolveDirectDeclarator ( const CompilerExpr * exprTree,
+                                                         bool inArray = false,
+                                                         bool inFunction = false );
+
+        /**
+         * @brief
+         * @param[in,out] with
+         * @param[in] location
+         * @return
+         */
+        CompilerCDeclaration * combineDeclarations ( const CompilerCDeclaration * base,
+                                                     CompilerCDeclaration * with,
+                                                     const CompilerSourceLocation & location );
+
+        int64_t resolveIntConstExpr ( const CompilerExpr * expr );
+        int64_t resolveIntConstValue ( const CompilerValue & value,
+                                       const CompilerSourceLocation & location );
+        int64_t getIntConstant ( const std::string & id,
+                                 const CompilerSourceLocation & location );
+
     ////    Inline Private Operations    ////
     private:
         /**
          * @brief
-         * @param[in,out] declaration
+         * @param[in,out] declExpr
          */
-        inline void processDeclaration ( CompilerExpr * declaration );
+        inline void processDeclaration ( CompilerExpr * declExpr );
 
         /**
          * @brief
-         * @param[in,out] definition
+         * @param[in,out] codeTree
          */
-        inline void processFuncDef ( CompilerStatement * definition );
+        inline void processFuncDef ( CompilerStatement * codeTree );
 
         /**
          * @brief
@@ -115,6 +172,12 @@ class CompilerCTreeDecoder
          * @param[in] location
          */
         inline void unexpectedNode ( const CompilerSourceLocation & location );
+
+        /**
+         * @brief
+         * @param[in] typedefDecl
+         */
+        inline void newTypedef ( const CompilerCDeclaration * typedefDecl );
 
     ////    Private Attributes    ////
     private:
@@ -129,6 +192,9 @@ class CompilerCTreeDecoder
 
         ///
         CompilerCExprProcessor * const m_exprProcessor;
+
+        ///
+        TemporaryDeclarations m_tmpDeclarations;
 };
 
 #endif // COMPILERCTREEDECODER_H

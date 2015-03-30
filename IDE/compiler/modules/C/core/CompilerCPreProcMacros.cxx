@@ -56,7 +56,9 @@ const std::set<std::string> CompilerCPreProcMacros::KEYWORDS =
     "extern",       "float",        "enum",         "int",          "long",
     "register",     "short",        "signed",       "static",       "struct",
     "typedef",      "union",        "unsigned",     "void",         "volatile",
-    "_Bool",        "_Complex",     "_Imaginary"
+    "_Bool",        "_Complex",     "_Imaginary",   "_Alignas",     "_Thread_local",
+    "_Atomic",      "_Generic",     "_Noreturn",    "__at__",       "_Static_assert",
+    "asm",          "_Alignof",     "__critical__"
 };
 
 const std::map<std::string, std::string> CompilerCPreProcMacros::NAMED_OPERATORS =
@@ -96,11 +98,48 @@ CompilerCPreProcMacros::PREDEFINED_MACROS =
 
 CompilerCPreProcMacros::CompilerCPreProcMacros ( CompilerParserInterface * compilerCore,
                                                  const CompilerOptions * opts,
+                                                 CompilerCBackend * backend,
                                                  std::vector<CompilerSourceLocation> & locationStack )
-                                               : m_compilerCore ( compilerCore ),
+                                               :
+                                                 m_compilerCore ( compilerCore ),
                                                  m_opts ( opts ),
+                                                 m_backend ( backend ),
                                                  m_locationStack ( locationStack )
 {
+    for ( const auto & def : m_opts->m_define )
+    {
+        std::string name;
+        std::string value = "1";
+
+        size_t pos = def.find('=');
+        if ( std::string::npos == pos )
+        {
+            name = def;
+        }
+        else
+        {
+            name = def.substr(0, pos);
+            value = def.substr(pos + 1);
+        }
+
+        bool validName = ( PREDEFINED_MACROS.cend() == PREDEFINED_MACROS.find(name) );
+
+        for ( unsigned int i = 0; ( i < name.size() ) && ( true == validName ); i++ )
+        {
+            validName = IS_IDENTIFIER(name, i);
+        }
+
+        if ( false == validName )
+        {
+            m_compilerCore -> preprocessorMessage ( CompilerSourceLocation(),
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr ( "invalid name: " ).toStdString()
+                                                                  + '`' + name + '\'' );
+            continue;
+        }
+
+        m_table[name] = { value, std::vector<std::string>() };
+    }
 }
 
 bool CompilerCPreProcMacros::isDefined ( const std::string & name )

@@ -2,7 +2,7 @@
 #
 # Compiler modules for the supported programming languages.
 #
-# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 

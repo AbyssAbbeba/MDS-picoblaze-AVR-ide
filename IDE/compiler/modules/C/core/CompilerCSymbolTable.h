@@ -19,6 +19,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <ostream>
 
 // Forward declarations.
 class CompilerCScope;
@@ -34,8 +35,9 @@ class CompilerStatement;
  */
 class CompilerCSymbolTable
 {
-    ////    Public Datatypes    ////
-    public:
+    ////    Friends    ////
+    friend std::ostream & operator << ( std::ostream & out,
+                                        const CompilerCSymbolTable * table );
 
     ////    Constructors and Destructors    ////
     public:
@@ -57,7 +59,7 @@ class CompilerCSymbolTable
              * @brief
              * @param[in] scope
              */
-            void enterScopeDeclaration ( const CompilerStatement * scope );
+            void enterScopeDeclaration ( const CompilerStatement * scope = nullptr );
 
             /**
              * @brief
@@ -113,5 +115,17 @@ class CompilerCSymbolTable
         ///
         std::map<CompilerStatement *, CompilerCScope *> m_scopes;
 };
+
+/// @name Tracing operators
+//@{
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] table
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerCSymbolTable * table );
+//@}
 
 #endif // COMPILERCSYMBOLTABLE_H

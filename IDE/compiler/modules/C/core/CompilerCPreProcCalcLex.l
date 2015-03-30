@@ -75,7 +75,13 @@ WSPACE  ([ \t]|\u00A0)+
 /* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'. */
 XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})|(\\[abfnrtve\\"'?])
 /* Floating point number. */
-FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
+DFLOAT  ([0-9]+[eE][+-]?[0-9]+)|((([0-9]+\.[0-9]*)|(\.[0-9]+))([eE][+-]?[0-9]+)?)
+XFLOAT  (0x(([0-9a-fA-F]+\.[0-9a-fA-F]*)|(\.[0-9a-fA-F]+))[pP][0-9]+)
+FLOAT   {DFLOAT}|{XFLOAT}
+/* Ignored declaration specifiers. */
+DSPEC11 (_Imaginary)|(_Thread_local)|(_Atomic)
+DSPEC   ((const)|(signed)|(unsigned)|(auto)|(extern)|(register)|(restrict)|(static)|(volatile)|{DSPEC11})
+D       ({DSPEC}{WSPACE})*
 
 /* -------------------------------------------------------------------------- */
 /* LEXICAL RULES                                                              */
@@ -123,42 +129,42 @@ FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
 "sizeof"        { return O_SIZEOF;   }
 
  /* Data types */
-"const"         { return D_CONST;    }
-"signed"        { return D_SIGNED;   }
-"unsigned"      { return D_UNSIGNED; }
-"void"          { return D_VOID;     }
-"char"          { return D_CHAR;     }
-"int"           { return D_INT;      }
-"long"          { return D_LONG;     }
-"short"         { return D_SHORT;    }
-"float"         { return D_FLOAT;    }
-"double"        { return D_DOUBLE;   }
+{D}"void"          { return D_VOID;     }
+{D}"char"          { return D_CHAR;     }
+{D}"short"         { return D_SHORT;    }
+{D}"int"           { return D_INT;      }
+{D}"long"          { return D_LONG;     }
+{D}"float"         { return D_FLOAT;    }
+{D}"double"        { return D_DOUBLE;   }
+{D}"_Bool"         { return D_BOOL;     }
+{D}"_Complex"      { return D_COMPLEX;  }
+{DSPEC}            { return D_SPEC;     }
 
  /* Integers */
 0b[01]+         {
                     // Binary integer.
-                    yylval->number = convertStrToNumber(compilerCore, yylloc, (yytext + 2), 64, 2);
+                    yylval->number = (int) convertStrToNumber(compilerCore, yylloc, (yytext + 2), 64, 2);
                     return NUMBER;
                 }
 0x[0-9A-F]+     {
                     // Hexadecimal integer.
-                    yylval->number = convertStrToNumber(compilerCore, yylloc, (yytext + 2), 16, 16);
+                    yylval->number = (int) convertStrToNumber(compilerCore, yylloc, (yytext + 2), 16, 16);
                     return NUMBER;
                 }
 0[0-7]+         {
                     // Octal integer.
-                    yylval->number = convertStrToNumber(compilerCore, yylloc, (yytext + 1), 22, 8);
+                    yylval->number = (int) convertStrToNumber(compilerCore, yylloc, (yytext + 1), 22, 8);
                     return NUMBER;
                 }
 [0-9]+          {
                     // Decimal integer.
-                    yylval->number = convertStrToNumber(compilerCore, yylloc, yytext, 20, 10);
+                    yylval->number = (int) convertStrToNumber(compilerCore, yylloc, yytext, 20, 10);
                     return NUMBER;
                 }
 
  /* Single character literals */
 '.'             {
-                    yylval->number = (int64_t) (yytext[1]);
+                    yylval->number = (int) (yytext[1]);
                     return NUMBER;
                 }
 '{XESC}'        {
