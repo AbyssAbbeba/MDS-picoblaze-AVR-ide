@@ -38,10 +38,10 @@ if
 #else
     2 == sizeof(int)
 #endif
-#if 1 != sizeof(unsigned char *)
-    1 != sizeof(unsigned char *)
+#if 2 != sizeof(unsigned char *)
+    2 != sizeof(unsigned char *)
 #else
-    1 == sizeof(unsigned char *)
+    2 == sizeof(unsigned char *)
 #endif
 #if 4 != sizeof(float)
     4 != sizeof(float)

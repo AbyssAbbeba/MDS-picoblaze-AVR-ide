@@ -2,7 +2,7 @@
 #
 # MDS Compiler module for the C language.
 #
-# (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
+# (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( CompilerModuleC )
+project ( CompilerModuleCCore )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -40,6 +40,7 @@ add_library ( ${PROJECT_NAME}
               CompilerCPreProcSupport.cxx
 
               # Semantic analyzer.
+              CompilerCType.cxx
               CompilerCScope.cxx
               CompilerCTreeDecoder.cxx
               CompilerCDeclaration.cxx

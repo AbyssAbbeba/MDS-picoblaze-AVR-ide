@@ -144,8 +144,8 @@ STRPR   ([uUL]|(u8))
  /* Special tokens */
 ";"             { return EOS;               }
 "__at__"        { return LOCATION_SPEC;     }
-"__asm__"       { return INLINE_ASSEMBLY;   }
 "__critical__"  { return CRITICAL_BLOCK;    }
+"asm"           { return INLINE_ASSEMBLY;   }
 "..."           { return ELIPSIS;           }
 
  /* Keywords */

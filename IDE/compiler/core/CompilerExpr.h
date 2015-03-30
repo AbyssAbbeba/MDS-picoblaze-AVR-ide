@@ -257,17 +257,20 @@ class CompilerExpr : public CompilerSerializable
 
         /**
          * @brief
+         * @return
          */
         CompilerExpr * copyEntireChain() const;
 
         /**
          * @brief
+         * @return
          */
         CompilerExpr * copyChainLink() const;
 
         /**
          * @brief
          * @param[in] index
+         * @return
          */
         CompilerExpr * operator [] ( int index );
 
