@@ -28,6 +28,7 @@ class CompilerParserInterface;
 #include "CompilerSourceLocation.h"
 
 // C compiler preprocessor header files.
+#include "CompilerCBackend.h"
 #include "CompilerCPreProcMacros.h"
 #include "CompilerCPreProcSupport.h"
 #include "CompilerCPreProcInterface.h"
@@ -76,12 +77,8 @@ class CompilerCPreProc : protected CompilerCPreProcSupport,
          * @param[in] opts
          */
         CompilerCPreProc ( CompilerParserInterface * compilerCore,
-                           const CompilerOptions * opts )
-                         :
-                           CompilerCPreProcInterface ( compilerCore, opts ),
-                           m_macroTable ( compilerCore, opts, m_locationStack )
-        {
-        }
+                           const CompilerOptions * opts,
+                           CompilerCBackend * backend );
 
     ////    Public Operations    ////
     public:
@@ -102,6 +99,15 @@ class CompilerCPreProc : protected CompilerCPreProcSupport,
          */
         bool evaluateExpr ( char * expr,
                             unsigned int length );
+
+        /**
+         * @brief
+         * @param[in] expr
+         * @param[in] length
+         * @return
+         */
+        bool expectSigleId ( char * expr,
+                             unsigned int length );
 
     ////    Inline Private Operations    ////
     private:

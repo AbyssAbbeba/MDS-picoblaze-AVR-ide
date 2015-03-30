@@ -39,7 +39,7 @@
 // Symbol semantic value.
 %union
 {
-    int64_t number;
+    int number;
 };
 
 
@@ -80,6 +80,9 @@
 
     // preprocessorMessage(....) function
     #define preprocMessage preprocessor->m_compilerCore->preprocessorMessage
+
+    // The Data Type Size Table.
+    #define DTSIZE preprocessor->m_backend->dataTypeSize()
 
     // Declaration of the error reporting function used by Bison.
     inline int CompilerCPreProcCalcPar_error ( YYLTYPE * yylloc,
@@ -133,16 +136,16 @@
 %token O_BITNOT         "~"
 %token O_SIZEOF         "sizeof"
 
+%token D_VOID           "void"
 %token D_CHAR           "char"
-%token D_CONST          "const"
-%token D_DOUBLE         "double"
-%token D_FLOAT          "float"
+%token D_SHORT          "short"
 %token D_INT            "int"
 %token D_LONG           "long"
-%token D_SHORT          "short"
-%token D_SIGNED         "signed"
-%token D_UNSIGNED       "unsigned"
-%token D_VOID           "void"
+%token D_FLOAT          "float"
+%token D_DOUBLE         "double"
+%token D_COMPLEX        "_Complex"
+%token D_BOOL           "_Bool"
+%token D_SPEC           "declaration specifier"
 
 /* Operator precedence (the one declared later has the higher precedence). */
 %left ","
@@ -168,7 +171,7 @@
 /*
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
-%type<number> expr dt dt_ptr dt_int dt_int_basic dt_float
+%type<number> expr size data-type
 
 // The start symbol.
 %start input
@@ -182,7 +185,6 @@
 // The start symbol.
 input:
       expr                          {
-                                        // result ready
                                         preprocessor->m_exprResult = (bool) $expr;
                                         YYACCEPT;
                                     }
@@ -237,84 +239,96 @@ expr:
                                             $$ = $1 % $3;
                                         }
                                     }
-    | expr "+" expr                 { $$ = $1 +  $3; }
-    | expr "-" expr                 { $$ = $1 -  $3; }
-    | expr "*" expr                 { $$ = $1 *  $3; }
+    | expr "+"  expr                { $$ = $1 +  $3; }
+    | expr "-"  expr                { $$ = $1 -  $3; }
+    | expr "*"  expr                { $$ = $1 *  $3; }
     | expr "<<" expr                { $$ = $1 << $3; }
     | expr ">>" expr                { $$ = $1 >> $3; }
     | expr "&&" expr                { $$ = $1 && $3; }
     | expr "||" expr                { $$ = $1 || $3; }
-    | expr "&" expr                 { $$ = $1 &  $3; }
-    | expr "|" expr                 { $$ = $1 |  $3; }
-    | expr "^" expr                 { $$ = $1 ^  $3; }
+    | expr "&"  expr                { $$ = $1 &  $3; }
+    | expr "|"  expr                { $$ = $1 |  $3; }
+    | expr "^"  expr                { $$ = $1 ^  $3; }
     | expr "==" expr                { $$ = $1 == $3; }
     | expr "!=" expr                { $$ = $1 != $3; }
-    | expr "<" expr                 { $$ = $1 <  $3; }
+    | expr "<"  expr                { $$ = $1 <  $3; }
     | expr "<=" expr                { $$ = $1 <= $3; }
-    | expr ">" expr                 { $$ = $1 >  $3; }
+    | expr ">"  expr                { $$ = $1 >  $3; }
     | expr ">=" expr                { $$ = $1 >= $3; }
 
     // Unary operators.
-    | "~" expr                      { $$ = ~ $2; }
-    | "!" expr                      { $$ = ! $2; }
-    | "+" expr  %prec UPLUS         { $$ =   $2; }
-    | "-" expr  %prec UMINUS        { $$ = - $2; }
-    | "sizeof" "(" dt ")"           { $$ =   $3; }
+    | "~" expr                      { $$ = ~ $2;    }
+    | "!" expr                      { $$ = ! $2;    }
+    | "+" expr  %prec UPLUS         { $$ =   $2;    }
+    | "-" expr  %prec UMINUS        { $$ = - $2;    }
+    | "sizeof" "(" size ")"         { $$ =   $size; }
 
     // Ternary operator.
     | expr "?" expr ":" expr        { $$ = $1 ? $3 : $5; }
 ;
 
-// Datatypes
-dt:
-      dt_const dt_int               { $$ = $dt_int;   }
-    | dt_const dt_float             { $$ = $dt_float; }
-    | dt_const dt_ptr               { $$ = $dt_ptr;   }
+size:
+      data-type ds                  { $$ = $[data-type];     }
+    | pointer                       { $$ = DTSIZE.m_pointer; }
 ;
 
-dt_ptr:
-      "void" dt_const ptr ref       { $$ = 1; }
-    | dt_int dt_const ptr ref       { $$ = 1; }
-    | dt_float dt_const ptr ref     { $$ = 1; }
+data-type:
+      "_Bool"                       { $$ = DTSIZE.m_bool;              }
+
+    | "char"                        { $$ = DTSIZE.m_char;              }
+
+    | "short"                       { $$ = DTSIZE.m_shortInt;          }
+    | "short" "int"                 { $$ = DTSIZE.m_shortInt;          }
+    | "int" "short"                 { $$ = DTSIZE.m_shortInt;          }
+
+    | "int"                         { $$ = DTSIZE.m_int;               }
+
+    | "long"                        { $$ = DTSIZE.m_longInt;           }
+    | "long" "int"                  { $$ = DTSIZE.m_longInt;           }
+    | "int" "long"                  { $$ = DTSIZE.m_longInt;           }
+
+    | "long" "long"                 { $$ = DTSIZE.m_longLongInt;       }
+    | "int" "long" "long"           { $$ = DTSIZE.m_longLongInt;       }
+    | "long" "long" "int"           { $$ = DTSIZE.m_longLongInt;       }
+    | "long" "int" "long"           { $$ = DTSIZE.m_longLongInt;       }
+
+    |  "float"                      { $$ = DTSIZE.m_float;             }
+
+    |  "double"                     { $$ = DTSIZE.m_double;            }
+
+    |  "long"  "double"             { $$ = DTSIZE.m_longDouble;        }
+    |  "double"  "long"             { $$ = DTSIZE.m_longDouble;        }
+
+    | "_Complex" "float"            { $$ = DTSIZE.m_complexFloat;      }
+    | "float" "_Complex"            { $$ = DTSIZE.m_complexFloat;      }
+
+    | "_Complex" "double"           { $$ = DTSIZE.m_complexDouble;     }
+    | "double" "_Complex"           { $$ = DTSIZE.m_complexDouble;     }
+
+    | "long" "double" "_Complex"    { $$ = DTSIZE.m_complexLongDouble; }
+    | "_Complex" "long" "double"    { $$ = DTSIZE.m_complexLongDouble; }
+    | "long" "_Complex" "double"    { $$ = DTSIZE.m_complexLongDouble; }
+    | "double" "_Complex" "long"    { $$ = DTSIZE.m_complexLongDouble; }
 ;
 
-ptr:
-      "*"
-    | ptr "*"
+pointer:
+      "void" ds aterixes
+    | data-type ds aterixes
 ;
 
-ref:
+aterixes:
+      "*" ds
+    | aterixes "*" ds
+;
+
+ds:
       /* empty */
-    | "&"
+    | dss
 ;
 
-dt_const:
-      /* empty */
-    | "const"
-;
-
-dt_signed:
-      /* empty */
-    | "signed"
-    | "unsigned"
-;
-
-dt_int:
-    dt_signed dt_int_basic          { $$ = $dt_int_basic; }
-;
-
-dt_int_basic:
-      "char"                        {  $$ = 1; }
-    | "short"                       {  $$ = 1; }
-    | "int"                         {  $$ = 2; }
-    | "long"                        {  $$ = 4; }
-    | "long" "int"                  {  $$ = 4; }
-    | "long" "long" "int"           {  $$ = 8; }
-;
-
-dt_float:
-      "float"                       {  $$ = 4; }
-    | "double"                      {  $$ = 8; }
+dss:
+      D_SPEC
+    | dss D_SPEC
 ;
 
 %%
@@ -329,7 +343,7 @@ inline int CompilerCPreProcCalcPar_error ( YYLTYPE * yylloc,
                                            CompilerCPreProcInterface * preprocessor,
                                            const char * errorInfo )
 {
-    preprocessor->m_compilerCore->parserMessage ( preprocessor->m_compilerCore->toSourceLocation(yylloc),
+    preprocessor->m_compilerCore->parserMessage ( preprocessor->m_exprLocation,
                                                   CompilerBase::MT_ERROR,
                                                   errorInfo );
 

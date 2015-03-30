@@ -123,24 +123,27 @@ CompilerExpr::CompilerExpr ( CompilerValue lValue,
 
 CompilerExpr * CompilerExpr::first()
 {
-    CompilerExpr * expr = this;
-
     if ( nullptr == this )
     {
         return nullptr;
     }
 
-    while ( nullptr != expr->m_prev )
+    auto result = this;
+    while ( nullptr != result->m_prev )
     {
-        expr = expr->m_prev;
+        result = result->m_prev;
     }
-
-    return expr;
+    return result;
 }
 
 CompilerExpr * CompilerExpr::last()
 {
-    CompilerExpr * result = this;
+    if ( nullptr == this )
+    {
+        return nullptr;
+    }
+
+    auto result = this;
     while ( nullptr != result->m_next )
     {
         result = result->m_next;
@@ -250,7 +253,7 @@ void CompilerExpr::completeDelete()
 
 CompilerExpr * CompilerExpr::operator [] ( int index )
 {
-    CompilerExpr * result = this;
+    auto result = this;
     for ( int i = 0; i < index; i++ )
     {
         result = result->m_next;
@@ -269,15 +272,15 @@ CompilerExpr * CompilerExpr::copyEntireChain() const
         return nullptr;
     }
 
-    CompilerExpr * result = copyChainLink();
+    auto result = copyChainLink();
 
-    const CompilerExpr * next = this;
+    auto next = this;
     while ( nullptr != ( next = next->m_next ) )
     {
         result->appendLink(next->copyChainLink());
     }
 
-    const CompilerExpr * prev = this;
+    auto prev = this;
     while ( nullptr != ( prev = prev->m_prev ) )
     {
         result->prependLink(prev->copyChainLink());
@@ -293,7 +296,7 @@ CompilerExpr * CompilerExpr::copyChainLink() const
         return nullptr;
     }
 
-    CompilerExpr * result = new CompilerExpr();
+    auto result = new CompilerExpr();
 
     CompilerValue * val;
 
@@ -374,9 +377,9 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_ASSIGN:          out << "=";               break;
         case CompilerExpr::OPER_NAND:            out << "!&";              break;
         case CompilerExpr::OPER_HASH:            out << "#";               break;
-        case CompilerExpr::OPER_REF:             out << "&ref";            break;
-        case CompilerExpr::OPER_DEREF:           out << "*";               break;
-        case CompilerExpr::OPER_CONDITION:       out << "?:";              break;
+        case CompilerExpr::OPER_REF:             out << "&reference";      break;
+        case CompilerExpr::OPER_DEREF:           out << "*dereference";    break;
+        case CompilerExpr::OPER_CONDITION:       out << "?";               break;
         case CompilerExpr::OPER_COLON:           out << ":";               break;
         case CompilerExpr::OPER_INDEX:           out << "[index]";         break;
         case CompilerExpr::OPER_INC:             out << "post++";          break;
@@ -400,6 +403,7 @@ std::ostream & operator << ( std::ostream & out,
         case CompilerExpr::OPER_ALIGNOF:         out << "alignof";         break;
         case CompilerExpr::OPER_ALIGNAS:         out << "alignas";         break;
         case CompilerExpr::OPER_ASSERT:          out << "assert";          break;
+        case CompilerExpr::OPER_COMPOUND:        out << "compound";        break;
     }
 
     return out;

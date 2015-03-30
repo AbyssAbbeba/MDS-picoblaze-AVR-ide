@@ -17,6 +17,7 @@
 
 // Forward declarations.
 class CompilerOptions;
+class CompilerCBackend;
 class CompilerStatement;
 class CompilerCSymbolTable;
 class CompilerCTreeDecoder;
@@ -41,7 +42,8 @@ class CompilerCSemanticAnalyzer : public CompilerSemanticAnalyzer
          * @param[in] opts
          */
         CompilerCSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
-                                    CompilerOptions * opts );
+                                    CompilerOptions * opts,
+                                    CompilerCBackend * backend );
 
         /**
          * @brief
@@ -64,6 +66,9 @@ class CompilerCSemanticAnalyzer : public CompilerSemanticAnalyzer
 
         ////    Private Attributes    ////
     private:
+        ///
+        CompilerCBackend * const m_backend;
+
         ///
         CompilerCSymbolTable * m_symbolTable;
 

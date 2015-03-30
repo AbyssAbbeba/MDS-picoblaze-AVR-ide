@@ -56,9 +56,17 @@ void CompilerCSymbolTable::leaveScope()
 
 const CompilerCDeclaration * CompilerCSymbolTable::findSymbol ( const std::string & id )
 {
+    return nullptr;
 }
 
 const CompilerCDeclaration * CompilerCSymbolTable::findDataType ( const std::string & typeName,
                                                                   CompilerCDeclaration::Type type )
 {
+    return nullptr;
+}
+
+std::ostream & operator << ( std::ostream & out,
+                             const CompilerCSymbolTable * table )
+{
+
 }

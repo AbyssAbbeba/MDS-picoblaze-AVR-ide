@@ -27,18 +27,24 @@ CompilerCScope::CompilerCScope ( CompilerCScope * parent,
 
 CompilerCScope::~CompilerCScope()
 {
-    for ( auto scope : m_chidren )
+    for ( auto scope : m_members )
     {
         delete scope;
     }
 
     for ( const auto & i : m_symbols )
     {
-        delete i.second;
+        delete i;
     }
 
     for ( const auto & i : m_datatypes )
     {
-        delete i.second;
+        delete i;
     }
+}
+
+std::ostream & operator << ( std::ostream & out,
+                             const CompilerCScope * scope )
+{
+
 }
