@@ -40,7 +40,7 @@ StopWatch::~StopWatch()
 void StopWatch::saveAsText()
 {
     outPath.clear();
-    outPath = QFileDialog::getSaveFileName(this,"Output file",m_path, tr("Text document (*.txt);; All files (*.*)"));
+    outPath = QFileDialog::getSaveFileName(this,"Output file","", tr("Text document (*.txt);; All files (*.*)"));
     if ( outPath == NULL)
         return;
     outFile.setFileName(outPath);

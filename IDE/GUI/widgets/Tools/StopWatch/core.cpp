@@ -50,13 +50,14 @@ bool Core::isCoreStoped()
     if ( cntCurrent.interrupts == cntStop.interrupts && cntStop.interrupts != 0 )              return true;
     if ( cntCurrent.subPrograms == cntStop.subPrograms && cntStop.subPrograms!= 0 )            return true;
     if ( cntCurrent.returns == cntStop.returns && cntStop.returns != 0 )                    return true;
-    if ( cntCurrent.interruptReturns == cntStop.interruptReturns && cntStop.interruptReturns != 0 )  return true;
+    if ( cntCurrent.interruptReturns == cntStop.interruptReturns && cntStop.interruptReturns != 0 )  return true;  
+    if ( cntCurrent.breakpoints == cntStop.breakpoints && cntStop.breakpoints != 0 )        return true;
     return false;
 }
 
 void Core::addNanoSec()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus()  == true )
         return;
 
     cntCurrent.nanoSecs += 1;
@@ -67,7 +68,7 @@ void Core::addNanoSec()
 }
 void Core::addClockCycle()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus()  == true )
         return;
 
     cntCurrent.clockCycles+= 1;
@@ -78,7 +79,7 @@ void Core::addClockCycle()
 }
 void Core::addInstrction()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus()  == true)
         return;
 
     cntCurrent.instructions += 1;
@@ -88,7 +89,7 @@ void Core::addInstrction()
 }
 void Core::addProgramByte()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus()  == true)
         return;
 
     cntCurrent.programBytes += 1;
@@ -99,7 +100,7 @@ void Core::addProgramByte()
 }
 void Core::addInterrupt()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus()  == true )
         return;
 
     cntCurrent.interrupts += 1;
@@ -110,7 +111,7 @@ void Core::addInterrupt()
 }
 void Core::addSubProg()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus()  == true )
         return;
 
     cntCurrent.subPrograms += 1;
@@ -121,7 +122,7 @@ void Core::addSubProg()
 }
 void Core::addReturn()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus()  == true )
         return;
 
     cntCurrent.returns+= 1;
@@ -132,7 +133,7 @@ void Core::addReturn()
 }
 void Core::addInterruptReturn()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus() == true )
         return;
 
     cntCurrent.interruptReturns += 1;
@@ -143,7 +144,7 @@ void Core::addInterruptReturn()
 }
 void Core::addBreakPoint()
 {
-    if ( getShutDownStatus() )
+    if ( getShutDownStatus() == true )
         return;
 
     cntCurrent.breakpoints += 1;
