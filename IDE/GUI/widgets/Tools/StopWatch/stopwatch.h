@@ -34,6 +34,9 @@ public:
     QSignalMapper *signalMapper;
     QRegExpValidator *valueValidator;
     QTimer *timer;
+    QFile outFile;
+    QString outPath;
+    QString m_path;
 
 
     
@@ -68,7 +71,7 @@ private slots:
     void handleUpdateRequest(int mask);
 
 signals:
-    signal stopSim();
+    void stopSim();
 };
 
 #endif // STOPWATCH_H
