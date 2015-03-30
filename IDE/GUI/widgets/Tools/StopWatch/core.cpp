@@ -56,48 +56,101 @@ bool Core::isCoreStoped()
 
 void Core::addNanoSec()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.nanoSecs += 1;
     cntOverAll.nanoSecs += 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addClockCycle()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.clockCycles+= 1;
     cntOverAll.clockCycles += 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addInstrction()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.instructions += 1;
     cntOverAll.instructions += 1;
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addProgramByte()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.programBytes += 1;
     cntOverAll.programBytes += 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addInterrupt()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.interrupts += 1;
     cntOverAll.interrupts += 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addSubProg()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.subPrograms += 1;
     cntOverAll.subPrograms += 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addReturn()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.returns+= 1;
     cntOverAll.returns += 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addInterruptReturn()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.interruptReturns += 1;
     cntOverAll.interruptReturns+= 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 void Core::addBreakPoint()
 {
+    if ( !getShutDownStatus() )
+        return;
+
     cntCurrent.breakpoints += 1;
     cntOverAll.breakpoints += 1;
+
+    if ( isCoreStoped() == true)
+        shutDown(false);
 }
 //Core::current Core::getStruct()
 //{
