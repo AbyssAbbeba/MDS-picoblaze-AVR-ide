@@ -83,6 +83,10 @@
  * @ingroup Compiler
  * This group contains components of the C compiler.
  *
+ * @defgroup CompilerCPicoBlaze C compiler for PicoBlaze
+ * @ingroup CompilerC
+ * PicoBlaze C language compiler back-end.
+ *
  * @defgroup Assembler Assembler
  * @ingroup Compiler
  * This group contains components of the built-in assemblers.

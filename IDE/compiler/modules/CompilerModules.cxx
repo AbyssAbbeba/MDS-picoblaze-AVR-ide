@@ -30,7 +30,7 @@
 
 // Include all implemented semantic analyzers we have in this compiler collection.
 #ifdef MDS_FEATURE_C_COMPILER
-#   include "C/CompilerCSemanticAnalyzer.h"
+#   include "C/core/CompilerCSemanticAnalyzer.h"
 #endif // MDS_FEATURE_C_COMPILER
 #ifdef MDS_FEATURE_AVR8
 #   include "assembler/avr8/AsmAvr8SemanticAnalyzer.h"
@@ -50,7 +50,7 @@
 
 // Include lexer prototypes (they are used by the core to initialize and destroy lexer).
 #ifdef MDS_FEATURE_C_COMPILER
-#   include "C/CompilerCLexer.h"
+#   include "C/core/CompilerCLexer.h"
 #endif // MDS_FEATURE_C_COMPILER
 #ifdef MDS_FEATURE_AVR8
 #   include "assembler/avr8/AsmAvr8Lexer.h"
@@ -70,8 +70,11 @@
 
 // Include additional compiler specific header files.
 #ifdef MDS_FEATURE_C_COMPILER
-#   include "C/CompilerCPreProc.h"
-#   include "C/CompilerCParserExtension.h"
+#   include "C/core/CompilerCPreProc.h"
+#   include "C/core/CompilerCParserExtension.h"
+#   ifdef MDS_FEATURE_PICOBLAZE
+#       include "C/PicoBlaze/CompilerCPicoBlazeBackend.h"
+#   endif // MDS_FEATURE_PICOBLAZE
 #endif // MDS_FEATURE_C_COMPILER
 
 // Parser prototypes (the core uses them to initiate syntactical analysis).
@@ -190,8 +193,11 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
+                    // Initialize PicoBlaze C backend;
+                    CompilerCBackend * backend = new CompilerCPicoBlazeBackend(compilerCore, options);
+
                     // Initialize C preprocessor.
-                    CompilerCPreProc preprocessor ( parserIntf, options );
+                    CompilerCPreProc preprocessor ( parserIntf, options, backend );
                     char * buffer = preprocessor.processFiles ( sourceFiles );
                     compilerCore->closeInputFiles();
 
@@ -221,7 +227,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     free(buffer);
 
                     // Setup compiler's semantic analyzer.
-                    compilerCore->setSemanticAnalyzer ( new CompilerCSemanticAnalyzer(compilerCore, options) );
+                    compilerCore->setSemanticAnalyzer ( new CompilerCSemanticAnalyzer(compilerCore, options, backend) );
 
                     // Done.
                     return MESC_OK;

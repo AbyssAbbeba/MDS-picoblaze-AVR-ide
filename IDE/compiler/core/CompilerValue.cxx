@@ -113,6 +113,11 @@ CompilerValue::CompilerValue ( unsigned char * array,
 
 CompilerValue * CompilerValue::makeCopy() const
 {
+    if ( nullptr == this )
+    {
+        return nullptr;
+    }
+
     CompilerValue * result = new CompilerValue();
     result->m_type = m_type;
     switch ( m_type )

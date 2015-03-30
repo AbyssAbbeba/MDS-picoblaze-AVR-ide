@@ -17,14 +17,17 @@
 #include<iostream>//DEBUG
 
 // C compiler header files.
+#include "CompilerCBackend.h"
 #include "CompilerCSymbolTable.h"
 #include "CompilerCTreeDecoder.h"
 #include "CompilerCExprProcessor.h"
 
 CompilerCSemanticAnalyzer::CompilerCSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
-                                                       CompilerOptions * opts )
+                                                       CompilerOptions * opts,
+                                                       CompilerCBackend * backend )
                                                      :
-                                                       CompilerSemanticAnalyzer ( compilerCore, opts )
+                                                       CompilerSemanticAnalyzer ( compilerCore, opts ),
+                                                       m_backend ( backend )
 {
     m_symbolTable   = new CompilerCSymbolTable();
     m_exprProcessor = new CompilerCExprProcessor(compilerCore, opts);

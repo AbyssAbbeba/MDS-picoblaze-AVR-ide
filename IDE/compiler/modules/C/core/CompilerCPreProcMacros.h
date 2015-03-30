@@ -17,6 +17,7 @@
 
 // Forward declarations.
 class CompilerOptions;
+class CompilerCBackend;
 class CompilerParserInterface;
 
 // Standard headers.
@@ -134,10 +135,12 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
          * @brief
          * @param[in,out] compilerCore
          * @param[in] opts
+         * @param[in] backend
          * @param[in,out] locationStack
          */
         CompilerCPreProcMacros ( CompilerParserInterface * compilerCore,
                                  const CompilerOptions * opts,
+                                 CompilerCBackend * backend,
                                  std::vector<CompilerSourceLocation> & locationStack );
 
     ////    Public Operations    ////
@@ -284,6 +287,9 @@ class CompilerCPreProcMacros : private CompilerCPreProcSupport
 
         ///
         const CompilerOptions * const m_opts;
+
+        ///
+        CompilerCBackend * const m_backend;
 
         ///
         std::vector<CompilerSourceLocation> & m_locationStack;

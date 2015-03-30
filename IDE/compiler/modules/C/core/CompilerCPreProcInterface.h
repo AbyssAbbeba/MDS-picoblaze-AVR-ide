@@ -19,6 +19,9 @@
 #include "CompilerOptions.h"
 #include "CompilerParserInterface.h"
 
+// C compiler preprocessor header files.
+#include "CompilerCBackend.h"
+
 /**
  * @brief
  * @ingroup CompilerC
@@ -32,12 +35,15 @@ class CompilerCPreProcInterface
          * @brief
          * @param[in,out] compilerCore
          * @param[in] opts
+         * @param[in] backend
          */
         CompilerCPreProcInterface ( CompilerParserInterface * compilerCore,
-                                    const CompilerOptions * opts )
+                                    const CompilerOptions * opts,
+                                    const CompilerCBackend * backend )
                                   :
                                     m_compilerCore ( compilerCore ),
-                                    m_opts ( opts ) {}
+                                    m_opts ( opts ),
+                                    m_backend ( backend ) {}
 
         /**
          * @brief
@@ -51,6 +57,9 @@ class CompilerCPreProcInterface
 
         ///
         const CompilerOptions * const m_opts;
+
+        ///
+        const CompilerCBackend * const m_backend;
 
         ///
         CompilerSourceLocation m_exprLocation;
