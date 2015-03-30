@@ -23,7 +23,8 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
     m_simControl->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
 
-//   connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
+    connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
+    connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
 
     
 }
@@ -104,53 +105,47 @@ void StopWatch::updateCore()
 
 }
 
-void StopWatch::update()
+void StopWatch::update(int i)
 {
-    if ( !core.getShutDownStatus() )
-        return;
-    core.addNanoSec();
-    ui->lineNano->setText(QString::number(core.getData(0),10));
-    ui->lineNano3->setText(QString::number(core.getData(1),10));
-//    core.cntCurrent.nanoSecs
-
-    core.addClockCycle();
-    ui->lineCycles->setText(QString::number(core.getData(2),10));
-    ui->lineCycles3->setText(QString::number(core.getData(3),10));
-
-    core.addInstrction();
-    ui->lineInstr->setText(QString::number(core.getData(4),10));
-    ui->lineInstr3->setText(QString::number(core.getData(5),10));
-
-    core.addProgramByte();
-    ui->lineProgram->setText(QString::number(core.getData(6),10));
-    ui->lineProgram3->setText(QString::number(core.getData(7),10));
-
-    core.addInterrupt();
-    ui->lineInterrupt->setText(QString::number(core.getData(8),10));
-    ui->lineInterrupt3->setText(QString::number(core.getData(9),10));
-
-    core.addSubProg();
-    ui->lineCalls->setText(QString::number(core.getData(10),10));
-    ui->lineCalls3->setText(QString::number(core.getData(11),10));
-
-    core.addReturn();
-    ui->lineReturns->setText(QString::number(core.getData(12),10));
-    ui->lineReturns3->setText(QString::number(core.getData(13),10));
-
-    core.addInterruptReturn();
-    ui->lineIntRet->setText(QString::number(core.getData(14),10));
-    ui->lineIntRet3->setText(QString::number(core.getData(15),10));
-
-    core.addBreakPoint();
-    ui->lineBreak->setText(QString::number(core.getData(16),10));
-    ui->lineBreak3->setText(QString::number(core.getData(17),10));
-
+    switch ( i )
+    {
+        case 1:
+            ui->lineNano->setText(QString::number(core.getData(0),10));
+            ui->lineNano3->setText(QString::number(core.getData(1),10));
+        break;
+    //    core.cntCurrent.nanoSecs
+        case 2:
+            ui->lineCycles->setText(QString::number(core.getData(2),10));
+            ui->lineCycles3->setText(QString::number(core.getData(3),10));
+            ui->lineInstr->setText(QString::number(core.getData(4),10));
+            ui->lineInstr3->setText(QString::number(core.getData(5),10));
+        break;
+        case 3:
+            ui->lineProgram->setText(QString::number(core.getData(6),10));
+            ui->lineProgram3->setText(QString::number(core.getData(7),10));
+        break;
+        case 4:
+            ui->lineInterrupt->setText(QString::number(core.getData(8),10));
+            ui->lineInterrupt3->setText(QString::number(core.getData(9),10));
+        break;
+        case 5:
+            ui->lineCalls->setText(QString::number(core.getData(10),10));
+            ui->lineCalls3->setText(QString::number(core.getData(11),10));
+        break;
+        case 6:
+            ui->lineReturns->setText(QString::number(core.getData(12),10));
+            ui->lineReturns3->setText(QString::number(core.getData(13),10));
+        break;
+        case 7:
+            ui->lineIntRet->setText(QString::number(core.getData(14),10));
+            ui->lineIntRet3->setText(QString::number(core.getData(15),10));
+        break;
+        case 8:
+            ui->lineBreak->setText(QString::number(core.getData(16),10));
+            ui->lineBreak3->setText(QString::number(core.getData(17),10));
+        break;
+        }
     qDebug() << core.isCoreStoped();
-    qDebug() << core.structPtrCurrent->nanoSecs << "cureent" ;
-    qDebug() << core.structPtrStop->nanoSecs << "stop";
-
-    if ( core.isCoreStoped() == true)
-        core.shutDown(false);
 }
 
 void StopWatch::setStop()
@@ -251,11 +246,6 @@ void StopWatch::readButton(int button)
 
 void StopWatch::connectSignals()
 {
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer->start(100);
-
-
     signalMapper = new QSignalMapper(this);
     signalMapper->setMapping(ui->pushStart, 0);
     signalMapper->setMapping(ui->pushSave, 1);
@@ -346,10 +336,28 @@ void StopWatch::connectSignals()
 
 
     //ui->push// cancel.png, breakpoint_disable.png
-    ui->pushBreak->setIcon(QPixmap(":/resources/icons/cancel.png"));
+    ui->pushBreak->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
     ui->pushBreak2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
     ui->pushCalls->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
     ui->pushCalls2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushCycles->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushCycles2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushInstr->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushInstr2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushInterrupt->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushInterrupt2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushIntRet->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushIntRet2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushNano->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushNano2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushProgram->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushProgram2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushReturns->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushReturns2->setIcon(QPixmap(":/resources/icons/breakpoint_disable.png"));
+    ui->pushSave->setIcon(QPixmap(":/resources/icons/disk.png"));
+    ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+    ui->pushClearStop->setIcon(QPixmap(":/resources/icons/cancel.png"));
+    ui->pushClearCur->setIcon(QPixmap(":/resources/icons/cancel.png"));
 
 }
 
@@ -399,14 +407,27 @@ void StopWatch::on_lineBreak2_textChanged(const QString &arg1)
     core.structPtrStop->breakpoints = arg1.toULongLong(0,10);
 }
 
+void StopWatch::breakpointReachedSlot()
+{
+    core.addBreakPoint();
+    if ( core.getShutDownStatus() )
+    update(8);
+}
 
 void StopWatch::handleUpdateRequest(int mask)
 {
+    qDebug() << "--------------------";
     if (1 & mask)
     {
         //this->leTime->setText(QString::number(m_simControlUnit->getTotalMCycles()));
         //this->leTime->setStyleSheet("background-color: yellow");
-        unsigned long long cycles = m_simControlUnit->getTotalMCycles();
+        unsigned long long cycles;
+        cycles = m_simControlUnit->getTotalMCycles();
+        qDebug() << cycles;
+
+        core.addClockCycle();
+        if ( core.getShutDownStatus() )
+        update(2);
         //this->wTime->setTime(2*cycles/(clock*clockMult));
         //this->leCycles->setText(QString::number(2*cycles, 10));
     }
@@ -417,27 +438,37 @@ void StopWatch::handleEvent(int subsysId, int eventId, int locationOrReason, int
 {
     if (MCUSimSubsys::ID_CPU == subsysId)
     {
-        //qDebug() << "CallWatcher: ID_CPU event";
+        qDebug() << "CallWatcher: ID_CPU event";
         switch ( eventId )
         {
             case MCUSimCPU::EVENT_CPU_CALL:
             {
+                core.addSubProg();
 
+                qDebug() << core.getShutDownStatus();
+                if ( core.getShutDownStatus() )
+                update(5);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN:
             {
-
+                core.addReturn();
+                if ( core.getShutDownStatus() )
+                update(6);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_IRQ:
             {
-
+                core.addInterrupt();
+                if ( core.getShutDownStatus() )
+                update(4);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR:
             {
-
+                core.addInterruptReturn();
+                if ( core.getShutDownStatus() )
+                update(7);
                 break;
             }
             default:
@@ -459,7 +490,7 @@ void StopWatch::deviceReset()
 }
 
 
-void StopWatch::setReadOnly(bool readOnly)
+void StopWatch::setReadOnly(bool) //readOnly)
 {
 }
 
