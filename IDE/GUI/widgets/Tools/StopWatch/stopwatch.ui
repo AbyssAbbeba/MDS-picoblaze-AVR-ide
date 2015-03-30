@@ -902,8 +902,13 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="5">
+   <item row="0" column="3" colspan="3">
     <widget class="QLabel" name="labelStahp">
+     <property name="font">
+      <font>
+       <pointsize>22</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string/>
      </property>

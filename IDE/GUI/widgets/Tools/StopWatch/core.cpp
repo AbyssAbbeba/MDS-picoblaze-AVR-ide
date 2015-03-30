@@ -64,15 +64,17 @@ void Core::addNanoSec()
     cntOverAll.nanoSecs += 1;
 
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addClockCycle()
 {
     if ( getShutDownStatus()  == true )
         return;
 
-    cntCurrent.clockCycles+= 1;
-    cntOverAll.clockCycles += 1;
+    cntCurrent.clockCycles += 2;
+    cntOverAll.clockCycles += 2;
+    cntCurrent.instructions = cntCurrent.clockCycles / 2;
+    cntOverAll.instructions = cntOverAll.clockCycles / 2;
 
     if ( isCoreStoped() == true)
         shutDown(true);

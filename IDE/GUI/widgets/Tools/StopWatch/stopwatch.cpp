@@ -171,7 +171,6 @@ void StopWatch::setStop()
 {
     bool flag;
 
-    ui->labelStahp->setText("STAHP");
     flag = core.getShutDownStatus();
     qDebug() << core.getShutDownStatus();
     flag = !flag;
@@ -179,10 +178,14 @@ void StopWatch::setStop()
 
     if ( core.getShutDownStatus() == true )
     {
+        ui->labelStahp->setStyleSheet("QLabel { color : red }");
+        ui->labelStahp->setText("STOPPED");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+        emit stopSim();
     }
     else
     {
+        ui->labelStahp->setText("");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
     }
 
@@ -321,7 +324,7 @@ void StopWatch::on_lineBreak2_textChanged(const QString &arg1)
 void StopWatch::breakpointReachedSlot()
 {
     core.addBreakPoint();
-    if ( core.getShutDownStatus() )
+    if ( core.getShutDownStatus() == false )
     update(8);
 }
 
@@ -337,7 +340,7 @@ void StopWatch::handleUpdateRequest(int mask)
         qDebug() << cycles;
 
         core.addClockCycle();
-        if ( core.getShutDownStatus() )
+        if ( core.getShutDownStatus()  == false )
         update(2);
         //this->wTime->setTime(2*cycles/(clock*clockMult));
         //this->leCycles->setText(QString::number(2*cycles, 10));
@@ -357,28 +360,28 @@ void StopWatch::handleEvent(int subsysId, int eventId, int locationOrReason, int
                 core.addSubProg();
 
                 qDebug() << core.getShutDownStatus();
-                if ( core.getShutDownStatus() )
+                if ( core.getShutDownStatus()  == false )
                 update(5);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN:
             {
                 core.addReturn();
-                if ( core.getShutDownStatus() )
+                if ( core.getShutDownStatus()  == false )
                 update(6);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_IRQ:
             {
                 core.addInterrupt();
-                if ( core.getShutDownStatus() )
+                if ( core.getShutDownStatus()  == false )
                 update(4);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR:
             {
                 core.addInterruptReturn();
-                if ( core.getShutDownStatus() )
+                if ( core.getShutDownStatus()  == false )
                 update(7);
                 break;
             }
@@ -392,11 +395,43 @@ void StopWatch::handleEvent(int subsysId, int eventId, int locationOrReason, int
 
 void StopWatch::deviceChanged()
 {
+    deviceReset();
 }
 
 
 void StopWatch::deviceReset()
 {
+    core.structPtrCurrent->nanoSecs = 0;
+    core.structPtrCurrent->clockCycles = 0;
+    core.structPtrCurrent->instructions = 0;
+    core.structPtrCurrent->programBytes = 0;
+    core.structPtrCurrent->interrupts = 0;
+    core.structPtrCurrent->subPrograms = 0;
+    core.structPtrCurrent->returns = 0;
+    core.structPtrCurrent->interruptReturns = 0;
+    core.structPtrCurrent->breakpoints = 0;
+
+    core.structPtrStop->nanoSecs = 0;
+    core.structPtrStop->clockCycles = 0;
+    core.structPtrStop->instructions = 0;
+    core.structPtrStop->programBytes = 0;
+    core.structPtrStop->interrupts = 0;
+    core.structPtrStop->subPrograms = 0;
+    core.structPtrStop->returns = 0;
+    core.structPtrStop->interruptReturns = 0;
+    core.structPtrStop->breakpoints = 0;
+
+    core.structPtrOverall->nanoSecs = 0;
+    core.structPtrOverall->clockCycles = 0;
+    core.structPtrOverall->instructions = 0;
+    core.structPtrOverall->programBytes = 0;
+    core.structPtrOverall->interrupts = 0;
+    core.structPtrOverall->subPrograms = 0;
+    core.structPtrOverall->returns = 0;
+    core.structPtrOverall->interruptReturns = 0;
+    core.structPtrOverall->breakpoints = 0;
+
+    core.shutDown(true);
 }
 
 
