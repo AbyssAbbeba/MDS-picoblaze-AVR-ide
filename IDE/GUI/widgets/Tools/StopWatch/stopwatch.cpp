@@ -26,6 +26,17 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
     connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
 
+    if ( core.getShutDownStatus() == true )
+    {
+        ui->labelStahp->setText("");
+        ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+    }
+    else
+    {
+        ui->labelStahp->setStyleSheet("QLabel { color : red }");
+        ui->labelStahp->setText("STOPPED");
+        ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+    }
     ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
 
     
@@ -178,15 +189,15 @@ void StopWatch::setStop()
 
     if ( core.getShutDownStatus() == true )
     {
-        ui->labelStahp->setStyleSheet("QLabel { color : red }");
-        ui->labelStahp->setText("STOPPED");
-        ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
-        emit stopSim();
+      //  emit stopSim();
+        ui->labelStahp->setText("");
+        ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
     }
     else
     {
-        ui->labelStahp->setText("");
-        ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+        ui->labelStahp->setStyleSheet("QLabel { color : red }");
+        ui->labelStahp->setText("STOPPED");
+        ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
 
 }
@@ -324,7 +335,7 @@ void StopWatch::on_lineBreak2_textChanged(const QString &arg1)
 void StopWatch::breakpointReachedSlot()
 {
     core.addBreakPoint();
-    if ( core.getShutDownStatus() == false )
+    if ( core.getShutDownStatus() == true )
     update(8);
 }
 
@@ -340,7 +351,7 @@ void StopWatch::handleUpdateRequest(int mask)
         qDebug() << cycles;
 
         core.addClockCycle();
-        if ( core.getShutDownStatus()  == false )
+        if ( core.getShutDownStatus()  == true )
         update(2);
         //this->wTime->setTime(2*cycles/(clock*clockMult));
         //this->leCycles->setText(QString::number(2*cycles, 10));
@@ -360,28 +371,28 @@ void StopWatch::handleEvent(int subsysId, int eventId, int locationOrReason, int
                 core.addSubProg();
 
                 qDebug() << core.getShutDownStatus();
-                if ( core.getShutDownStatus()  == false )
+                if ( core.getShutDownStatus()  == true )
                 update(5);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN:
             {
                 core.addReturn();
-                if ( core.getShutDownStatus()  == false )
+                if ( core.getShutDownStatus()  == true )
                 update(6);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_IRQ:
             {
                 core.addInterrupt();
-                if ( core.getShutDownStatus()  == false )
+                if ( core.getShutDownStatus()  == true )
                 update(4);
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR:
             {
                 core.addInterruptReturn();
-                if ( core.getShutDownStatus()  == false )
+                if ( core.getShutDownStatus()  == true )
                 update(7);
                 break;
             }
@@ -430,8 +441,6 @@ void StopWatch::deviceReset()
     core.structPtrOverall->returns = 0;
     core.structPtrOverall->interruptReturns = 0;
     core.structPtrOverall->breakpoints = 0;
-
-    core.shutDown(true);
 }
 
 
