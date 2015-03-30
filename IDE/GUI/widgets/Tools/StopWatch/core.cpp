@@ -216,4 +216,5 @@ unsigned long long Core::getData(int what)
         case 17:
         return cntOverAll.breakpoints;
     }
+    return 0;
 }
