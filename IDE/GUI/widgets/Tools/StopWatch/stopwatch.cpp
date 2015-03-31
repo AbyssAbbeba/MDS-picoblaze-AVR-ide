@@ -26,20 +26,17 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
     connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
 
-    if ( core.getShutDownStatus() == true )
+    ui->labelStahp->setStyleSheet("QLabel { color : red }");
+    if ( core.getShutDownStatus() == false )
     {
         ui->labelStahp->setText("");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
     }
     else
     {
-        ui->labelStahp->setStyleSheet("QLabel { color : red }");
         ui->labelStahp->setText("STOPPED");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
-    ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
-
-    
 }
 
 StopWatch::~StopWatch()
@@ -175,19 +172,17 @@ void StopWatch::update(int i)
             ui->lineBreak3->setText(QString::number(core.getData(17),10));
         break;
         }
-    qDebug() << core.isCoreStoped();
 }
 
 void StopWatch::setStop()
 {
     bool flag;
-
     flag = core.getShutDownStatus();
     qDebug() << core.getShutDownStatus();
     flag = !flag;
     core.shutDown(flag);
 
-    if ( core.getShutDownStatus() == true )
+    if ( core.getShutDownStatus() == false )
     {
       //  emit stopSim();
         ui->labelStahp->setText("");
@@ -195,7 +190,6 @@ void StopWatch::setStop()
     }
     else
     {
-        ui->labelStahp->setStyleSheet("QLabel { color : red }");
         ui->labelStahp->setText("STOPPED");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
@@ -334,14 +328,36 @@ void StopWatch::on_lineBreak2_textChanged(const QString &arg1)
 
 void StopWatch::breakpointReachedSlot()
 {
-    core.addBreakPoint();
     if ( core.getShutDownStatus() == true )
-    update(8);
+    {
+        core.structPtrOverall->breakpoints += 1;
+        update(8);
+        return;
+    }
+    else
+    {
+        core.structPtrOverall->breakpoints += 1;
+        core.addBreakPoint();
+        update(8);
+        if ( core.getShutDownStatus() == false )
+        {
+            ui->labelStahp->setText("");
+            ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+        }
+        else
+        {
+            if ( ui->checkSimulation->isChecked() == true )
+                emit stopSim();
+
+            ui->labelStahp->setText("STOPPED");
+            ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+        }
+    }
 }
 
 void StopWatch::handleUpdateRequest(int mask)
 {
-    qDebug() << "--------------------";
+    //qDebug() << "--------------------";
     if (1 & mask)
     {
         //this->leTime->setText(QString::number(m_simControlUnit->getTotalMCycles()));
@@ -350,9 +366,31 @@ void StopWatch::handleUpdateRequest(int mask)
         cycles = m_simControlUnit->getTotalMCycles();
         qDebug() << cycles;
 
-        core.addClockCycle();
-        if ( core.getShutDownStatus()  == true )
-        update(2);
+        if ( core.getShutDownStatus() == true )
+        {
+            core.structPtrOverall->clockCycles += 1;
+            update(2);
+            return;
+        }
+        else
+        {
+            core.structPtrOverall->clockCycles += 1;
+            core.addClockCycle();
+            update(2);
+            if ( core.getShutDownStatus() == false )
+            {
+                ui->labelStahp->setText("");
+                ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+            }
+            else
+            {
+                if ( ui->checkSimulation->isChecked() == true )
+                    emit stopSim();
+
+                ui->labelStahp->setText("STOPPED");
+                ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+            }
+        }
         //this->wTime->setTime(2*cycles/(clock*clockMult));
         //this->leCycles->setText(QString::number(2*cycles, 10));
     }
@@ -368,32 +406,118 @@ void StopWatch::handleEvent(int subsysId, int eventId, int locationOrReason, int
         {
             case MCUSimCPU::EVENT_CPU_CALL:
             {
-                core.addSubProg();
+                if ( core.getShutDownStatus() == true )
+                {
+                    core.structPtrOverall->subPrograms += 1;
+                    update(5);
+                    return;
+                }
+                else
+                {
+                    core.structPtrOverall->subPrograms += 1;
+                    core.addSubProg();
+                    if ( core.getShutDownStatus() == false )
+                    {
+                        ui->labelStahp->setText("");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+                    }
+                    else
+                    {
+                        if ( ui->checkSimulation->isChecked() == true )
+                            emit stopSim();
 
-                qDebug() << core.getShutDownStatus();
-                if ( core.getShutDownStatus()  == true )
-                update(5);
+                        ui->labelStahp->setText("STOPPED");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+                    }
+                    update(5);
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN:
             {
-                core.addReturn();
-                if ( core.getShutDownStatus()  == true )
-                update(6);
+                if ( core.getShutDownStatus() == true )
+                {
+                    core.structPtrOverall->returns += 1;
+                    update(6);
+                    return;
+                }
+                else
+                {
+                    core.structPtrOverall->returns += 1;
+                    core.addReturn();
+                    if ( core.getShutDownStatus() == false )
+                    {
+                        ui->labelStahp->setText("");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+                    }
+                    else
+                    {
+                        if ( ui->checkSimulation->isChecked() == true )
+                            emit stopSim();
+
+                        ui->labelStahp->setText("STOPPED");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+                    }
+                    update(6);
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_IRQ:
             {
-                core.addInterrupt();
-                if ( core.getShutDownStatus()  == true )
-                update(4);
+                if ( core.getShutDownStatus() == true )
+                {
+                    core.structPtrOverall->interrupts += 1;
+                    update(4);
+                    return;
+                }
+                else
+                {
+                    core.structPtrOverall->interrupts += 1;
+                    core.addInterrupt();
+                    if ( core.getShutDownStatus() == false )
+                    {
+                        ui->labelStahp->setText("");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+                    }
+                    else
+                    {
+                        if ( ui->checkSimulation->isChecked() == true )
+                            emit stopSim();
+
+                        ui->labelStahp->setText("STOPPED");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+                    }
+                    update(4);
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR:
             {
-                core.addInterruptReturn();
-                if ( core.getShutDownStatus()  == true )
-                update(7);
+                if ( core.getShutDownStatus() == true )
+                {
+                    core.structPtrOverall->interruptReturns += 1;
+                    update(7);
+                    return;
+                }
+                else
+                {
+                    core.structPtrOverall->interruptReturns += 1;
+                    core.addInterruptReturn();
+                    update(7);
+                    if ( core.getShutDownStatus() == false )
+                    {
+                        ui->labelStahp->setText("");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/pause.png"));
+                    }
+                    else
+                    {
+                        if ( ui->checkSimulation->isChecked() == true )
+                            emit stopSim();
+
+                        ui->labelStahp->setText("STOPPED");
+                        ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
+                    }
+                }
                 break;
             }
             default:
@@ -444,6 +568,8 @@ void StopWatch::deviceReset()
 }
 
 
+//lineEdit->selectAll();
+
 void StopWatch::setReadOnly(bool) //readOnly)
 {
 }
@@ -461,7 +587,7 @@ void StopWatch::setReadOnly(bool) //readOnly)
 // }
 
 void StopWatch::connectSignals()
-{
+{   
     signalMapper = new QSignalMapper(this);
     signalMapper->setMapping(ui->pushStart, 0);
     signalMapper->setMapping(ui->pushSave, 1);

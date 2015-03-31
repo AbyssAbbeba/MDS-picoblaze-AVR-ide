@@ -57,103 +57,61 @@ bool Core::isCoreStoped()
 
 void Core::addNanoSec()
 {
-    if ( getShutDownStatus()  == false )
-        return;
-
     cntCurrent.nanoSecs += 1;
-    cntOverAll.nanoSecs += 1;
-
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addClockCycle()
 {
-    if ( getShutDownStatus()  == false )
-        return;
-
     cntCurrent.clockCycles += 2;
-    cntOverAll.clockCycles += 2;
+    //cntOverAll.clockCycles += 2;
     cntCurrent.instructions = cntCurrent.clockCycles / 2;
-    cntOverAll.instructions = cntOverAll.clockCycles / 2;
+    //cntOverAll.instructions = cntOverAll.clockCycles / 2;
 
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addInstrction()
 {
-    if ( getShutDownStatus()  == false)
-        return;
-
     cntCurrent.instructions += 1;
-    cntOverAll.instructions += 1;
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addProgramByte()
 {
-    if ( getShutDownStatus()  == false)
-        return;
-
     cntCurrent.programBytes += 1;
-    cntOverAll.programBytes += 1;
-
     if ( isCoreStoped() == false)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addInterrupt()
 {
-    if ( getShutDownStatus()  == false )
-        return;
-
     cntCurrent.interrupts += 1;
-    cntOverAll.interrupts += 1;
-
     if ( isCoreStoped() == false)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addSubProg()
 {
-    if ( getShutDownStatus()  == false )
-        return;
-
     cntCurrent.subPrograms += 1;
-    cntOverAll.subPrograms += 1;
-
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addReturn()
 {
-    if ( getShutDownStatus()  == false )
-        return;
-
     cntCurrent.returns+= 1;
-    cntOverAll.returns += 1;
-
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addInterruptReturn()
 {
-    if ( getShutDownStatus() == false )
-        return;
-
     cntCurrent.interruptReturns += 1;
-    cntOverAll.interruptReturns+= 1;
-
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 void Core::addBreakPoint()
 {
-    if ( getShutDownStatus() == false )
-        return;
-
-    cntCurrent.breakpoints += 1;
-    cntOverAll.breakpoints += 1;
-
+    cntCurrent.breakpoints += 1;    
     if ( isCoreStoped() == true)
-        shutDown(false);
+        shutDown(true);
 }
 //Core::current Core::getStruct()
 //{
