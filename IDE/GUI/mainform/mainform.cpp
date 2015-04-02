@@ -4286,7 +4286,7 @@ void MainForm::interfaceConfig()
 
 void MainForm::stopSimSlot()
 {
-    //qDebug() << "MainForm: stopSimSlot";
+    qDebug() << "MainForm: stopSimSlot";
     if (true == simulationRunStatus)
     {
         this->simulationRunHandle();
@@ -5952,5 +5952,8 @@ void MainForm::simStopWatch()
         StopWatch *watch = new StopWatch(0, m_projectMan->getSimulated()->getSimControl());
 
         watch->show();
+
+
+        connect(watch, SIGNAL(stopSim()), this, SLOT(stopSimSlot()));
     #endif
 }
