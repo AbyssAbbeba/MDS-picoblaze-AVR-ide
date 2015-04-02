@@ -92,6 +92,11 @@
        <string>kcpsm6</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>user defined</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="6" column="0" colspan="2">

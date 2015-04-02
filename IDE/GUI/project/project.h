@@ -252,6 +252,8 @@ class Project : public QObject
         //MDS - 0, Xilinx - 1
         int m_asmType;
         QList<RegWatcherExportStruct> m_regWatchers;
+
+        QString customDevicePath;
         
         QTreeWidgetItem *treeProjName;
         QTreeWidgetItem *treeProjSource;
