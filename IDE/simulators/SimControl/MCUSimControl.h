@@ -62,6 +62,10 @@ class MCUSimControl : public QThread
         enum QuotaType
         {
             QTP_CYCLES,
+            QTP_INTERRUPTS,
+            QTP_SUBROUTINES,
+            QTP_RETURNS,
+            QTP_INT_RETURNS,
 
             QTP__MAX__
         };

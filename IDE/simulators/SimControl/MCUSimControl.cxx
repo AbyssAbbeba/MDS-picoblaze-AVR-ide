@@ -908,6 +908,11 @@ inline bool MCUSimControl::checkQuotas()
         return true;
     }
 
+//     QTP_INTERRUPTS,
+//     QTP_SUBROUTINES,
+//     QTP_RETURNS,
+//     QTP_INT_RETURNS,
+
     return false;
 }
 
