@@ -65,7 +65,7 @@ CompilerCDeclaration::Allocation::Allocation()
     m_address = -1;
     m_alignment = -1;
     m_bitFieldWidth = -1;
-    m_memory = MS_UNSPECIFIED;
+    m_memory = CompilerCType::MS_UNSPECIFIED;
 }
 
 CompilerCDeclaration::Name::Name()
@@ -328,19 +328,9 @@ void CompilerCDeclaration::print ( std::ostream & out,
         out << lineString << "  ├─ name.typedef: \"" << *m_name.m_typedef << '"' << std::endl;
     }
 
-    if ( MS_UNSPECIFIED != m_alloc.m_memory )
+    if ( CompilerCType::MS_UNSPECIFIED != m_alloc.m_memory )
     {
-        out << lineString << "  ├─ allocation.memory: ";
-        switch ( m_alloc.m_memory )
-        {
-            case MS_CODE: out << "CODE";
-            case MS_DATA: out << "DATA";
-            case MS_REG:  out << "REG";
-            case MS_PORT: out << "PORT";
-            default:
-                 out << "<error-unknown!>";
-        }
-        out << std::endl;
+        out << lineString << "  ├─ allocation.memory: " << m_alloc.m_memory << std::endl;
     }
     if ( -1 != m_alloc.m_address )
     {

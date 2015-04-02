@@ -47,8 +47,8 @@ class MCUSimControl : public QThread
     ////    Public Datatypes    ////
     public:
         /**
-          * @brief
-          */
+         * @brief
+         */
         enum UpdateRequest
         {
             UR_TIME_AND_PC    = 0x01,
@@ -57,8 +57,23 @@ class MCUSimControl : public QThread
         };
 
         /**
-          * @brief
-          */
+         * @brief
+         */
+        enum QuotaType
+        {
+            QTP_CYCLES,
+            QTP_INTERRUPTS,
+            QTP_SUBROUTINES,
+            QTP_RETURNS,
+            QTP_INT_RETURNS,
+            QTP_BREAKPOINTS,
+
+            QTP__MAX__
+        };
+
+        /**
+         * @brief
+         */
         enum SimulatorState
         {
             SS_IDLE,
@@ -67,8 +82,8 @@ class MCUSimControl : public QThread
         };
 
         /**
-          * @brief
-          */
+         * @brief
+         */
         enum CompilerID
         {
             COMPILER_NATIVE,    ///< Native compiler, i.e. our own compiler - Moravia Microsystems Compiler
@@ -281,7 +296,7 @@ class MCUSimControl : public QThread
 
         /**
          * @brief
-         * @param[in] fileNames
+         * @param[in] enabled
          */
         void enableBreakPoints ( bool enabled );
 
@@ -290,6 +305,27 @@ class MCUSimControl : public QThread
          * @return
          */
         bool breakPointsEnabled() const;
+
+        /**
+         * @brief
+         * @param[in] type
+         * @param[in] value (-1 means unlimited)
+         * @return
+         */
+        void setQuota ( QuotaType type,
+                        int value );
+
+        /**
+         * @brief
+         * @param[in] enabled
+         */
+        void enableQuotas ( bool enabled );
+
+        /**
+         * @brief
+         * @return
+         */
+        bool quotasEnabled() const;
 
         /**
          * @brief
@@ -358,11 +394,18 @@ class MCUSimControl : public QThread
          */
         inline bool unregisterSpecificObserver ( MCUSimSubsys::SubsysId subsysId,
                                                  const MCUSimObserver * observer );
+
         /**
          * @brief
          * @return
          */
         inline bool checkBreakpoint();
+
+        /**
+         * @brief
+         * @return
+         */
+        inline bool checkQuotas();
 
     ////    Qt Public Slots    ////
     public slots:
@@ -449,6 +492,11 @@ class MCUSimControl : public QThread
          */
         void breakpointReached();
 
+        /**
+         * @brief
+         */
+        void quotaReched(QuotaType);
+
     ////    Private Attributes    ////
     private:
         /// @brief
@@ -482,6 +530,12 @@ class MCUSimControl : public QThread
         bool m_breakPointsSet;
 
         /// @brief
+        bool m_quotasEnabled;
+
+        /// @brief
+        bool m_quotasSet;
+
+        /// @brief
         std::map<unsigned int, std::pair<int, int>> m_breakpoints;
 
         /// @brief
@@ -504,6 +558,9 @@ class MCUSimControl : public QThread
 
         /// @brief
         const bool m_textMode;
+
+        /// @brief
+        int m_quotas[QTP__MAX__];
 };
 
 #endif // MCUSIMCONTROL_H
