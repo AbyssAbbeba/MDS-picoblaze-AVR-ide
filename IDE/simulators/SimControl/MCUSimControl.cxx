@@ -77,6 +77,7 @@ MCUSimControl::MCUSimControl ( const std::string & deviceName,
     m_running = false;
     m_simState = SS_IDLE;
 
+    m_quotasEnabled = true;
     m_breakPointsEnabled = true;
     changeDevice(deviceName, procDef);
 }
@@ -258,6 +259,12 @@ bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
         delete m_dbgFile;
     }
 
+    m_quotasSet = false;
+    for ( int i = 0; i < QTP__MAX__; i++ )
+    {
+        m_quotas[i] = -1;
+    }
+
     m_breakPointsSet = false;
     m_dbgFile = dbgFile;
 
@@ -413,6 +420,11 @@ void MCUSimControl::animateProgram ( bool thread )
         {
             m_abort |= checkBreakpoint();
         }
+
+        if ( true == m_quotasEnabled )
+        {
+            m_abort |= checkQuotas();
+        }
     }
 }
 
@@ -496,6 +508,11 @@ void MCUSimControl::runProgram ( bool thread )
         if ( true == m_breakPointsEnabled )
         {
             m_abort |= checkBreakpoint();
+        }
+
+        if ( true == m_quotasEnabled )
+        {
+            m_abort |= checkQuotas();
         }
     }
 }
@@ -878,6 +895,48 @@ bool MCUSimControl::breakPointsEnabled() const
     return m_breakPointsEnabled;
 }
 
+inline bool MCUSimControl::checkQuotas()
+{
+    if ( false == m_quotasSet )
+    {
+        return false;
+    }
+
+    if ( ( -1 != m_quotas[QTP_CYCLES] ) && ( (int) m_totalMCycles >= m_quotas[QTP_CYCLES] ) )
+    {
+        emit(quotaReched());
+        return true;
+    }
+
+    return false;
+}
+
+void MCUSimControl::enableQuotas ( bool enabled )
+{
+    m_quotasEnabled = enabled;
+}
+
+bool MCUSimControl::quotasEnabled() const
+{
+    return m_quotasEnabled;
+}
+
+void MCUSimControl::setQuota ( MCUSimControl::QuotaType type,
+                               int value )
+{
+    m_quotas[type] = value;
+
+    m_quotasSet = false;
+    for ( int i = 0; i < QTP__MAX__; i++ )
+    {
+        if ( -1 != m_quotas[i] )
+        {
+            m_quotasSet = true;
+            break;
+        }
+    }
+}
+
 const std::vector<std::string> & MCUSimControl::getMessages() const
 {
     return m_messages;
@@ -1078,7 +1137,7 @@ void MCUSimControl::abortAndExit()
 
 std::map<unsigned int, std::pair<int, int>> & MCUSimControl::getBreakpoints()
 {
-    m_breakPointsSet = true;
+//     m_breakPointsSet = true;
     return m_breakpoints;
 }
 

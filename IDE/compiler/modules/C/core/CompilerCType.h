@@ -26,6 +26,16 @@
 
 namespace CompilerCType
 {
+    enum MemorySpace
+    {
+        MS_UNSPECIFIED, ///<
+        MS_CODE,        ///<
+        MS_DATA,        ///<
+        MS_REG,         ///<
+        MS_PORT,        ///<
+        MS_STACK,       ///<
+    };
+
     struct Type
     {
         // TODO: protected constructor
@@ -41,6 +51,9 @@ namespace CompilerCType
 
         int m_size;
         int m_alignment;
+
+        int m_address;
+        MemorySpace m_memory;
 
         CompilerSourceLocation m_location;
     };
@@ -84,6 +97,7 @@ namespace CompilerCType
 
         bool m_vla;
         int m_size;
+        const Type * m_target;
     };
 
     struct Pointer : public Type
@@ -122,6 +136,15 @@ namespace CompilerCType
      */
     std::ostream & operator << ( std::ostream & out,
                                  const CompilerCType::Type * type );
+
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] ms
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerCType::MemorySpace ms );
 //@}
 
 #endif // COMPILERCTYPE_H
