@@ -19,15 +19,18 @@
 #include "CompilerSourceLocation.h"
 
 // Standard header files.
-#include <map>
 #include <string>
 #include <vector>
-#include <cstdint>
+#include <utility>
+#include <ostream>
 
 namespace CompilerCType
 {
     struct Type
     {
+        // TODO: protected constructor
+        virtual void print ( std::ostream & out ) const;
+
         bool m_atomic;
         bool m_constant;
         bool m_volatile;
@@ -44,6 +47,8 @@ namespace CompilerCType
 
     struct Basic : public Type
     {
+        virtual void print ( std::ostream & out ) const;
+
         enum Type
         {
             VOID,
@@ -58,11 +63,15 @@ namespace CompilerCType
 
     struct BitField : public Type
     {
+        virtual void print ( std::ostream & out ) const;
+
         int m_width;
     };
 
     struct Function : public Type
     {
+        virtual void print ( std::ostream & out ) const;
+
         bool m_inline;
         bool m_noreturn;
         const Type * m_return;
@@ -71,18 +80,24 @@ namespace CompilerCType
 
     struct Array : public Type
     {
+        virtual void print ( std::ostream & out ) const;
+
         bool m_vla;
         int m_size;
     };
 
     struct Pointer : public Type
     {
+        virtual void print ( std::ostream & out ) const;
+
         bool m_restrict;
         const Type * m_target;
     };
 
     struct Struct : public Type
     {
+        virtual void print ( std::ostream & out ) const;
+
         bool m_union;
         std::string m_tag;
         std::vector<std::pair<std::string,const Type*>> m_members;
@@ -90,9 +105,23 @@ namespace CompilerCType
 
     struct Enum : public Basic
     {
+        virtual void print ( std::ostream & out ) const;
+
         std::string m_tag;
         std::vector<std::pair<std::string,int>> m_members;
     };
 };
+
+/// @name Tracing operators
+//@{
+    /**
+     * @brief
+     * @param[in,out] out
+     * @param[in] type
+     * @return
+     */
+    std::ostream & operator << ( std::ostream & out,
+                                 const CompilerCType::Type * type );
+//@}
 
 #endif // COMPILERCTYPE_H
