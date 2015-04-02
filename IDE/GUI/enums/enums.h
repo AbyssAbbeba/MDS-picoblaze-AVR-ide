@@ -83,7 +83,8 @@ typedef enum SourceType
     CPP,
     AVRASM,
     PICASM,
-    PICOBLAZEASM
+    PICOBLAZEASM,
+    CUSTOMASM
 } SourceType;
 
 typedef enum WidgetCode
