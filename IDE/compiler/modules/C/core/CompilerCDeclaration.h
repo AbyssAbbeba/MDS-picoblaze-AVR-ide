@@ -25,6 +25,9 @@ class CompilerStatement;
 #include <cstdint>
 #include <ostream>
 
+// C compiler header files.
+#include "CompilerCType.h"
+
 // Compiler header files.
 #include "CompilerSourceLocation.h"
 
@@ -85,25 +88,13 @@ class CompilerCDeclaration
         /**
          * @brief
          */
-        enum MemorySpace
-        {
-            MS_UNSPECIFIED, ///<
-            MS_CODE,        ///<
-            MS_DATA,        ///<
-            MS_REG,         ///<
-            MS_PORT,        ///<
-        };
-
-        /**
-         * @brief
-         */
         struct Allocation
         {
             ///
             Allocation();
 
             ///
-            MemorySpace m_memory;
+            CompilerCType::MemorySpace m_memory;
 
             ///
             int m_address;
