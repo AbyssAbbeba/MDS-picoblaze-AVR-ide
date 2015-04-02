@@ -4,7 +4,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  */
@@ -399,26 +399,26 @@ expr:
     | F_HIGH "(" expr ")"           { $$ = new CompilerExpr($3, CompilerExpr::OPER_HIGH, LOC(@$));         }
     | "-" expr %prec UMINUS         { $$ = new CompilerExpr($2, CompilerExpr::OPER_ADD_INV, LOC(@$));      }
     | "+" expr %prec UPLUS          { $$ = new CompilerExpr($2, CompilerExpr::OPER_INT_PROM, LOC(@$));     }
-    | "~" expr                      { $$ = new CompilerExpr($2, '~', LOC(@$));                             }
-    | "!" expr                      { $$ = new CompilerExpr($2, '!', LOC(@$));                             }
-    | expr "+"  expr                { $$ = new CompilerExpr($1, '+', $3, LOC(@$));                         }
-    | expr "-"  expr                { $$ = new CompilerExpr($1, '-', $3, LOC(@$));                         }
-    | expr "*"  expr                { $$ = new CompilerExpr($1, '*', $3, LOC(@$));                         }
-    | expr "/"  expr                { $$ = new CompilerExpr($1, '/', $3, LOC(@$));                         }
-    | expr "%"  expr                { $$ = new CompilerExpr($1, '%', $3, LOC(@$));                         }
-    | expr "|"  expr                { $$ = new CompilerExpr($1, '|', $3, LOC(@$));                         }
-    | expr "^"  expr                { $$ = new CompilerExpr($1, '^', $3, LOC(@$));                         }
-    | expr "&"  expr                { $$ = new CompilerExpr($1, '&', $3, LOC(@$));                         }
-    | expr "<"  expr                { $$ = new CompilerExpr($1, '<', $3, LOC(@$));                         }
-    | expr ">"  expr                { $$ = new CompilerExpr($1, '>', $3, LOC(@$));                         }
-    | expr "||" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR,  $3,    LOC(@$));  }
-    | expr "&&" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND, $3,    LOC(@$));  }
-    | expr "==" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,   $3,    LOC(@$));  }
-    | expr "!=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,   $3,    LOC(@$));  }
-    | expr "<=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,   $3,    LOC(@$));  }
-    | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,   $3,    LOC(@$));  }
-    | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,  $3,    LOC(@$));  }
-    | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,  $3,    LOC(@$));  }
+    | "~" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_CMPL, LOC(@$));         }
+    | "!" expr                      { $$ = new CompilerExpr($2, CompilerExpr::OPER_NOT, LOC(@$));          }
+    | expr "+"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD,  $3, LOC(@$));     }
+    | expr "-"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB,  $3, LOC(@$));     }
+    | expr "*"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_MULT, $3, LOC(@$));     }
+    | expr "/"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_DIV,  $3, LOC(@$));     }
+    | expr "%"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_MOD,  $3, LOC(@$));     }
+    | expr "|"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_BOR,  $3, LOC(@$));     }
+    | expr "^"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_BXOR, $3, LOC(@$));     }
+    | expr "&"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_BAND, $3, LOC(@$));     }
+    | expr "<"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LT,   $3, LOC(@$));     }
+    | expr ">"  expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GT,   $3, LOC(@$));     }
+    | expr "||" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LOR,  $3, LOC(@$));     }
+    | expr "&&" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LAND, $3, LOC(@$));     }
+    | expr "==" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_EQ,   $3, LOC(@$));     }
+    | expr "!=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_NE,   $3, LOC(@$));     }
+    | expr "<=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_LE,   $3, LOC(@$));     }
+    | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,   $3, LOC(@$));     }
+    | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,  $3, LOC(@$));     }
+    | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,  $3, LOC(@$));     }
     | id "(" args ")"               { $$ = new CompilerExpr($id,CompilerExpr::OPER_CALL, $args, LOC(@$));  }
     | id "(" ")"                    {
                                         /* Syntax Error */
@@ -2307,7 +2307,7 @@ inst_setb:
 inst_clrb:
       I_CLRB expr "," expr          {
                                         $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_AND_SX_KK, $2->appendLink
-                                        ( new CompilerExpr ( 0xff, '^', new CompilerExpr ( 0x01, CompilerExpr::OPER_SHL,
+                                        ( new CompilerExpr ( 0xff, CompilerExpr::OPER_BXOR, new CompilerExpr ( 0x01, CompilerExpr::OPER_SHL,
                                         $4, LOC(@4) ), LOC(@4) ) ) );
                                     }
 ;
