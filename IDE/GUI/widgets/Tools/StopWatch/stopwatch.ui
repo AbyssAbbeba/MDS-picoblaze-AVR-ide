@@ -25,7 +25,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Start/stop stopwatch</string>
+        <string>Start/stop stopwatch (Return)</string>
        </property>
        <property name="text">
         <string/>
@@ -137,6 +137,9 @@
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="label_8">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -197,6 +200,9 @@
    </item>
    <item row="5" column="1">
     <widget class="QLineEdit" name="lineProgram">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>0</string>
      </property>
@@ -242,6 +248,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QLabel" name="label_11">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
      <property name="text">
       <string>Current</string>
      </property>
@@ -252,6 +261,9 @@
    </item>
    <item row="1" column="3">
     <widget class="QLabel" name="label_12">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
      <property name="text">
       <string>Stop after</string>
      </property>
@@ -283,6 +295,9 @@
    </item>
    <item row="5" column="3">
     <widget class="QLineEdit" name="lineProgram2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>0</string>
      </property>
@@ -327,6 +342,9 @@
     <widget class="QLabel" name="label_13">
      <property name="toolTip">
       <string>Overall view</string>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="text">
       <string>Overall</string>
@@ -381,6 +399,9 @@
    </item>
    <item row="5" column="5">
     <widget class="QLineEdit" name="lineProgram3">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="text">
       <string>0</string>
      </property>
@@ -569,6 +590,9 @@
    </item>
    <item row="5" column="2">
     <widget class="QPushButton" name="pushProgram">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -753,6 +777,9 @@
    </item>
    <item row="5" column="4">
     <widget class="QPushButton" name="pushProgram2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>

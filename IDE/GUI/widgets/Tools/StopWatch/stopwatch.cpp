@@ -13,6 +13,14 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
 
     connectSignals();
+    ui->lineProgram->setVisible(false);
+    ui->lineProgram2->setVisible(false);
+    ui->lineProgram3->setVisible(false);
+
+    ui->pushProgram->setVisible(false);
+    ui->pushProgram2->setVisible(false);
+
+    ui->label_8->setVisible(false);
 
     std::vector<int> mask;
     mask =  {
@@ -208,7 +216,6 @@ void StopWatch::setStop()
 {
     bool flag;
     flag = core.getShutDownStatus();
-    qDebug() << core.getShutDownStatus();
     flag = !flag;
     core.shutDown(flag);
 
@@ -654,6 +661,7 @@ void StopWatch::handleUpdateRequest(int mask)
             {
                 if ( ui->checkSimulation->isChecked() == true )
                     emit stopSim();
+                qDebug() << "stop sim emited";
 
                 ui->labelStahp->setText("STOPPED");
                 ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
@@ -665,7 +673,7 @@ void StopWatch::handleUpdateRequest(int mask)
 }
 
 
-void StopWatch::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
+void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/, int /*detail*/)
 {
     if (MCUSimSubsys::ID_CPU == subsysId)
     {
