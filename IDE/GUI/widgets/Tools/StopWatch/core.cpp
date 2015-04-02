@@ -43,15 +43,15 @@ Core::Core()
 
 bool Core::isCoreStoped()
 {
-    if ( cntCurrent.nanoSecs == cntStop.nanoSecs  && cntStop.nanoSecs != 0)                  return true;
-    if ( cntCurrent.clockCycles == cntStop.clockCycles && cntStop.clockCycles!= 0 )            return true;
-    if ( cntCurrent.instructions == cntStop.instructions && cntStop.instructions!= 0 )          return true;
-    if ( cntCurrent.programBytes == cntStop.programBytes && cntStop.programBytes!= 0 )          return true;
-    if ( cntCurrent.interrupts == cntStop.interrupts && cntStop.interrupts != 0 )              return true;
-    if ( cntCurrent.subPrograms == cntStop.subPrograms && cntStop.subPrograms!= 0 )            return true;
-    if ( cntCurrent.returns == cntStop.returns && cntStop.returns != 0 )                    return true;
-    if ( cntCurrent.interruptReturns == cntStop.interruptReturns && cntStop.interruptReturns != 0 )  return true;  
-    if ( cntCurrent.breakpoints == cntStop.breakpoints && cntStop.breakpoints != 0 )        return true;
+    if ( cntCurrent.nanoSecs >= cntStop.nanoSecs  && cntStop.nanoSecs != 0)                  return true;
+    if ( cntCurrent.clockCycles >= cntStop.clockCycles && cntStop.clockCycles!= 0 )            return true;
+    if ( cntCurrent.instructions >= cntStop.instructions && cntStop.instructions!= 0 )          return true;
+    if ( cntCurrent.programBytes >= cntStop.programBytes && cntStop.programBytes!= 0 )          return true;
+    if ( cntCurrent.interrupts >= cntStop.interrupts && cntStop.interrupts != 0 )              return true;
+    if ( cntCurrent.subPrograms >= cntStop.subPrograms && cntStop.subPrograms!= 0 )            return true;
+    if ( cntCurrent.returns >= cntStop.returns && cntStop.returns != 0 )                    return true;
+    if ( cntCurrent.interruptReturns >= cntStop.interruptReturns && cntStop.interruptReturns != 0 )  return true;
+    if ( cntCurrent.breakpoints >= cntStop.breakpoints && cntStop.breakpoints != 0 )        return true;
     return false;
 }
 

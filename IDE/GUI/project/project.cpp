@@ -1639,6 +1639,7 @@ void Project::saveProject()
 
     QTextStream xmlStream(file);
     xmlStream << domDoc.toString();
+    file->close();
     qDebug() << "return saveProject()";
 }
 
