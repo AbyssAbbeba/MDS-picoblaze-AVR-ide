@@ -904,7 +904,7 @@ inline bool MCUSimControl::checkQuotas()
 
     if ( ( -1 != m_quotas[QTP_CYCLES] ) && ( (int) m_totalMCycles >= m_quotas[QTP_CYCLES] ) )
     {
-        emit(quotaReched());
+        emit(quotaReched(QTP_CYCLES));
         return true;
     }
 
@@ -912,6 +912,7 @@ inline bool MCUSimControl::checkQuotas()
 //     QTP_SUBROUTINES,
 //     QTP_RETURNS,
 //     QTP_INT_RETURNS,
+//     QTP_BREAKPOINTS
 
     return false;
 }

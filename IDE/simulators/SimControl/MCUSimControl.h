@@ -66,6 +66,7 @@ class MCUSimControl : public QThread
             QTP_SUBROUTINES,
             QTP_RETURNS,
             QTP_INT_RETURNS,
+            QTP_BREAKPOINTS,
 
             QTP__MAX__
         };
@@ -494,7 +495,7 @@ class MCUSimControl : public QThread
         /**
          * @brief
          */
-        void quotaReched();
+        void quotaReched(QuotaType);
 
     ////    Private Attributes    ////
     private:
