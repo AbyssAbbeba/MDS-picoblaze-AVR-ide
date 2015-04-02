@@ -72,6 +72,13 @@ private slots:
 
 signals:
     void stopSim();
+
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
+    //void paintEvent(QPaintEvent*);
+  //  void mousePressEvent(QMouseEvent* pressEvent);
+    void keyPressEvent(QKeyEvent *);
+    //void mouseMoveEvent ( QMouseEvent * moveEvent );
 };
 
 #endif // STOPWATCH_H
