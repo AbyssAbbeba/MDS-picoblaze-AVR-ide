@@ -82,7 +82,7 @@ inline void CompilerCTreeDecoder::processDeclaration ( CompilerExpr * declExpr )
 
     std::cout << "\n>>> resolveDeclaration -->\n" << declaration<<'\n';
 
-    Type * type;
+    Type * type = nullptr;
 
     if ( CompilerCDeclaration::TS_ENUM & declaration->m_type )
     {
@@ -128,8 +128,10 @@ std::cout << "enum " << id << " = " << value << '\n';
     }
     else
     {
-        
+
     }
+
+std::cout << "\n### TYPE >>>\n" << type << '\n';
 
     if ( CompilerCDeclaration::SC_TYPEDEF & declaration->m_type )
     {
@@ -146,17 +148,6 @@ std::cout << "enum " << id << " = " << value << '\n';
     {
 
     }
-//     if ( nullptr != absDeclar )
-//     {
-//         if ( true == isTypedef )
-//         {
-//             m_symbolTable->newDataType(absDeclar);
-//         }
-//         else
-//         {
-//             m_symbolTable->newSymbol(absDeclar);
-//         }
-//     }
 }
 
 CompilerCDeclaration * CompilerCTreeDecoder::resolveDeclaration ( const CompilerExpr * exprTree,
