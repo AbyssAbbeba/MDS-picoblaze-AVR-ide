@@ -34,6 +34,9 @@ public:
     QSignalMapper *signalMapper;
     QRegExpValidator *valueValidator;
     QTimer *timer;
+    QFile outFile;
+    QString outPath;
+    QString m_path;
 
 
     
@@ -46,6 +49,7 @@ private:
     void deviceChanged();
     void deviceReset();
     void setReadOnly(bool readOnly);
+    void update(int);
 
 
     Ui::StopWatch *ui;
@@ -53,7 +57,7 @@ private:
 
 
 private slots:
-    void update();
+    void breakpointReachedSlot();
     void readButton(int button);
     void on_lineNano2_textChanged(const QString &arg1);
     void on_lineCycles2_textChanged(const QString &arg1);
@@ -65,6 +69,9 @@ private slots:
     void on_lineIntRet2_textChanged(const QString &arg1);
     void on_lineBreak2_textChanged(const QString &arg1);
     void handleUpdateRequest(int mask);
+
+signals:
+    void stopSim();
 };
 
 #endif // STOPWATCH_H

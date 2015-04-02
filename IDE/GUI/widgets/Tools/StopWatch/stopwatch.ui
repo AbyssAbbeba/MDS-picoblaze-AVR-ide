@@ -15,17 +15,40 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QPushButton" name="pushStart">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Start</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushStart">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Start/stop stopwatch</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushSave">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Save as text to file</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label">
@@ -186,6 +209,16 @@
      </property>
     </widget>
    </item>
+   <item row="7" column="5">
+    <widget class="QLineEdit" name="lineCalls3">
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item row="7" column="1">
     <widget class="QLineEdit" name="lineCalls">
      <property name="text">
@@ -292,6 +325,9 @@
    </item>
    <item row="1" column="5">
     <widget class="QLabel" name="label_13">
+     <property name="toolTip">
+      <string>Overall view</string>
+     </property>
      <property name="text">
       <string>Overall</string>
      </property>
@@ -299,6 +335,19 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
+   </item>
+   <item row="13" column="0" colspan="7">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="2" column="5">
     <widget class="QLineEdit" name="lineNano3">
@@ -350,16 +399,6 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="5">
-    <widget class="QLineEdit" name="lineCalls3">
-     <property name="text">
-      <string>0</string>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="8" column="5">
     <widget class="QLineEdit" name="lineReturns3">
      <property name="text">
@@ -390,19 +429,6 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="0" colspan="7">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
    <item row="1" column="2">
     <widget class="QPushButton" name="pushClearCur">
      <property name="sizePolicy">
@@ -410,6 +436,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear all</string>
      </property>
      <property name="text">
       <string/>
@@ -431,6 +460,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -450,6 +482,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear all</string>
      </property>
      <property name="text">
       <string/>
@@ -471,6 +506,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -490,6 +528,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -511,6 +552,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -530,6 +574,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -551,6 +598,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -570,6 +620,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -591,6 +644,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -610,6 +666,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -631,6 +690,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -650,6 +712,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -671,6 +736,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -690,6 +758,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -711,6 +782,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -730,6 +804,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -751,6 +828,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -770,6 +850,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Clear</string>
      </property>
      <property name="text">
       <string/>
@@ -791,6 +874,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Clear</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -805,6 +891,9 @@
    </item>
    <item row="12" column="3" colspan="2">
     <widget class="QCheckBox" name="checkSimulation">
+     <property name="toolTip">
+      <string>Stop MDS simulator as well</string>
+     </property>
      <property name="text">
       <string>Stop simulation</string>
      </property>
@@ -813,23 +902,15 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="5">
+   <item row="0" column="3" colspan="3">
     <widget class="QLabel" name="labelStahp">
+     <property name="font">
+      <font>
+       <pointsize>22</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="pushSave">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Save</string>
      </property>
     </widget>
    </item>
