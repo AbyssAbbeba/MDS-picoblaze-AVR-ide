@@ -46,6 +46,7 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
         ui->labelStahp->setText("STOPPED");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
+    qDebug() << m_simControl->quotasEnabled() << "QUOTAS";
 }
 
 StopWatch::~StopWatch()
