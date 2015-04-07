@@ -35,7 +35,7 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
 
     connect(m_simControl, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     connect(m_simControl, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
-    connect(m_simControlUnit, SIGNAL(quotaReached(MCUSimControl::QuotaType)), this, SLOT(quotaReachedSlot(MCUSimControl::QuotaType)));
+    connect(m_simControl, SIGNAL(quotaReached(MCUSimControl::QuotaType)), this, SLOT(quotaReachedSlot(MCUSimControl::QuotaType)));
 
     ui->labelStahp->setStyleSheet("QLabel { color : red }");
     if ( core.getShutDownStatus() == false )
@@ -49,7 +49,6 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
     qDebug() << m_simControl->quotasEnabled() << "QUOTAS";
-    m_simControl->setQuota(MCUSimControl::QTP_CYCLES, 50);
 }
 
 StopWatch::~StopWatch()
@@ -573,6 +572,8 @@ void StopWatch::on_lineNano2_textChanged(const QString &arg1)
 void StopWatch::on_lineCycles2_textChanged(const QString &arg1)
 {
     core.structPtrStop->clockCycles = arg1.toULongLong(0,10);
+    if ( ui->checkSimulation->isChecked() == true )
+        m_simControl->setQuota(MCUSimControl::QTP_CYCLES, arg1.toInt(0,10));
 }
 
 void StopWatch::on_lineInstr2_textChanged(const QString &arg1)
