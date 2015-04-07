@@ -38,6 +38,8 @@ public:
     QString outPath;
     QString m_path;
 
+    //MCUSimControl::QuotaType Quota;
+
 
     
 private:
@@ -69,6 +71,7 @@ private slots:
     void on_lineIntRet2_textChanged(const QString &arg1);
     void on_lineBreak2_textChanged(const QString &arg1);
     void handleUpdateRequest(int mask);
+    void quotaReachedSlot(MCUSimControl::QuotaType);
 
 signals:
     void stopSim();
