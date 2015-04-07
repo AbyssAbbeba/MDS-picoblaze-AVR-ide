@@ -89,11 +89,12 @@ inline void CompilerCTreeDecoder::processDeclaration ( CompilerExpr * declExpr )
         std::cout<<"########################################################\n CompilerCDeclaration::TS_ENUM\n########################################################\n";
         if ( nullptr != declaration->m_members )
         {
-            type = new Enum();
+            Enum * enumeration = new Enum();
+            type = enumeration;
 
             if ( nullptr != declaration->m_name.m_id )
             {
-                static_cast<Enum *>(type)->m_tag = *(declaration->m_name.m_id);
+                enumeration->m_tag = *(declaration->m_name.m_id);
             }
 
             auto & intConstants = m_tmpDeclarations.m_intConstants.back();
@@ -117,14 +118,35 @@ std::cout << "enum " << id << " = " << value << '\n';
                 }
 
                 intConstants[id] = { member->m_location, value };
-                static_cast<Enum *>(type)->m_members.push_back ( { id, value } );
+                enumeration->m_members.push_back ( { id, value } );
             }
         }
     }
     else if ( ( CompilerCDeclaration::TS_STRUCT | CompilerCDeclaration::TS_UNION ) & declaration->m_type )
     {
         std::cout<<"########################################################\n CompilerCDeclaration::TS_STRUCT | CompilerCDeclaration::TS_UNION\n########################################################\n";
+        if ( nullptr != declaration->m_members )
+        {
+            Struct * structure = new Struct();
+            type = structure;
 
+            if ( nullptr != declaration->m_name.m_id )
+            {
+                structure->m_tag = *(declaration->m_name.m_id);
+            }
+
+            structure->m_union = ( CompilerCDeclaration::TS_UNION & declaration->m_type ) ? true : false;
+
+            for ( CompilerCDeclaration * member = declaration->m_members;
+                  nullptr != member;
+                  member = member->m_next )
+            {
+                std::cout << "MEMBER = \n" <<member<<'\n';
+
+//                 member->m_name.m_id
+//                 structure->m_members.push_back({});
+            }
+        }
     }
     else
     {
