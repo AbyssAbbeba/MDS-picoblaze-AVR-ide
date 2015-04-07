@@ -630,8 +630,6 @@ void StopWatch::breakpointReachedSlot()
         }
         else
         {
-            if ( ui->checkSimulation->isChecked() == true )
-                emit stopSim();
 
             ui->labelStahp->setText("STOPPED");
             ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
@@ -668,10 +666,6 @@ void StopWatch::handleUpdateRequest(int mask)
             }
             else
             {
-                if ( ui->checkSimulation->isChecked() == true )
-                    emit stopSim();
-                qDebug() << "stop sim emited";
-
                 ui->labelStahp->setText("STOPPED");
                 ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
             }
@@ -708,9 +702,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
@@ -737,9 +728,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
@@ -766,9 +754,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
@@ -796,9 +781,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
