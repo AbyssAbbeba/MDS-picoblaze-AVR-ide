@@ -35,7 +35,7 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
 
     connect(m_simControl, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     connect(m_simControl, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
-    connect(m_simControl, SIGNAL(quotaReched(MCUSimControl::QuotaType)), this, SLOT(quotaReachedSlot(MCUSimControl::QuotaType)));
+    connect(m_simControl, SIGNAL(quotaReached(MCUSimControl::QuotaType)), this, SLOT(quotaReachedSlot(MCUSimControl::QuotaType)));
 
     ui->labelStahp->setStyleSheet("QLabel { color : red }");
     if ( core.getShutDownStatus() == false )
