@@ -29,11 +29,13 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
                 MCUSimCPU::EVENT_CPU_IRQ,
                 MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR
             };
+
     m_simControl->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
 
-    connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
-    connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
+    connect(m_simControl, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
+    connect(m_simControl, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
+    connect(m_simControl, SIGNAL(quotaReched(MCUSimControl::QuotaType)), this, SLOT(quotaReachedSlot(MCUSimControl::QuotaType)));
 
     ui->labelStahp->setStyleSheet("QLabel { color : red }");
     if ( core.getShutDownStatus() == false )
@@ -47,11 +49,17 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
     qDebug() << m_simControl->quotasEnabled() << "QUOTAS";
+    m_simControl->setQuota(MCUSimControl::QTP_CYCLES, 50);
 }
 
 StopWatch::~StopWatch()
 {
     delete ui;
+}
+
+void StopWatch::quotaReachedSlot(MCUSimControl::QuotaType Quota)
+{
+    qDebug() << "quota reached"<< Quota;
 }
 
 
