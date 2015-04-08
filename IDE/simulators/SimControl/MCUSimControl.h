@@ -495,7 +495,7 @@ class MCUSimControl : public QThread
         /**
          * @brief
          */
-        void quotaReached(QuotaType);
+        void quotaReached(int);
 
     ////    Private Attributes    ////
     private:

@@ -71,7 +71,7 @@ private slots:
     void on_lineIntRet2_textChanged(const QString &arg1);
     void on_lineBreak2_textChanged(const QString &arg1);
     void handleUpdateRequest(int mask);
-    void quotaReachedSlot(MCUSimControl::QuotaType);
+    void quotaReachedSlot(int);
 
 signals:
     void stopSim();
