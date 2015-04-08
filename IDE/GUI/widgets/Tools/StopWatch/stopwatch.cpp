@@ -9,17 +9,16 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
 {
     m_simControl = controlUnit;
     ui->setupUi(this);  
+
     this->setWindowTitle("Stopwatch");
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
-
     connectSignals();
+
     ui->lineProgram->setVisible(false);
     ui->lineProgram2->setVisible(false);
     ui->lineProgram3->setVisible(false);
-
     ui->pushProgram->setVisible(false);
     ui->pushProgram2->setVisible(false);
-
     ui->label_8->setVisible(false);
 
     std::vector<int> mask;
@@ -32,10 +31,9 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
 
     m_simControl->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
-
     connect(m_simControl, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     connect(m_simControl, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
-    connect(m_simControl, SIGNAL(quotaReached(MCUSimControl::QuotaType)), this, SLOT(quotaReachedSlot(MCUSimControl::QuotaType)));
+    connect(m_simControl, SIGNAL(quotaReached(int)), this, SLOT(quotaReachedSlot(int)));
 
     ui->labelStahp->setStyleSheet("QLabel { color : red }");
     if ( core.getShutDownStatus() == false )
@@ -48,7 +46,10 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
         ui->labelStahp->setText("STOPPED");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
-    qDebug() << m_simControl->quotasEnabled() << "QUOTAS";
+    qDebug() << m_simControl->quotasEnabled() << "<< QUOTAS";
+    //qDebug() << m_simControl->getDeviceName();
+    //ui->labelDevice->setText(m_simControl->getDeviceName());
+
 }
 
 StopWatch::~StopWatch()
@@ -56,9 +57,17 @@ StopWatch::~StopWatch()
     delete ui;
 }
 
-void StopWatch::quotaReachedSlot(MCUSimControl::QuotaType Quota)
+void StopWatch::quotaReachedSlot(int Quota)
 {
-    qDebug() << "quota reached"<< Quota;
+    // 0 = cycles, 1 = interrupt, 2 = subroutines,
+    // 3 = returns, 4 = int ret, 5 = breakpoints
+    switch ( Quota)
+    {
+        case 0:
+            m_simControl->setQuota(MCUSimControl::QTP_CYCLES,-1);
+            qDebug() << "aa";
+            break;
+    }
 }
 
 
