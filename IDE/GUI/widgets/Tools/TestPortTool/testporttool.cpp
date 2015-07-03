@@ -19,6 +19,7 @@ TestPortTool::TestPortTool(QWidget *parent, MCUSimControl *controlUnit) :
     ui->lineInFile->setReadOnly(true);
     ui->lineOutFile->setReadOnly(true);
     ui->textLog->setReadOnly(true);
+    ui->pushActivate->setText("Reset");
 
 
     m_simControlUnit = controlUnit;
