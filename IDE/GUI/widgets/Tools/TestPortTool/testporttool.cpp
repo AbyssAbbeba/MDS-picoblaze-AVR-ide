@@ -205,8 +205,11 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ:
             {
+
                 if  ( index < address.size() )
                 {
+                    qDebug() << address.at(index).toInt(0,16);
+                    qDebug() << data.at(index).toInt(0,16);
                     if ( locationOrReason == address.at(index).toInt(0,16) )
                     {
                         m_plio->getInputArray()[locationOrReason] = data.at(index).toInt(0,16);
