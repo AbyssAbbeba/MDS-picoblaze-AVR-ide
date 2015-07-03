@@ -1,8 +1,7 @@
 #include "testporttool.h"
-#include "ui_testporttool.h"
 #include <QtGui>
 
-TestPortTool::TestPortTool(QWidget *parent) :
+TestPortTool::TestPortTool(QWidget *parent, MCUSimControl *controlUnit) :
     QWidget(parent),
     ui(new Ui::TestPortTool)
 {
@@ -19,6 +18,15 @@ TestPortTool::TestPortTool(QWidget *parent) :
     ui->lineInFile->setReadOnly(true);
     ui->lineOutFile->setReadOnly(true);
     ui->textLog->setReadOnly(true);
+
+
+    m_simControlUnit = controlUnit;
+    
+    std::vector<int> mask = { //8
+                                MCUSimPureLogicIO::EVENT_PLIO_WRITE,
+                                MCUSimPureLogicIO::EVENT_PLIO_READ
+                            };
+    m_simControlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask); //8
 
     // info log
     cursor = new QTextCursor(ui->textLog->textCursor());
@@ -177,7 +185,68 @@ void TestPortTool::cancelApp()
 {
     this->close();
 }
+
 TestPortTool::~TestPortTool()
 {
     delete ui;
+}
+
+void TestPortTool::deviceChanged()  //8
+{
+    if ( NULL == m_simControlUnit )
+    {
+       qDebug() << "PortHexEdit: m_simControlUnit is NULL";
+    }
+    if ( NULL == m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_PLIO) )
+    {
+        qDebug() << "PortHexEdit: m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_PLIO) is NULL";
+    }
+    m_plio = dynamic_cast<MCUSimPureLogicIO*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_PLIO));
+    deviceReset();
+}
+
+
+void TestPortTool::deviceReset()  //8
+{
+    //this->value = m_plio->getOutputArray()[this->address];
+}
+
+void TestPortTool::handleUpdateRequest(int mask) //8
+{
+    if ( 4 & mask)
+    {
+        //this->value = m_plio->getOutputArray()[this->address];
+    }
+}
+
+void TestPortTool::handleEvent(int subsysId, int eventId, int /*locationOrReason*/, int /*detail*/) //8
+{
+    if (MCUSimSubsys::ID_PLIO == subsysId)
+    {
+         qDebug()<< "handle event" << eventId;
+        switch ( eventId )
+        {
+            case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
+            {
+                qDebug()<< "sim switch handle event";
+                //this->value = m_plio->getOutputArray()[this->address];
+                break;
+            }
+            case MCUSimPureLogicIO::EVENT_PLIO_READ:
+            {
+                qDebug()<< "sim switch handle event";
+                //this->value = m_plio->getOutputArray()[this->address];
+                break;
+            }
+            default:
+            {
+                break;
+            }
+        }
+    }
+}
+
+
+void TestPortTool::setReadOnly(bool /*readOnly*/)
+{
 }
