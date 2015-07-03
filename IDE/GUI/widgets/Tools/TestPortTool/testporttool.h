@@ -44,7 +44,7 @@ private:
 
     QStringList address, data;
     int index;
-    int outValue;
+    unsigned int outValue;
     QFile inFile,outFile;
     QString loadPath;
     Ui::TestPortTool *ui;
