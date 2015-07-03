@@ -53,6 +53,8 @@ TestPortTool::TestPortTool(QWidget *parent, MCUSimControl *controlUnit) :
             SLOT(outFileClicked())
            );
 
+    deviceChanged();
+
 }
 
 void TestPortTool::inputEvent()
