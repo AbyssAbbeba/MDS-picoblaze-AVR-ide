@@ -215,7 +215,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                     if ( locationOrReason == address.at(index).toInt(0,16) )
                     {
                         m_plio->getInputArray()[locationOrReason] = data.at(index).toInt(0,16);
-                        cursor->insertText(QString("Data read: %1 %2 \n").arg(address.at(index)).arg(data.at(index)));
+                        cursor->insertText(QString("Data read: 0x%1 0x%2 \n").arg(address.at(index)).arg(data.at(index)));
                         ui->textLog->setTextCursor(*cursor);
                         index++;
                     }
