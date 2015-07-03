@@ -113,7 +113,10 @@ void TestPortTool::outFileClicked()
 {
     // get path
     loadPath.clear();
-    loadPath = QFileDialog::getSaveFileName(this,"Output file",".","*.txt");
+    loadPath = QFileDialog::getSaveFileName(this,"Output file","");
+
+    if ( NULL == loadPath)
+        return;
 
     ui->lineOutFile->setText(loadPath);
     // open device for read only
@@ -131,13 +134,15 @@ void TestPortTool::readFileClicked()
 {
     // get path
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.txt");
+    loadPath = QFileDialog::getOpenFileName(this,"Input file","");
     QFile inFile(loadPath);
     ui->lineInFile->setText(loadPath);
 
+    if ( NULL == loadPath)
+        return;
+
     // open device for read only
     inFile.open(QIODevice::ReadOnly | QIODevice::Text);
-
     cursor->insertText("Input values has been succesfully loaded\n");
     ui->textLog->setTextCursor(*cursor);
 
@@ -203,7 +208,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                 this->outValue = m_plio->getOutputArray()[locationOrReason];
                 *outFileText << "Portout: " << locationOrReason << " " << (unsigned char)outValue << endl;
                 outFileText->flush();
-                cursor->insertText(QString("Portout: %1 %2 \n").arg(locationOrReason).arg((unsigned char)outValue));
+                cursor->insertText(QString("Portout: 0x%1 0x%2 \n").arg(locationOrReason).arg((unsigned char)outValue));
                 ui->textLog->setTextCursor(*cursor);
                 break;
             }
