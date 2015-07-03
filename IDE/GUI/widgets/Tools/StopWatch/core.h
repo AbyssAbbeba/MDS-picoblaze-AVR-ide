@@ -24,7 +24,7 @@ public:
 
     // core functions defining stop watch object and variables
     void addNanoSec();
-    void addClockCycle();
+    void addClockCycle(unsigned long long ptrCycles);
     void addInstrction();
     void addProgramByte();
     void addInterrupt();
@@ -56,7 +56,8 @@ public:
     }
     //current getStruct();
     unsigned long long getData(int);
-
+    unsigned long long clockDif;
+    unsigned long long instrDif;
     //
     struct current * structPtrCurrent;
     struct current * structPtrStop;
