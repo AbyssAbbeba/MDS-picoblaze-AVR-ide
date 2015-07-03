@@ -201,6 +201,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                 qDebug()<< "sim switch handle event";
                 this->outValue = m_plio->getOutputArray()[locationOrReason];
                 *outFileText << "Portout: " << locationOrReason << " " << (unsigned char)outValue << endl;
+                outFileText->flush();
                 cursor->insertText(QString("Portout: %1 %2 \n").arg(locationOrReason).arg((unsigned char)outValue));
                 ui->textLog->setTextCursor(*cursor);
                 break;
@@ -241,5 +242,7 @@ void TestPortTool::cancelApp()
 
 TestPortTool::~TestPortTool()
 {
+    outFile.close();
+    inFile.close();
     delete ui;
 }
