@@ -201,6 +201,7 @@ class MainForm : public QMainWindow
         void simSwitch();
         void simStopWatch();
         void simPortLogger();
+        void simTestPort();
         void userGuide();
         void openRecentFileSlot(QAction *action);
         void openRecentProjectSlot(QAction *action);
@@ -338,6 +339,7 @@ class MainForm : public QMainWindow
         QAction *toolSimSwitchAct;
         QAction *toolSimLoggerAct;
         QAction *toolSimStopWatchAct;
+        QAction *toolSimTestPortAct;
 
         QAction *extAppAct[3];
 

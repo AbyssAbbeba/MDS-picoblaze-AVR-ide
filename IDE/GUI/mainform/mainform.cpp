@@ -128,6 +128,10 @@
     #define MDS_SIM_FEATURES
     #include "../widgets/Tools/StopWatch/stopwatch.h"
 #endif
+#ifdef MDS_FEATURE_SIM_TESTPORTTOOL
+    #define MDS_SIM_FEATURES
+    #include "../widgets/Tools/TestPortTool/testporttool.h"
+#endif
 
 #include "../guicfg/guicfg.h"
 
@@ -605,6 +609,9 @@ void MainForm::createMenu()
         #ifdef MDS_FEATURE_SIM_STOPWATCH
            simToolsMenu->addAction(toolSimStopWatchAct);
         #endif
+        #ifdef MDS_FEATURE_SIM_TESTPORTTOOL
+           simToolsMenu->addAction(toolSimTestPortAct);
+        #endif
     #endif
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -914,6 +921,11 @@ void MainForm::createActions()
         //toolSimLoggerAct = new QAction(tr("Port Logger"), this);
         //toolSimLoggerAct->setDisabled(true);
         //connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
+    #endif
+    #ifdef MDS_FEATURE_SIM_TESTPORTTOOL
+        toolSimTestPortAct = new QAction(QIcon(":resources/icons/stopwatch.png"), tr("Test Ports"), this);
+        toolSimTestPortAct->setDisabled(true);
+        connect(toolSimTestPortAct, SIGNAL(triggered()), this, SLOT(simTestPort()));
     #endif
         
 
@@ -3683,6 +3695,9 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
             #ifdef MDS_FEATURE_SIM_STOPWATCH
                 toolSimStopWatchAct->setEnabled(true);
             #endif
+            #ifdef MDS_FEATURE_SIM_TESTPORTTOOL
+                toolSimTestPortAct->setEnabled(true);
+            #endif
             projectConfigAct->setDisabled(true);
             projectCompileAct->setDisabled(true);
             if (true == simulationBreakpointsEnabled)
@@ -3815,6 +3830,9 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
         #endif
         #ifdef MDS_FEATURE_SIM_STOPWATCH
             toolSimStopWatchAct->setDisabled(true);
+        #endif
+        #ifdef MDS_FEATURE_SIM_TESTPORTTOOL
+            toolSimTestPortAct->setDisabled(true);
         #endif
         projectConfigAct->setEnabled(true);
         projectCompileAct->setEnabled(true);
@@ -5955,5 +5973,15 @@ void MainForm::simStopWatch()
 
 
         connect(watch, SIGNAL(stopSim()), this, SLOT(stopSimSlot()));
+    #endif
+}
+
+
+void MainForm::simTestPort()
+{
+    #ifdef MDS_FEATURE_SIM_TESTPORTTOOL
+        TestPortTool *portTool = new TestPortTool(0, m_projectMan->getSimulated()->getSimControl());
+
+        portTool->show();
     #endif
 }
