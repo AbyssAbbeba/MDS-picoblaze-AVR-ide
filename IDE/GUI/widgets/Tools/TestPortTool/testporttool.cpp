@@ -115,9 +115,9 @@ void TestPortTool::outFileClicked()
     loadPath.clear();
     loadPath = QFileDialog::getSaveFileName(this,"Output file",".","*.txt");
 
-    QFile outFile(loadPath);
     ui->lineOutFile->setText(loadPath);
     // open device for read only
+    outFile.setFileName(loadPath);
     outFile.open(QIODevice::WriteOnly | QIODevice::Text);
 
     cursor->insertText("Output file has been succesfully selected\n");
@@ -198,10 +198,11 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
         {
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
             {
+                //QTextStream outFileText(&outFile);
                 qDebug()<< "sim switch handle event";
                 this->outValue = m_plio->getOutputArray()[locationOrReason];
                 *outFileText << "Portout: " << locationOrReason << " " << (unsigned char)outValue << endl;
-                //outFileText->flush();
+                outFileText->flush();
                 cursor->insertText(QString("Portout: %1 %2 \n").arg(locationOrReason).arg((unsigned char)outValue));
                 ui->textLog->setTextCursor(*cursor);
                 break;
