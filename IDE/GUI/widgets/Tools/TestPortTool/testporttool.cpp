@@ -9,6 +9,7 @@ TestPortTool::TestPortTool(QWidget *parent, MCUSimControl *controlUnit) :
 
     status = false;
     fileBuffer.clear();
+    index = 0;
 
     ui->labelStatus->setText("Inactive");
 
@@ -52,32 +53,6 @@ TestPortTool::TestPortTool(QWidget *parent, MCUSimControl *controlUnit) :
             SLOT(outFileClicked())
            );
 
-    // FOR TESTING ONLY, SIMULATE IN/OUT events
-    QTimer *timer = new QTimer(this);
-    connect(timer,
-            SIGNAL(timeout()),
-            this,
-            SLOT(inputEvent()));
-    timer->start(500);
-
-    // LIST
-    //bootDeviceList << "UART" << "Buttons" << "Leds" << "I2C_interface" << "LCD_interface" << "SPI_slave";
-  //  connect(ui->listVystup,
-     //       SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-     //       this,
-     //       SLOT(insertItem(QListWidgetItem*))
-    //       );
-  //  ui->listVystup->setContextMenuPolicy(Qt::CustomContextMenu);
-  //  connect(ui->listVystup,
-  //          SIGNAL(customContextMenuRequested(QPoint)),
-  //          SLOT(customMenuRequested(QPoint))
-  //          );
-
-    int random;
-    qsrand( QDateTime::currentDateTime().toTime_t() );
-    random = randInt(0,10);//qrand();
-
-    qDebug() << random;
 }
 
 void TestPortTool::inputEvent()
@@ -85,15 +60,13 @@ void TestPortTool::inputEvent()
 
 }
 
-int TestPortTool::randInt(int low, int high)
-{
-    // Random number between low and high
-    return qrand() % ((high + 1) - low) + low;
-}
-
 void TestPortTool::activatePushed()
 {
     // check if file is loaded
+    index = 0;
+    address.clear();
+    data.clear();
+
     if ( loadPath.isNull() )
     {
         cursor->insertText("Select input/output file first..\n");
@@ -119,6 +92,8 @@ void TestPortTool::activatePushed()
 void TestPortTool::fillBuffer()
 {
     QStringList buffer;
+    data.clear();
+    address.clear();
 
     qDebug() << fileBuffer.size();
     for (int i = 0; i < fileBuffer.size(); i++)
@@ -127,7 +102,6 @@ void TestPortTool::fillBuffer()
         qDebug() << "splt addr > " << buffer;
         address << buffer[0];
         data << buffer[1];
-       //both = QString("Address:    0x%1, Data:    0x%2").arg(buffer[0].toUpper(), buffer[1].toUpper());
     }
     qDebug() << "address: " << address;
     qDebug() << "data: " << data;
@@ -148,7 +122,7 @@ void TestPortTool::outFileClicked()
     ui->textLog->setTextCursor(*cursor);
 
     outFileText = new QTextStream(&outFile);
-    *outFileText << "shjxdwskjchskcjhk";
+    //*outFileText << "shjxdwskjchskcjhk";
 }
 
 void TestPortTool::readFileClicked()
@@ -181,15 +155,6 @@ void TestPortTool::readFileClicked()
     inFile.close(); //670100-2210281372/6210
 }
 
-void TestPortTool::cancelApp()
-{
-    this->close();
-}
-
-TestPortTool::~TestPortTool()
-{
-    delete ui;
-}
 
 void TestPortTool::deviceChanged()  //8
 {
@@ -219,23 +184,37 @@ void TestPortTool::handleUpdateRequest(int mask) //8
     }
 }
 
-void TestPortTool::handleEvent(int subsysId, int eventId, int /*locationOrReason*/, int /*detail*/) //8
+void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, int /*detail*/) //8
 {
     if (MCUSimSubsys::ID_PLIO == subsysId)
     {
-         qDebug()<< "handle event" << eventId;
+         qDebug()<< "subsys" << subsysId;
+         qDebug()<< "eventid" << eventId;
+         qDebug()<< "locationorreason " << locationOrReason;
+
         switch ( eventId )
         {
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
             {
                 qDebug()<< "sim switch handle event";
-                //this->value = m_plio->getOutputArray()[this->address];
+                this->outValue = m_plio->getOutputArray()[locationOrReason];
+                *outFileText << "Portout: " << locationOrReason << " " << outValue << endl;
+                cursor->insertText("Portout: %1 %2 \n").arg(locationOrReason).arg(outValue);
+                ui->textLog->setTextCursor(*cursor);
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ:
             {
-                qDebug()<< "sim switch handle event";
-                //this->value = m_plio->getOutputArray()[this->address];
+                if  ( index < address.size() )
+                {
+                    if ( locationOrReason == address.at(index).toInt(0,16) )
+                    {
+                        m_plio->getInputArray()[locationOrReason] = data.at(index);
+                        index++;
+                        cursor->insertText("Data read: %1 %2 \n").arg(address).arg(data);
+                        ui->textLog->setTextCursor(*cursor);
+                    }
+                }
                 break;
             }
             default:
@@ -249,4 +228,13 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int /*locationOrReason
 
 void TestPortTool::setReadOnly(bool /*readOnly*/)
 {
+}
+void TestPortTool::cancelApp()
+{
+    this->close();
+}
+
+TestPortTool::~TestPortTool()
+{
+    delete ui;
 }

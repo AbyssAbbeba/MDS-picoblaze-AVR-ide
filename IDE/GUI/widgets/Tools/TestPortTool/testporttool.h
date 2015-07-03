@@ -43,6 +43,8 @@ private:
     int randInt(int,int);
 
     QStringList address, data;
+    int index;
+    int outValue;
     QFile inFile,outFile;
     QString loadPath;
     Ui::TestPortTool *ui;
