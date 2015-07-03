@@ -199,7 +199,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                 qDebug()<< "sim switch handle event";
                 this->outValue = m_plio->getOutputArray()[locationOrReason];
                 *outFileText << "Portout: " << locationOrReason << " " << outValue << endl;
-                cursor->insertText("Portout: %1 %2 \n").arg(locationOrReason).arg(outValue);
+                cursor->insertText(QString("Portout: %1 %2 \n").arg(locationOrReason).arg(outValue));
                 ui->textLog->setTextCursor(*cursor);
                 break;
             }
@@ -209,10 +209,10 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                 {
                     if ( locationOrReason == address.at(index).toInt(0,16) )
                     {
-                        m_plio->getInputArray()[locationOrReason] = data.at(index);
-                        index++;
-                        cursor->insertText("Data read: %1 %2 \n").arg(address).arg(data);
+                        m_plio->getInputArray()[locationOrReason] = data.at(index).toInt(0,16);
+                        cursor->insertText(QString("Data read: %1 %2 \n").arg(address.at(index)).arg(data.at(index)));
                         ui->textLog->setTextCursor(*cursor);
+                        index++;
                     }
                 }
                 break;
