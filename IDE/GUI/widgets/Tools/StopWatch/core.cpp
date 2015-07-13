@@ -2,6 +2,8 @@
 #include <QtGui>
 Core::Core()
 {
+    clockDif = 0;
+    instrDif = 0;
     stopFlag = false;
     shutDownFlag = false;
 
@@ -61,13 +63,17 @@ void Core::addNanoSec()
     if ( isCoreStoped() == true)
         shutDown(true);
 }
-void Core::addClockCycle()
+void Core::addClockCycle(unsigned long long  ptrCycles)
 {
-    cntCurrent.clockCycles += 2;
+    cntCurrent.instructions = (ptrCycles - instrDif);
+    cntCurrent.clockCycles  = (ptrCycles * 2);
+    cntCurrent.clockCycles  -= clockDif;
     //cntOverAll.clockCycles += 2;
-    cntCurrent.instructions = cntCurrent.clockCycles / 2;
+    //cntCurrent.instructions = cntCurrent.clockCycles / 2;
     //cntOverAll.instructions = cntOverAll.clockCycles / 2;
 
+    qDebug() << clockDif << " << clock different";
+    qDebug() << instrDif << " << cycles different";
     if ( isCoreStoped() == true)
         shutDown(true);
 }

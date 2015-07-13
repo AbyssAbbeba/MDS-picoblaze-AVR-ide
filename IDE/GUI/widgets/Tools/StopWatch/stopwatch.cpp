@@ -7,19 +7,18 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
     QWidget(parent),
     ui(new Ui::StopWatch)
 {
-    m_simControl = controlUnit;
+    m_simControlUnit = controlUnit;
     ui->setupUi(this);  
+
     this->setWindowTitle("Stopwatch");
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
-
     connectSignals();
+
     ui->lineProgram->setVisible(false);
     ui->lineProgram2->setVisible(false);
     ui->lineProgram3->setVisible(false);
-
     ui->pushProgram->setVisible(false);
     ui->pushProgram2->setVisible(false);
-
     ui->label_8->setVisible(false);
 
     std::vector<int> mask;
@@ -29,11 +28,12 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
                 MCUSimCPU::EVENT_CPU_IRQ,
                 MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR
             };
-    m_simControl->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
+    m_simControlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
     connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
+    connect(m_simControlUnit, SIGNAL(quotaReached(int)), this, SLOT(quotaReachedSlot(int)));
 
     ui->labelStahp->setStyleSheet("QLabel { color : red }");
     if ( core.getShutDownStatus() == false )
@@ -46,12 +46,28 @@ StopWatch::StopWatch(QWidget *parent, MCUSimControl *controlUnit) :
         ui->labelStahp->setText("STOPPED");
         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
     }
-    qDebug() << m_simControl->quotasEnabled() << "QUOTAS";
+    qDebug() << m_simControlUnit->quotasEnabled() << "<< QUOTAS";
+    //qDebug() << m_simControl->getDeviceName();
+    //ui->labelDevice->setText(m_simControl->getDeviceName());
+
 }
 
 StopWatch::~StopWatch()
 {
     delete ui;
+}
+
+void StopWatch::quotaReachedSlot(int Quota)
+{
+    // 0 = cycles, 1 = interrupt, 2 = subroutines,
+    // 3 = returns, 4 = int ret, 5 = breakpoints
+    switch ( Quota)
+    {
+        case 0:
+            m_simControlUnit->setQuota(MCUSimControl::QTP_CYCLES,-1);
+            qDebug() << "aa";
+            break;
+    }
 }
 
 
@@ -148,9 +164,11 @@ void StopWatch::clearCurrent()
     core.structPtrCurrent->subPrograms = 0;
 
     ui->lineCycles->setText("0");
+    core.clockDif += core.structPtrCurrent->clockCycles;
     core.structPtrCurrent->clockCycles = 0;
 
     ui->lineInstr->setText("0");
+    core.instrDif += core.structPtrCurrent->instructions;
     core.structPtrCurrent->instructions = 0;
 
     ui->lineInterrupt->setText("0");
@@ -269,6 +287,7 @@ void StopWatch::readButton(int button)
             break;
         case 13: ui->lineCycles->setText("0");
                 updateCore();
+                core.clockDif += core.structPtrCurrent->clockCycles;
                 core.structPtrCurrent->clockCycles = 0;
             break;
         case 14: ui->lineCycles2->setText("0");
@@ -277,6 +296,7 @@ void StopWatch::readButton(int button)
             break;
         case 16: ui->lineInstr->setText("0");
                 updateCore();
+                core.instrDif += core.structPtrCurrent->instructions;
                 core.structPtrCurrent->instructions = 0;
             break;
         case 17: ui->lineInstr2->setText("0");
@@ -322,7 +342,6 @@ void StopWatch::readButton(int button)
 
 bool StopWatch::eventFilter(QObject *obj, QEvent *event)
 {
-
     if(event->type() == QEvent::MouseButtonPress)
     {
         ui->lineBreak->setStyleSheet("QLineEdit{background: white;}");
@@ -565,11 +584,14 @@ void StopWatch::on_lineNano2_textChanged(const QString &arg1)
 void StopWatch::on_lineCycles2_textChanged(const QString &arg1)
 {
     core.structPtrStop->clockCycles = arg1.toULongLong(0,10);
+
 }
 
 void StopWatch::on_lineInstr2_textChanged(const QString &arg1)
 {
     core.structPtrStop->instructions = arg1.toULongLong(0,10);
+    if ( ui->checkSimulation->isChecked() == true )
+        m_simControlUnit->setQuota(MCUSimControl::QTP_CYCLES, arg1.toInt(0,10));
 }
 
 void StopWatch::on_lineProgram2_textChanged(const QString &arg1)
@@ -622,8 +644,6 @@ void StopWatch::breakpointReachedSlot()
         }
         else
         {
-            if ( ui->checkSimulation->isChecked() == true )
-                emit stopSim();
 
             ui->labelStahp->setText("STOPPED");
             ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
@@ -639,19 +659,23 @@ void StopWatch::handleUpdateRequest(int mask)
         //this->leTime->setText(QString::number(m_simControlUnit->getTotalMCycles()));
         //this->leTime->setStyleSheet("background-color: yellow");
         unsigned long long cycles;
-        cycles = m_simControlUnit->getTotalMCycles();
-        qDebug() << cycles;
+        //unsigned long long * ptrCycles;
+       // ptrCycles = &cycles;
 
+        cycles = m_simControlUnit->getTotalMCycles();
+        qDebug() << cycles << " << clocl cycles total";
+        //qDebug() << ptrCycles << "clock dif";
+
+        core.structPtrOverall->instructions = cycles;
+        core.structPtrOverall->clockCycles  = cycles * 2;
         if ( core.getShutDownStatus() == true )
         {
-            core.structPtrOverall->clockCycles += 2;
             update(2);
             return;
         }
         else
         {
-            core.structPtrOverall->clockCycles += 2;
-            core.addClockCycle();
+            core.addClockCycle(cycles);
             update(2);
             if ( core.getShutDownStatus() == false )
             {
@@ -660,10 +684,6 @@ void StopWatch::handleUpdateRequest(int mask)
             }
             else
             {
-                if ( ui->checkSimulation->isChecked() == true )
-                    emit stopSim();
-                qDebug() << "stop sim emited";
-
                 ui->labelStahp->setText("STOPPED");
                 ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
             }
@@ -678,7 +698,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
 {
     if (MCUSimSubsys::ID_CPU == subsysId)
     {
-        qDebug() << "CallWatcher: ID_CPU event";
         switch ( eventId )
         {
             case MCUSimCPU::EVENT_CPU_CALL:
@@ -700,9 +719,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
@@ -729,9 +745,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
@@ -758,9 +771,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
@@ -788,9 +798,6 @@ void StopWatch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/,
                     }
                     else
                     {
-                        if ( ui->checkSimulation->isChecked() == true )
-                            emit stopSim();
-
                         ui->labelStahp->setText("STOPPED");
                         ui->pushStart->setIcon(QPixmap(":/resources/icons/bullet_arrow_right.png"));
                     }
@@ -813,6 +820,43 @@ void StopWatch::deviceChanged()
 
 void StopWatch::deviceReset()
 {
+ ui->lineNano->setText("0");
+
+ui->lineNano2->setText("0");
+
+   ui->lineBreak->setText("0");
+
+ ui->lineBreak2->setText("0");
+
+ ui->lineCalls->setText("0");
+
+ ui->lineCalls2->setText("0");
+
+ ui->lineCycles->setText("0");
+
+ ui->lineCycles2->setText("0");
+
+ui->lineInstr->setText("0");
+
+    ui->lineInstr2->setText("0");
+
+ ui->lineInterrupt->setText("0");
+
+ ui->lineInterrupt2->setText("0");
+
+     ui->lineIntRet->setText("0");
+
+     ui->lineIntRet2->setText("0");
+
+ ui->lineProgram->setText("0");
+
+ ui->lineProgram2->setText("0");
+
+ui->lineReturns->setText("0");
+
+    ui->lineReturns2->setText("0");
+
+    qDebug() << "device reset";
     core.structPtrCurrent->nanoSecs = 0;
     core.structPtrCurrent->clockCycles = 0;
     core.structPtrCurrent->instructions = 0;

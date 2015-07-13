@@ -70,6 +70,9 @@ endif()
 if ( MDS_FEATURE_SIM_STOPWATCH )
     list ( APPEND MDS_ADDITONAL_LIBS "StopWatch" )
 endif()
+if ( MDS_FEATURE_SIM_TESTPORTTOOL )
+    list ( APPEND MDS_ADDITONAL_LIBS "TestPortTool" )
+endif()
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
