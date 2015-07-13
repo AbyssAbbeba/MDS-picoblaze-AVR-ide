@@ -923,7 +923,7 @@ void MainForm::createActions()
         //connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
     #endif
     #ifdef MDS_FEATURE_SIM_TESTPORTTOOL
-        toolSimTestPortAct = new QAction(QIcon(":resources/icons/stopwatch.png"), tr("Test Ports"), this);
+        toolSimTestPortAct = new QAction(QIcon(":resources/icons/book_edit.png"), tr("Test Ports"), this);
         toolSimTestPortAct->setDisabled(true);
         connect(toolSimTestPortAct, SIGNAL(triggered()), this, SLOT(simTestPort()));
     #endif

@@ -10,6 +10,8 @@ TestPortTool::TestPortTool(QWidget *parent, MCUSimControl *controlUnit) :
     status = false;
     fileBuffer.clear();
     index = 0;
+    inOpen = false;
+    outOpen = false;
 
     ui->labelStatus->setText("Inactive");
 
@@ -75,9 +77,15 @@ void TestPortTool::activatePushed()
     address.clear();
     data.clear();
 
-    if ( loadPath.isNull() )
+    if ( false == inOpen )
     {
-        cursor->insertText("Select input/output file first..\n");
+        cursor->insertText("Select input file\n");
+        ui->textLog->setTextCursor(*cursor);
+        return;
+    }
+    if ( false == outOpen )
+    {
+        cursor->insertText("Select output file\n");
         ui->textLog->setTextCursor(*cursor);
         return;
     }
@@ -122,8 +130,13 @@ void TestPortTool::outFileClicked()
     ui->lineOutFile->setText(loadPath);
     // open device for read only
     outFile.setFileName(loadPath);
-    outFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        cursor->insertText("Output file: I/O error\n");
+        return;
+    }
 
+    outOpen = true;
     cursor->insertText("Output file has been succesfully selected\n");
     ui->textLog->setTextCursor(*cursor);
 
@@ -136,16 +149,21 @@ void TestPortTool::readFileClicked()
     // get path
     loadPath.clear();
     loadPath = QFileDialog::getOpenFileName(this,"Input file","");
-    QFile inFile(loadPath);
     ui->lineInFile->setText(loadPath);
 
     if ( NULL == loadPath)
         return;
 
+    inFile.setFileName(loadPath);
     // open device for read only
-    inFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    if (!inFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        cursor->insertText("Input file: I/O error\n");
+        return;
+    }
     cursor->insertText("Input values has been succesfully loaded\n");
     ui->textLog->setTextCursor(*cursor);
+    inOpen = true;
 
     // read from file, get input values
 
@@ -160,7 +178,7 @@ void TestPortTool::readFileClicked()
         line = in.readLine();
     }
 
-    inFile.close(); //670100-2210281372/6210
+    //inFile.close();
 }
 
 
