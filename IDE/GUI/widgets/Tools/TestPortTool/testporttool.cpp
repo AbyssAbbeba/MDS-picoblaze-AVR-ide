@@ -19,9 +19,13 @@ TestPortTool::TestPortTool(QWidget *parent, MCUSimControl *controlUnit) :
     ui->lineInFile->setReadOnly(true);
     ui->lineOutFile->setReadOnly(true);
     ui->textLog->setReadOnly(true);
-    ui->pushActivate->setText("Reset");
+    ui->pushActivate->setText("Start");
 
-
+    ui->pushLoadOut->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+    ui->pushLoadIn->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+    ui->pushLoadOut->setText("");
+    ui->pushLoadIn->setText("");
+//edisonka orange
     m_simControlUnit = controlUnit;
     
     std::vector<int> mask = { //8
@@ -66,6 +70,7 @@ void TestPortTool::inputEvent()
 void TestPortTool::activatePushed()
 {
     // check if file is loaded
+    ui->textLog->clear();
     index = 0;
     address.clear();
     data.clear();
@@ -82,12 +87,7 @@ void TestPortTool::activatePushed()
     if ( status == true)
     {
         ui->labelStatus->setText("Active");
-        ui->pushActivate->setText("Deactivate");
-    }
-    else
-    {
-        ui->labelStatus->setText("Inactive");
-        ui->pushActivate->setText("Activate");
+        ui->pushActivate->setText("Reset");
     }
     fillBuffer();
 }
@@ -207,7 +207,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                 //QTextStream outFileText(&outFile);
                 qDebug()<< "sim switch handle event";
                 this->outValue = m_plio->getOutputArray()[locationOrReason];
-                *outFileText << "Portout: " << locationOrReason << " " << (unsigned char)outValue << endl;
+                *outFileText << "Portout: 0x" << QString::number(locationOrReason, 16) << " 0x" << (unsigned char)outValue << endl;
                 outFileText->flush();
                 cursor->insertText(QString("Portout: 0x%1 0x%2 \n").arg(locationOrReason).arg((unsigned char)outValue));
                 ui->textLog->setTextCursor(*cursor);
@@ -223,7 +223,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                     if ( locationOrReason == address.at(index).toInt(0,16) )
                     {
                         m_plio->getInputArray()[locationOrReason] = data.at(index).toInt(0,16);
-                        cursor->insertText(QString("Data read: 0x%1 0x%2 \n").arg(address.at(index)).arg(data.at(index)));
+                        cursor->insertText(QString("Data read: 0x%1 0x%2 \n").arg(address.at(index).toInt(0,16)).arg(data.at(index)));
                         ui->textLog->setTextCursor(*cursor);
                         index++;
                     }
