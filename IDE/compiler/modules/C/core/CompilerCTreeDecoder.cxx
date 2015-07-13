@@ -23,17 +23,19 @@
 #include "CompilerSemanticInterface.h"
 
 // C compiler header files.
-#include "CompilerCType.h"
+#include "CompilerCBackend.h"
 #include "CompilerCSymbolTable.h"
 #include "CompilerCDeclaration.h"
 
 CompilerCTreeDecoder::CompilerCTreeDecoder ( CompilerSemanticInterface * compilerCore,
                                              CompilerOptions           * opts,
+                                             CompilerCBackend          * backend,
                                              CompilerCSymbolTable      * symbolTable,
                                              CompilerCExprProcessor    * exprProcessor )
                                            :
                                              m_compilerCore ( compilerCore ),
                                              m_opts ( opts ),
+                                             m_backend ( backend ),
                                              m_symbolTable ( symbolTable ),
                                              m_exprProcessor ( exprProcessor )
 {
@@ -71,14 +73,18 @@ void CompilerCTreeDecoder::processCodeTree ( CompilerStatement * codeTree )
 
 inline void CompilerCTreeDecoder::processDeclaration ( CompilerExpr * declExpr )
 {
-    using namespace CompilerCType;
-
     std::cout << "C_DECLARATION:" << declExpr << '\n';
     std::cout << "left="<<declExpr->lVal()<<'\n';
     std::cout << "op="<<declExpr->oper()<<'\n';
     std::cout << "right="<<declExpr->rVal()<<'\n'<<'\n';
 
     CompilerCDeclaration * declaration = resolveDeclaration(declExpr);
+    processType(declaration);
+}
+
+CompilerCType::Type * CompilerCTreeDecoder::processType ( CompilerCDeclaration * declaration )
+{
+    using namespace CompilerCType;
 
     std::cout << "\n>>> resolveDeclaration -->\n" << declaration<<'\n';
 
@@ -142,18 +148,139 @@ std::cout << "enum " << id << " = " << value << '\n';
                   member = member->m_next )
             {
                 std::cout << "MEMBER = \n" <<member<<'\n';
+                Type * memberType = processType(member);
+                std::cout << "MEMBER type = \n" <<memberType<<'\n';
 
-//                 member->m_name.m_id
-//                 structure->m_members.push_back({});
+                for ( CompilerCDeclaration * instance = member->m_instances;
+                      nullptr != instance;
+                      instance = instance->m_next )
+                {
+                    // TODO: handle pointers, array, etc.
+                    std::string id;
+                    if ( nullptr != instance->m_name.m_id )
+                    {
+                        id = *( instance->m_name.m_id );
+                    }
+                    structure->m_members.push_back ( { id, memberType } );
+                }
             }
         }
     }
     else
     {
+        Basic * basicType = new Basic();
+        type = basicType;
 
+        constexpr int INTEGER_TYPES =
+        (
+              CompilerCDeclaration::TS_CHAR
+            | CompilerCDeclaration::TS_SHORT
+            | CompilerCDeclaration::TS_INT
+            | CompilerCDeclaration::TS_LONG
+            | CompilerCDeclaration::TS_LONG_LONG
+        );
+
+        constexpr int FLOATING_TYPES =
+        (
+              CompilerCDeclaration::TS_FLOAT
+            | CompilerCDeclaration::TS_DOUBLE
+            | CompilerCDeclaration::TS_LONG_DOUBLE
+        );
+
+        if ( CompilerCDeclaration::TS_VOID & declaration->m_type )
+        {
+            basicType->m_type = Basic::VOID;
+            basicType->m_size = 0;
+        }
+        else if ( CompilerCDeclaration::TS_BOOL & declaration->m_type )
+        {
+            basicType->m_type = Basic::BOOLEAN;
+            basicType->m_size = m_backend->dataTypeSize().m_bool;
+        }
+        else if ( INTEGER_TYPES & declaration->m_type )
+        {
+            basicType->m_type = ( CompilerCDeclaration::TS_UNSIGNED & declaration->m_type )
+                                ? Basic::UNSIGNED_INT : Basic::SIGNED_INT;
+
+            unsigned int size = 0;
+            const CompilerCBackend::DataTypeSizeTable & dtst = m_backend->dataTypeSize();
+
+            if ( CompilerCDeclaration::TS_CHAR & declaration->m_type )
+            {
+                size = dtst.m_char;
+            }
+            else if ( CompilerCDeclaration::TS_SHORT & declaration->m_type )
+            {
+                size = dtst.m_shortInt;
+            }
+            else if ( CompilerCDeclaration::TS_INT & declaration->m_type )
+            {
+                size = dtst.m_int;
+            }
+            else if ( CompilerCDeclaration::TS_LONG & declaration->m_type )
+            {
+                size = dtst.m_longInt;
+            }
+            else if ( CompilerCDeclaration::TS_LONG_LONG & declaration->m_type )
+            {
+                size = dtst.m_longLongInt;
+            }
+
+            basicType->m_size = size;
+        }
+        else if ( FLOATING_TYPES & declaration->m_type )
+        {
+            unsigned int size = 0;
+            const CompilerCBackend::DataTypeSizeTable & dtst = m_backend->dataTypeSize();
+
+            if ( CompilerCDeclaration::TS_COMPLEX & declaration->m_type )
+            {
+                basicType->m_type = Basic::COMPLEX_FLOAT;
+
+                if ( CompilerCDeclaration::TS_FLOAT & declaration->m_type )
+                {
+                    size = dtst.m_complexFloat;
+                }
+                else if ( CompilerCDeclaration::TS_DOUBLE & declaration->m_type )
+                {
+                    size = dtst.m_complexDouble;
+                }
+                else if ( CompilerCDeclaration::TS_LONG_DOUBLE & declaration->m_type )
+                {
+                    size = dtst.m_complexLongDouble;
+                }
+            }
+            else
+            {
+                if ( CompilerCDeclaration::TS_IMAGINARY & declaration->m_type )
+                {
+                    basicType->m_type = Basic::IMAGINARY_FLOAT;
+                }
+                else
+                {
+                    basicType->m_type = Basic::REAL_FLOAT;
+                }
+
+                if ( CompilerCDeclaration::TS_FLOAT & declaration->m_type )
+                {
+                    size = dtst.m_float;
+                }
+                else if ( CompilerCDeclaration::TS_DOUBLE & declaration->m_type )
+                {
+                    size = dtst.m_double;
+                }
+                else if ( CompilerCDeclaration::TS_LONG_DOUBLE & declaration->m_type )
+                {
+                    size = dtst.m_longDouble;
+                }
+            }
+
+            basicType->m_size = size;
+        }
     }
 
-std::cout << "\n### TYPE >>>\n" << type << '\n';
+std::cout << "\n### TYPE >>>\n";
+std::cerr << type << '\n';
 
     if ( CompilerCDeclaration::SC_TYPEDEF & declaration->m_type )
     {
@@ -170,6 +297,8 @@ std::cout << "\n### TYPE >>>\n" << type << '\n';
     {
 
     }
+
+    return type;
 }
 
 CompilerCDeclaration * CompilerCTreeDecoder::resolveDeclaration ( const CompilerExpr * exprTree,
@@ -914,7 +1043,7 @@ inline void CompilerCTreeDecoder::newTypedef ( const CompilerCDeclaration * type
     }
 
     const std::string & id = *(typedefDecl->m_name.m_id);
-    // TODO: handle eclipse
+    // TODO: process eclipse
     if ( m_tmpDeclarations.m_typedefs.back().cend() != m_tmpDeclarations.m_typedefs.back().find(id) )
     {
         m_compilerCore->semanticMessage ( typedefDecl->m_location,

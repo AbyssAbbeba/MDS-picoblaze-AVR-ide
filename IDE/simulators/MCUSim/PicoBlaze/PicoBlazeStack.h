@@ -242,7 +242,7 @@ inline unsigned int PicoBlazeStack::popFromStack()
         m_position = (int) m_config.m_size - 1;
     }
 
-    unsigned int result = ( 0x3ff & m_data[m_position] );
+    unsigned int result = ( 0xfff & m_data[m_position] );
 
     logEvent(EVENT_STACK_SP_CHANGED, m_position);
     logEvent(EVENT_MEM_INF_RD_VAL_READ, m_position, result);
