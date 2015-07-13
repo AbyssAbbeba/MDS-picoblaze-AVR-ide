@@ -31,7 +31,7 @@ CompilerCSemanticAnalyzer::CompilerCSemanticAnalyzer ( CompilerSemanticInterface
 {
     m_symbolTable   = new CompilerCSymbolTable();
     m_exprProcessor = new CompilerCExprProcessor(compilerCore, opts);
-    m_treeDecoder   = new CompilerCTreeDecoder(compilerCore, opts, m_symbolTable, m_exprProcessor);
+    m_treeDecoder   = new CompilerCTreeDecoder(compilerCore, opts, m_backend, m_symbolTable, m_exprProcessor);
 }
 
 CompilerCSemanticAnalyzer::~CompilerCSemanticAnalyzer()
