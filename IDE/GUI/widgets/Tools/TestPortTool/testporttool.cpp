@@ -209,7 +209,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                 this->outValue = m_plio->getOutputArray()[locationOrReason];
                 *outFileText << "Portout: 0x" << QString::number(locationOrReason, 16) << " 0x" << (unsigned char)outValue << endl;
                 outFileText->flush();
-                cursor->insertText(QString("Portout: 0x%1 0x%2 \n").arg(locationOrReason).arg((unsigned char)outValue));
+                cursor->insertText(QString("Portout: 0x%1 0x%2 \n").arg(QString::number(locationOrReason, 16)).arg((unsigned char)outValue));
                 ui->textLog->setTextCursor(*cursor);
                 break;
             }
@@ -223,7 +223,7 @@ void TestPortTool::handleEvent(int subsysId, int eventId, int locationOrReason, 
                     if ( locationOrReason == address.at(index).toInt(0,16) )
                     {
                         m_plio->getInputArray()[locationOrReason] = data.at(index).toInt(0,16);
-                        cursor->insertText(QString("Data read: 0x%1 0x%2 \n").arg(address.at(index).toInt(0,16)).arg(data.at(index)));
+                        cursor->insertText(QString("Data read: 0x%1 0x%2 \n").arg(QString::number(address.at(index).toInt(0,16), 16)).arg(data.at(index)));
                         ui->textLog->setTextCursor(*cursor);
                         index++;
                     }
