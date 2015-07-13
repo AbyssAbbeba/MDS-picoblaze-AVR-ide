@@ -137,8 +137,8 @@ void CompilerCType::Struct::print ( std::ostream & out ) const
     for ( const auto & m : m_members )
     {
         out << "<member>";
-        out << "<tag>" << m.first << "</tag>";
-        out << "<value>" << m.second << "</value>";
+        out << "<type>" << m.second << "</type>";
+        out << "<id>" << m.first << "</id>";
         out << "</member>";
     }
     out << ( m_union ? "</union>" : "</struct>" );

@@ -18,6 +18,7 @@
 // Forward declarations.
 class CompilerExpr;
 class CompilerOptions;
+class CompilerCBackend;
 class CompilerStatement;
 class CompilerCSymbolTable;
 class CompilerCDeclaration;
@@ -27,6 +28,9 @@ class CompilerSemanticInterface;
 // Compiler header files.
 #include "CompilerValue.h"
 #include "CompilerSourceLocation.h"
+
+// C compiler header files.
+#include "CompilerCType.h"
 
 // Standard header files.
 #include <map>
@@ -59,6 +63,7 @@ class CompilerCTreeDecoder
          */
         CompilerCTreeDecoder ( CompilerSemanticInterface * compilerCore,
                                CompilerOptions           * opts,
+                               CompilerCBackend          * backend,
                                CompilerCSymbolTable      * symbolTable,
                                CompilerCExprProcessor    * exprProcessor );
 
@@ -147,6 +152,8 @@ class CompilerCTreeDecoder
         int64_t getIntConstant ( const std::string & id,
                                  const CompilerSourceLocation & location );
 
+        CompilerCType::Type * processType ( CompilerCDeclaration * declaration );
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -186,6 +193,9 @@ class CompilerCTreeDecoder
 
         ///
         CompilerOptions * const m_opts;
+
+        ///
+        CompilerCBackend * const m_backend;
 
         ///
         CompilerCSymbolTable * const m_symbolTable;
