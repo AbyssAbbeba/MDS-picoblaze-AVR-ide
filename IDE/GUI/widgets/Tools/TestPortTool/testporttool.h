@@ -50,6 +50,7 @@ private:
     Ui::TestPortTool *ui;
     MCUSimControl *m_simControlUnit; //8
     MCUSimPureLogicIO * m_plio; //8
+    bool inOpen, outOpen;
 };
 
 #endif // TESTPORTTOOL_H
