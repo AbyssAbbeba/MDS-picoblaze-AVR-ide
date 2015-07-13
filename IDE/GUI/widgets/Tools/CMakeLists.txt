@@ -46,4 +46,7 @@ endif()
 if ( MDS_FEATURE_SIM_STOPWATCH )
     add_subdirectory(StopWatch)
 endif()
+if ( MDS_FEATURE_SIM_TESTPORTTOOL )
+    add_subdirectory(TestPortTool)
+endif()
 

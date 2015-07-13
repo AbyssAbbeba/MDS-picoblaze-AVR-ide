@@ -28,6 +28,8 @@ class StopWatch : public QWidget, public MCUSimObserver
 public:
     explicit StopWatch(QWidget *parent, MCUSimControl *controlUnit);
     ~StopWatch();
+    void deviceChanged();
+    void deviceReset();
 
     void connectSignals();
     void setStop();
@@ -37,8 +39,9 @@ public:
     QFile outFile;
     QString outPath;
     QString m_path;
+    unsigned long long clockDif;
 
-
+    //MCUSimControl::QuotaType Quota;
     
 private:
     void saveAsText();
@@ -46,14 +49,11 @@ private:
     void clearStop();
     void clearCurrent();
     void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
-    void deviceChanged();
-    void deviceReset();
     void setReadOnly(bool readOnly);
     void update(int);
 
 
     Ui::StopWatch *ui;
-    MCUSimControl *m_simControl;
 
 
 private slots:
@@ -69,6 +69,7 @@ private slots:
     void on_lineIntRet2_textChanged(const QString &arg1);
     void on_lineBreak2_textChanged(const QString &arg1);
     void handleUpdateRequest(int mask);
+    void quotaReachedSlot(int);
 
 signals:
     void stopSim();

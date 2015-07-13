@@ -904,7 +904,7 @@ inline bool MCUSimControl::checkQuotas()
 
     if ( ( -1 != m_quotas[QTP_CYCLES] ) && ( (int) m_totalMCycles >= m_quotas[QTP_CYCLES] ) )
     {
-        emit(quotaReched(QTP_CYCLES));
+        emit(quotaReached(QTP_CYCLES));
         return true;
     }
 
