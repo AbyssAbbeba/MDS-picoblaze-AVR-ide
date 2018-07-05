@@ -21,6 +21,9 @@ wide range of output data formats and a number of advanced features like macro p
 meant to give you means to write code with run-time efficiency typical for the assembly language while giving you some of the comfort
 of a more high-level language like C. 
 
+Quick user guide:
+https://moravia-microsystems.net/mds/others/QuickUserGuideAssembler.pdf
+
 For instance you may use: 
  - if ( S0 == S1 ) to easy write conditions instead of compares and conditional jumps
  - for ( S0, 0 .. 9 ) for loops
