@@ -5,6 +5,8 @@ MDS provides all the necessary functionality to develop software part of a PicoB
 assembler, disassembler, and simulator. Besides that there is also a number of tools and functions to make your work easier,
 the sole purpose of MDS is to save your time and enable development of more complex applications.
 
+![picoblz](https://user-images.githubusercontent.com/19152258/42370176-583eccc0-810c-11e8-92e8-cecbc2bfd626.jpg)
+
 ## Main features
 
   -  Text editor optimized for writing source code.
